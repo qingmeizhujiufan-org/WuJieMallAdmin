@@ -30,7 +30,7 @@ class Login extends React.Component {
                 this.setState({
                     loading: true
                 });
-                axios.post('/login', JSON.stringify(values)).then(res => res.data).then(data => {
+                axios.post('admin/login', JSON.stringify(values)).then(res => res.data).then(data => {
                     if (data.success) {
                         let backData = data.backData;
                         // sessionStorage.setItem('token', backData.token);
@@ -110,7 +110,7 @@ class Login extends React.Component {
                                     <p style={{margin: '0', color: '#999'}}>Welcome!</p>
                                 </FormItem>
                                 <FormItem>
-                                    {getFieldDecorator('user_code', {
+                                    {getFieldDecorator('user_name', {
                                         rules: [{required: true, message: '请输入您的用户名!'}],
                                     })(
                                         <Input prefix={<Icon type="user" style={{color: 'rgba(0,0,0,.25)'}}/>}

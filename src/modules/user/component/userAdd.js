@@ -11,6 +11,7 @@ import {
   Upload,
   Icon,
   Spin,
+  Switch,
   Notification,
   Message,
   Tooltip
@@ -32,19 +33,25 @@ class Index extends React.Component {
     this.state = {
       fileList: [],
       confirmDirty: false,
-      roleList: [],
+      roleList: [{
+        role_id: '000',
+        role_name: '超级管理员'
+      },{
+        role_id: '001',
+        role_name: '管理员'
+      }],
       roleLoading: false,
       submitLoading: false
     };
   }
 
   componentDidMount = () => {
-    this.queryRole();
+    // this.queryRole();
   }
 
   queryRole = () => {
     this.setState({roleLoading: true});
-    axios.get('role/queryList').then(res => res.data).then(data => {
+    axios.get('admin/queryList').then(res => res.data).then(data => {
       if (data.success) {
         let content = data.backData.content;
         let roleList = [];
@@ -116,7 +123,7 @@ class Index extends React.Component {
         this.setState({
           submitLoading: true
         });
-        axios.post('user/save', values).then(res => res.data).then(data => {
+        axios.post('admin/add', values).then(res => res.data).then(data => {
           if (data.success) {
             Notification.success({
               message: '提示',
@@ -192,8 +199,8 @@ class Index extends React.Component {
                         <Select>
                           {
                             roleList.map(item => {
-                              return (<Option key={item.id}
-                                              value={item.id}>{item.name}</Option>)
+                              return (<Option key={item.role_id}
+                                              value={item.role_id}>{item.role_name}</Option>)
                             })
                           }
                         </Select>
@@ -201,18 +208,7 @@ class Index extends React.Component {
                     </Spin>
                   </FormItem>
                 </Col>
-                <Col {...itemGrid}>
-                  <FormItem
-                    {...formItemLayout}
-                    label="用户编码"
-                  >
-                    {getFieldDecorator('userCode', {
-                      rules: [{required: false}],
-                    })(
-                      <Input disabled placeholder={'由用户名自动生成'}/>
-                    )}
-                  </FormItem>
-                </Col>
+
                 <Col {...itemGrid}>
                   <FormItem
                     {...formItemLayout}
@@ -224,6 +220,20 @@ class Index extends React.Component {
                       }],
                     })(
                       <Input/>
+                    )}
+                  </FormItem>
+                </Col>
+                <Col {...itemGrid}>
+                  <FormItem
+                    {...formItemLayout}
+                    label="真实姓名"
+                  >
+                    {getFieldDecorator('realName', {
+                      rules: [{
+                        required: true, message: '请输入真实姓名'
+                      }]
+                    })(
+                      <Input />
                     )}
                   </FormItem>
                 </Col>
@@ -267,6 +277,20 @@ class Index extends React.Component {
                     )}
                   </FormItem>
                 </Col>
+                {/*<Col {...itemGrid}>*/}
+                  {/*<FormItem*/}
+                    {/*{...formItemLayout}*/}
+                    {/*label="是否冻结"*/}
+                  {/*>*/}
+                    {/*{getFieldDecorator('is_frozen', { rules: [{*/}
+                      {/*required: false,*/}
+                    {/*}],*/}
+                      {/*initialValue: '关'*/}
+                    {/*})(*/}
+                      {/*<Switch checkedChildren="开" unCheckedChildren="关" />*/}
+                    {/*)}*/}
+                  {/*</FormItem>*/}
+                {/*</Col>*/}
                 <Col {...itemGrid}>
                   <FormItem
                     {...formItemLayout}
