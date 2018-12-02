@@ -112,9 +112,9 @@ const ResourceList = Loadable({
 });
 
 const requireAuth = (nextState, replace) => {
-    if (!sessionStorage.expireDate || new Date(sessionStorage.expireDate).getTime() <= new Date().getTime()) {
-        replace({pathname: '/'})
-    }
+    // if (!sessionStorage.expireDate || new Date(sessionStorage.expireDate).getTime() <= new Date().getTime()) {
+    //     replace({pathname: '/'})
+    // }
 }
 
 class PageRouter extends React.Component {

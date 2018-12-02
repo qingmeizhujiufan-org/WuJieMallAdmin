@@ -30,50 +30,50 @@ class Login extends React.Component {
                 this.setState({
                     loading: true
                 });
-                axios.post('user/login', JSON.stringify(values)).then(res => res.data).then(data => {
+                axios.post('/login', JSON.stringify(values)).then(res => res.data).then(data => {
                     if (data.success) {
                         let backData = data.backData;
-                        sessionStorage.setItem('token', backData.token);
-                        sessionStorage.setItem('expireDate', backData.outofServicetime);
-                        const loginedUser = backData.loginedUser;
+                        // sessionStorage.setItem('token', backData.token);
+                        // sessionStorage.setItem('expireDate', backData.outofServicetime);
+                        const loginedUser = backData;
                         if (loginedUser) {
                             sessionStorage.setItem('userId', loginedUser.id);
-                            sessionStorage.setItem('region', loginedUser.region);
-
-                            sessionStorage.setItem('userName', loginedUser.userName);
-                            sessionStorage.setItem('roleId', loginedUser.roleId);
-                            if (loginedUser.assessorys && loginedUser.assessorys.length > 0) {
-                                sessionStorage.setItem('avatar', restUrl.ADDR + loginedUser.assessorys[0].path + loginedUser.assessorys[0].name);
-                            } else {
-                                sessionStorage.removeItem('avatar');
-                            }
+                            sessionStorage.setItem('userName', loginedUser.user_name);
+                            sessionStorage.setItem('roleId', loginedUser.role_id);
+                            // if (loginedUser.assessorys && loginedUser.assessorys.length > 0) {
+                            //     sessionStorage.setItem('avatar', restUrl.ADDR + loginedUser.assessorys[0].path + loginedUser.assessorys[0].name);
+                            // } else {
+                            //     sessionStorage.removeItem('avatar');
+                            // }
 
                             let type = null;
                             let initUrl = null;
-                            // 超级管理员
-                            if (loginedUser.roleCode === '001') {
-                                type = 1;
-                                initUrl = '/frame/report/list'
-                            }
-                            // 管理员
-                            else if (loginedUser.roleCode === '002') {
-                                type = 1;
-                                initUrl = '/frame/report/list'
-                            }
-                            // 二级管理员
-                            else if (loginedUser.roleCode === '003') {
-                                type = 2;
-                                initUrl = '/frame/order/list'
-                            }
-                            // 业务员
-                            else if (loginedUser.roleCode === '004') {
-                                type = 3;
-                                initUrl = '/frame/order/list'
-                            } else {
-                                this.setState({loading: false});
-                                Message.error('角色不存在，请与管理员联系！');
-                                return;
-                            }
+                            type = 1;
+                            initUrl = '/frame/user/list'
+                            // // 超级管理员
+                            // if (loginedUser.role_id === '001') {
+                            //     type = 1;
+                            //     initUrl = '/frame/report/list'
+                            // }
+                            // // 管理员
+                            // else if (loginedUser.role_id === '002') {
+                            //     type = 1;
+                            //     initUrl = '/frame/report/list'
+                            // }
+                            // // 二级管理员
+                            // else if (loginedUser.role_id === '003') {
+                            //     type = 2;
+                            //     initUrl = '/frame/order/list'
+                            // }
+                            // // 业务员
+                            // else if (loginedUser.role_id === '004') {
+                            //     type = 3;
+                            //     initUrl = '/frame/order/list'
+                            // } else {
+                            //     this.setState({loading: false});
+                            //     Message.error('角色不存在，请与管理员联系！');
+                            //     return;
+                            // }
                             sessionStorage.setItem('type', type);
                             return this.context.router.push(initUrl);
                         }
@@ -110,7 +110,7 @@ class Login extends React.Component {
                                     <p style={{margin: '0', color: '#999'}}>Welcome!</p>
                                 </FormItem>
                                 <FormItem>
-                                    {getFieldDecorator('loginName', {
+                                    {getFieldDecorator('user_code', {
                                         rules: [{required: true, message: '请输入您的用户名!'}],
                                     })(
                                         <Input prefix={<Icon type="user" style={{color: 'rgba(0,0,0,.25)'}}/>}
@@ -118,7 +118,7 @@ class Login extends React.Component {
                                     )}
                                 </FormItem>
                                 <FormItem>
-                                    {getFieldDecorator('password', {
+                                    {getFieldDecorator('user_pwd', {
                                         rules: [{required: true, message: '请输入您的密码!'}],
                                     })(
                                         <Input prefix={<Icon type="lock" style={{color: 'rgba(0,0,0,.25)'}}/>}

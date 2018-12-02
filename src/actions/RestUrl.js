@@ -1,7 +1,6 @@
-const ADDR = 'http://118.31.44.54:8899';
+const ADDR = 'http://localhost:7001';
 
 module.exports = {
     ADDR,
-    BASE_HOST: ADDR + '/FirmOrders/',
-    UPLOAD: ADDR + 'AdminManage/UpLoadImage',
+    BASE_HOST: ADDR + '/api/',
 };
