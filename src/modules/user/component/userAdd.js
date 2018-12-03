@@ -33,37 +33,23 @@ class Index extends React.Component {
     this.state = {
       fileList: [],
       confirmDirty: false,
-      roleList: [{
-        role_id: '000',
-        role_name: '超级管理员'
-      },{
-        role_id: '001',
-        role_name: '管理员'
-      }],
+      roleList: [],
       roleLoading: false,
       submitLoading: false
     };
   }
 
   componentDidMount = () => {
-    // this.queryRole();
+     this.queryRole();
   }
 
   queryRole = () => {
     this.setState({roleLoading: true});
-    axios.get('admin/queryList').then(res => res.data).then(data => {
+    axios.get('role/queryList').then(res => res.data).then(data => {
       if (data.success) {
-        let content = data.backData.content;
-        let roleList = [];
-        content.map(item => {
-          roleList.push({
-            id: item.id,
-            name: item.roleName
-          });
-        });
-
+        let roleList = data.backData;
         this.setState({
-          roleList
+          roleList: roleList
         });
       } else {
         Message.error(data.backMsg);
@@ -277,20 +263,6 @@ class Index extends React.Component {
                     )}
                   </FormItem>
                 </Col>
-                {/*<Col {...itemGrid}>*/}
-                  {/*<FormItem*/}
-                    {/*{...formItemLayout}*/}
-                    {/*label="是否冻结"*/}
-                  {/*>*/}
-                    {/*{getFieldDecorator('is_frozen', { rules: [{*/}
-                      {/*required: false,*/}
-                    {/*}],*/}
-                      {/*initialValue: '关'*/}
-                    {/*})(*/}
-                      {/*<Switch checkedChildren="开" unCheckedChildren="关" />*/}
-                    {/*)}*/}
-                  {/*</FormItem>*/}
-                {/*</Col>*/}
                 <Col {...itemGrid}>
                   <FormItem
                     {...formItemLayout}

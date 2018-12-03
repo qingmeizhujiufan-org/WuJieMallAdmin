@@ -152,14 +152,14 @@ class Index extends React.Component {
     const {params, keyWords} = this.state;
     const param = assign({}, params, {keyWords});
     this.setState({loading: true});
-    axios.get('user/userList', {
+    axios.get('admin/queryList', {
       params: param
     }).then(res => res.data).then(data => {
       if (data.success) {
         if (data.backData) {
           const backData = data.backData;
-          const dataSource = backData.content;
-          const total = backData.totalElements;
+          const dataSource = backData;
+          const total = backData.length;
           dataSource.map(item => {
             item.key = item.id;
           });
@@ -186,12 +186,12 @@ class Index extends React.Component {
     this.setState({roleLoading: true});
     axios.get('role/queryList').then(res => res.data).then(data => {
       if (data.success) {
-        let content = data.backData.content;
+        let content = data.backData;
         let roleList = [];
         content.map(item => {
           roleList.push({
-            id: item.id,
-            name: item.roleName
+            id: item.role_id,
+            name: item.role_name
           });
         });
 
