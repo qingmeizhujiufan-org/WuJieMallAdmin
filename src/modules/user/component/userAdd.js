@@ -40,7 +40,7 @@ class Index extends React.Component {
   }
 
   componentDidMount = () => {
-     this.queryRole();
+    this.queryRole();
   }
 
   queryRole = () => {
@@ -75,7 +75,7 @@ class Index extends React.Component {
 
   compareToFirstPassword = (rule, value, callback) => {
     const form = this.props.form;
-    if (value && value !== form.getFieldValue('password')) {
+    if (value && value !== form.getFieldValue('user_pwd')) {
       callback('密码不一致!');
     } else {
       callback();
@@ -105,6 +105,7 @@ class Index extends React.Component {
       if (!err) {
         delete values.picSrc;
         delete values.confirm;
+        values.create_by = sessionStorage.getItem('userName');
         console.log('handleSubmit  param === ', values);
         this.setState({
           submitLoading: true
@@ -179,7 +180,7 @@ class Index extends React.Component {
                     {...formItemLayout}
                   >
                     <Spin spinning={roleLoading} indicator={<Icon type="loading"/>}>
-                      {getFieldDecorator('roleId', {
+                      {getFieldDecorator('role_id', {
                         rules: [{required: true, message: '角色不能为空!'}]
                       })(
                         <Select>
@@ -200,7 +201,7 @@ class Index extends React.Component {
                     {...formItemLayout}
                     label="用户名"
                   >
-                    {getFieldDecorator('userName', {
+                    {getFieldDecorator('user_name', {
                       rules: [{
                         required: true, message: '请输入用户名',
                       }],
@@ -214,12 +215,12 @@ class Index extends React.Component {
                     {...formItemLayout}
                     label="真实姓名"
                   >
-                    {getFieldDecorator('realName', {
+                    {getFieldDecorator('real_name', {
                       rules: [{
                         required: true, message: '请输入真实姓名'
                       }]
                     })(
-                      <Input />
+                      <Input/>
                     )}
                   </FormItem>
                 </Col>
@@ -229,12 +230,12 @@ class Index extends React.Component {
                     label={(
                       <span>密码&nbsp;
                         <Tooltip title="初始密码为：000000">
-                                                    <Icon type="question-circle-o"/>
-                                                </Tooltip>
-                                            </span>
+                            <Icon type="question-circle-o"/>
+                        </Tooltip>
+                    </span>
                     )}
                   >
-                    {getFieldDecorator('password', {
+                    {getFieldDecorator('user_pwd', {
                       rules: [{
                         required: true, message: '请输入密码',
                       }, {
@@ -277,18 +278,18 @@ class Index extends React.Component {
                     )}
                   </FormItem>
                 </Col>
-                <Col {...itemGrid}>
-                  <FormItem
-                    {...formItemLayout}
-                    label="所属区域"
-                  >
-                    {getFieldDecorator('region', {
-                      rules: [{required: true, message: '请输入所属区域'}],
-                    })(
-                      <Input/>
-                    )}
-                  </FormItem>
-                </Col>
+                {/*<Col {...itemGrid}>*/}
+                {/*<FormItem*/}
+                {/*{...formItemLayout}*/}
+                {/*label="所属区域"*/}
+                {/*>*/}
+                {/*{getFieldDecorator('region', {*/}
+                {/*rules: [{required: true, message: '请输入所属区域'}],*/}
+                {/*})(*/}
+                {/*<Input/>*/}
+                {/*)}*/}
+                {/*</FormItem>*/}
+                {/*</Col>*/}
               </Row>
               <Row type="flex" justify="center" style={{marginTop: 40}}>
                 <Button type="primary" size='large' style={{width: 120}} htmlType="submit"

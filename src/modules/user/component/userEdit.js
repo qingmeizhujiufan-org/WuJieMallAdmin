@@ -57,7 +57,7 @@ class Index extends React.Component {
     this.setState({
       loading: true
     });
-    axios.get('user/qureyOneUser', {
+    axios.get('admin/qureyOneUser', {
       params: param
     }).then(res => res.data).then(data => {
       if (data.success) {
@@ -95,17 +95,9 @@ class Index extends React.Component {
     this.setState({roleLoading: true});
     axios.get('role/queryList').then(res => res.data).then(data => {
       if (data.success) {
-        let content = data.backData.content;
-        let roleList = [];
-        content.map(item => {
-          roleList.push({
-            id: item.id,
-            name: item.roleName
-          });
-        });
-
+        let roleList = data.backData;
         this.setState({
-          roleList
+          roleList: roleList
         });
       } else {
         Message.error(data.backMsg);
@@ -138,14 +130,18 @@ class Index extends React.Component {
     this.props.form.validateFields((err, values) => {
       if (!err) {
         values.id = this.props.params.id;
+        values.update_by = sessionStorage.getItem('userName');
+
         values.assessorys = values.assessorys ? values.assessorys.map(item => {
           return item.response.backData;
         }) : [];
+        delete values.assessorys;
+
         console.log('handleSubmit  param === ', values);
         this.setState({
           submitLoading: true
         });
-        axios.post('user/save', values).then(res => res.data).then(data => {
+        axios.post('admin/updateUser', values).then(res => res.data).then(data => {
           if (data.success) {
             Notification.success({
               message: '提示',
@@ -218,15 +214,15 @@ class Index extends React.Component {
                       {...formItemLayout}
                     >
                       <Spin spinning={roleLoading} indicator={<Icon type="loading"/>}>
-                        {getFieldDecorator('roleId', {
+                        {getFieldDecorator('role_id', {
                           rules: [{required: true, message: '角色不能为空!'}],
-                          initialValue: data.roleId
+                          initialValue: data.role_id
                         })(
                           <Select>
                             {
                               roleList.map(item => {
-                                return (<Option key={item.id}
-                                                value={item.id}>{item.name}</Option>)
+                                return (<Option key={item.role_id}
+                                                value={item.role_id}>{item.role_name}</Option>)
                               })
                             }
                           </Select>
@@ -241,9 +237,9 @@ class Index extends React.Component {
                       {...formItemLayout}
                       label="用户编码"
                     >
-                      {getFieldDecorator('userCode', {
+                      {getFieldDecorator('id', {
                         rules: [{required: true, message: '请输入用户编码'}],
-                        initialValue: data.userCode
+                        initialValue: data.id
                       })(
                         <Input disabled/>
                       )}
@@ -254,16 +250,30 @@ class Index extends React.Component {
                       {...formItemLayout}
                       label="用户名"
                     >
-                      {getFieldDecorator('userName', {
+                      {getFieldDecorator('user_name', {
                         rules: [{required: true, message: '请输入用户名'}],
-                        initialValue: data.userName
+                        initialValue: data.user_name
                       })(
                         <Input/>
                       )}
                     </FormItem>
                   </Col>
                 </Row>
+
                 <Row>
+                  <Col span={12}>
+                    <FormItem
+                      {...formItemLayout}
+                      label="真实姓名"
+                    >
+                      {getFieldDecorator('real_name', {
+                        rules: [{required: true, message: '请输入真实姓名'}],
+                        initialValue: data.real_name
+                      })(
+                        <Input/>
+                      )}
+                    </FormItem>
+                  </Col>
                   <Col span={12}>
                     <FormItem
                       {...formItemLayout}
@@ -279,19 +289,6 @@ class Index extends React.Component {
                       )}
                     </FormItem>
                   </Col>
-                  <Col span={12}>
-                    <FormItem
-                      {...formItemLayout}
-                      label="所属区域"
-                    >
-                      {getFieldDecorator('region', {
-                        rules: [{required: true, message: '请输入所属区域'}],
-                        initialValue: data.region
-                      })(
-                        <Input/>
-                      )}
-                    </FormItem>
-                  </Col>
                 </Row>
                 <Row>
                   <Col span={12}>
@@ -299,9 +296,9 @@ class Index extends React.Component {
                       {...formItemLayout}
                       label="创建时间"
                     >
-                      {getFieldDecorator('createTime', {
+                      {getFieldDecorator('create_time', {
                         rules: [{required: false}],
-                        initialValue: data.createTime
+                        initialValue: data.create_time
                       })(
                         <Input disabled/>
                       )}

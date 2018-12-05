@@ -31,18 +31,26 @@ class Index extends React.Component {
 
     this.columns = [
       {
-        title: '用户编码',
+        title: '用户ID',
+        width: 250,
         align: 'center',
-        dataIndex: 'userCode',
-        key: 'userCode',
+        dataIndex: 'id',
+        key: 'id',
         render: (text, record, index) => (
           <Link to={this.onDetail(record.id)}>{text}</Link>
         )
       }, {
-        title: '姓名',
+        title: '用户名',
+        width: 120,
         align: 'center',
-        dataIndex: 'userName',
-        key: 'userName',
+        dataIndex: 'user_name',
+        key: 'user_name',
+      },{
+        title: '真实姓名',
+        width: 150,
+        align: 'center',
+        dataIndex: 'real_name',
+        key: 'real_name',
       }, {
         title: '个人手机号',
         width: 150,
@@ -50,17 +58,11 @@ class Index extends React.Component {
         dataIndex: 'phone',
         key: 'phone',
       }, {
-        title: '区域',
-        width: 150,
-        align: 'center',
-        dataIndex: 'region',
-        key: 'region',
-      }, {
         title: '用户角色',
         width: 120,
         align: 'center',
-        dataIndex: 'roleId',
-        key: 'roleId',
+        dataIndex: 'role_id',
+        key: 'role_id',
         render: (text, record, index) => {
           let role = find(this.state.roleList, {id: text});
           return (<span>{role ? role.name : null}</span>)
@@ -69,8 +71,8 @@ class Index extends React.Component {
         title: '是否冻结',
         width: 120,
         align: 'center',
-        dataIndex: 'isFrozen',
-        key: 'isFrozen',
+        dataIndex: 'is_frozen',
+        key: 'is_frozen',
         render: (text, record, index) => (
           <Switch
             checkedChildren="是"
@@ -79,23 +81,22 @@ class Index extends React.Component {
             onChange={checked => this.onFrozenChange(checked, record, index)}
           />
         )
-      }, {
-        title: '备注',
-        width: 150,
-        dataIndex: 'memo',
-        key: 'memo',
-      }, {
+      },{
         title: '更新时间',
         width: 200,
         align: 'center',
-        dataIndex: 'updateTime',
-        key: 'updateTime',
+        dataIndex: 'update_time',
+        key: 'update_time',
       }, {
         title: '创建时间',
         width: 200,
         align: 'center',
-        dataIndex: 'createTime',
-        key: 'createTime',
+        dataIndex: 'create_time',
+        key: 'create_time',
+      }, {
+        title: '备注',
+        dataIndex: 'memo',
+        key: 'memo',
       }, {
         title: <a><Icon type="setting" style={{fontSize: 18}}/></a>,
         key: 'operation',
@@ -104,7 +105,7 @@ class Index extends React.Component {
         align: 'center',
         render: (text, record, index) => (
           <div>
-            <a onClick={() => this.resetPassword(record.phone)}>重置密码</a>
+            <a onClick={() => this.resetPassword(record.id)}>重置密码</a>
             <Divider type="vertical"/>
             <Dropdown
               placement="bottomCenter"
@@ -158,14 +159,13 @@ class Index extends React.Component {
       if (data.success) {
         if (data.backData) {
           const backData = data.backData;
-          const dataSource = backData;
           const total = backData.length;
-          dataSource.map(item => {
+          backData.map(item => {
             item.key = item.id;
           });
 
           this.setState({
-            dataSource,
+            dataSource: backData,
             pagination: {total}
           });
         } else {
@@ -233,16 +233,19 @@ class Index extends React.Component {
     return this.context.router.push('/frame/user/add');
   }
 
-  resetPassword = (phone) => {
+  resetPassword = (id) => {
     Modal.confirm({
       title: '提示',
       content: '确认要重置密码吗？',
       okText: '确认',
       cancelText: '取消',
       onOk: () => {
-        const param = {};
-        param.phone = phone;
-        axios.post('user/resetPassword', param).then(res => res.data).then(data => {
+        const param = {
+          id: id,
+          update_by: sessionStorage.getItem('userName')
+        };
+        param.id = id;
+        axios.post('admin/resetPassword', param).then(res => res.data).then(data => {
           if (data.success) {
             Notification.success({
               message: '提示',
@@ -265,17 +268,20 @@ class Index extends React.Component {
   }
 
   onFrozenChange = (checked, record, index) => {
-    const param = {};
-    param.id = record.id;
-    param.isFrozen = checked ? 1 : 0;
-    axios.post('user/frozenUser', param).then(res => res.data).then(data => {
+    const param = {
+      id: id,
+      is_frozen: checked ? 1 : 0,
+      update_by: sessionStorage.getItem('userName')
+    };
+
+    axios.post('admin/frozen', param).then(res => res.data).then(data => {
       if (data.success) {
         Notification.success({
           message: '提示',
-          description: '冻结设置成功！'
+          description: data.backMsg
         });
         const dataSource = this.state.dataSource;
-        dataSource[index].isFrozen = checked ? 1 : 0;
+        dataSource[index].is_frozen = checked ? 1 : 0;
         this.setState({dataSource});
       } else {
         Message.error(data.backMsg);
@@ -292,7 +298,7 @@ class Index extends React.Component {
       onOk: () => {
         let param = {};
         param.id = id;
-        axios.post('user/delete', param).then(res => res.data).then(data => {
+        axios.post('admin/delete', param).then(res => res.data).then(data => {
           if (data.success) {
             Notification.success({
               message: '提示',
