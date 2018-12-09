@@ -434,7 +434,6 @@ class Index extends React.Component {
                                                 // headers={{
                                                 //     'X-Auth-Token': sessionStorage.token
                                                 // }}
-                                                name='bannerImage'
                                                 action={uploadUrl}
                                                 listType={'picture'}
                                                 onChange={this.handleChange}
