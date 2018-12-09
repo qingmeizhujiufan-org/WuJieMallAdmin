@@ -4,9 +4,10 @@ import {Form, Input, Breadcrumb, Icon, Button, Modal, Upload, Row, Col} from 'an
 import {ZZCard} from 'Comps/zz-antD';
 import {formItemLayout} from 'Utils/formItemGrid';
 import axios from "Utils/axios";
+import util from "Utils/util";
 import restUrl from 'RestUrl';
-import '../index.less';
 import assign from "lodash/assign";
+import '../index.less';
 
 const FormItem = Form.Item;
 
@@ -132,7 +133,7 @@ class Index extends React.Component {
                 label="创建时间"
               >
                 {getFieldDecorator('create_time', {
-                  initialValue: userInfo.create_time
+                  initialValue: util.FormatDate(userInfo.create_time)
                 })(
                   <Input disabled={true}/>
                 )}
@@ -142,7 +143,7 @@ class Index extends React.Component {
                 label="更新时间"
               >
                 {getFieldDecorator('update_time', {
-                  initialValue: userInfo.update_time
+                  initialValue: util.FormatDate(userInfo.update_time)
                 })(
                   <Input disabled={true}/>
                 )}

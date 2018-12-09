@@ -15,9 +15,9 @@ import {
   Notification
 } from 'antd';
 import axios from "Utils/axios";
+import util from "Utils/util";
 import restUrl from 'RestUrl';
 import assign from 'lodash/assign';
-
 import '../index.less';
 
 const uploadUrl = restUrl.BASE_HOST + 'assessory/upload';
@@ -254,7 +254,7 @@ class Index extends React.Component {
                         rules: [{required: true, message: '请输入用户名'}],
                         initialValue: data.user_name
                       })(
-                        <Input/>
+                        <Input disabled/>
                       )}
                     </FormItem>
                   </Col>
@@ -298,7 +298,7 @@ class Index extends React.Component {
                     >
                       {getFieldDecorator('create_time', {
                         rules: [{required: false}],
-                        initialValue: data.create_time
+                        initialValue: util.FormatDate(data.create_time)
                       })(
                         <Input disabled/>
                       )}
