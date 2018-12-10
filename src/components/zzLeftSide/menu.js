@@ -46,6 +46,14 @@ const Menu = [
         key: '3_2',
         link: '/frame/product/add',
         label: '新增产品'
+      }, {
+        key: '3_3',
+        link: '/frame/product/category/list',
+        label: '产品类别'
+      }, {
+        key: '3_4',
+        link: '/frame/product/category/add',
+        label: '新增类别'
       }
     ]
   }, {

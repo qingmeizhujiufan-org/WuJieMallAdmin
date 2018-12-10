@@ -422,8 +422,6 @@ class Index extends React.Component {
                             <Row>
                                 <Col span={24}>
                                     <FormItem
-                                        label="头像"
-                                        {...formItemLayout}
                                     >
                                         {getFieldDecorator('picSrc', {
                                             valuePropName: 'fileList',
@@ -435,11 +433,11 @@ class Index extends React.Component {
                                                 //     'X-Auth-Token': sessionStorage.token
                                                 // }}
                                                 action={uploadUrl}
-                                                listType={'picture'}
+                                                listType="picture-card"
                                                 onChange={this.handleChange}
                                             >
                                                 {fileList.length >= 1 ? null :
-                                                    <Button><Icon type="upload"/> 上传</Button>}
+                                                    <div><Icon type="plus"/> 上传</div>}
                                             </Upload>
                                         )}
                                     </FormItem>
