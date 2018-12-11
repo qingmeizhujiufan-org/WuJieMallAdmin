@@ -113,6 +113,7 @@ class Index extends React.Component {
                                             rules: [{
                                                 required: false, message: '请选择分类',
                                             }],
+                                            initialValue: '123'
                                         })(
                                             <Select placeholder="请选择">
                                                 <Option value='0'>1</Option>

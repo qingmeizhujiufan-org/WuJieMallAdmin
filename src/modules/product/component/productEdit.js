@@ -11,15 +11,18 @@ import {
     Spin,
     Message,
     Notification,
-    InputNumber
+    InputNumber, Divider, Upload, Icon
 } from 'antd';
 import axios from "Utils/axios";
 import {formItemLayout, itemGrid} from 'Utils/formItemGrid';
 import '../index.less';
+import restUrl from "RestUrl";
 
 const FormItem = Form.Item;
 const {TextArea} = Input;
 const Option = Select.Option;
+
+const uploadUrl = restUrl.BASE_HOST + 'attachment/upload';
 
 class Index extends React.Component {
     constructor(props) {
@@ -27,6 +30,7 @@ class Index extends React.Component {
 
         this.state = {
             data: {},
+            fileList: [],
             loading: false,
             submitLoading: false
         };
@@ -49,6 +53,7 @@ class Index extends React.Component {
             if (data.success) {
                 let backData = data.backData;
 
+                this.setFields(backData);
                 this.setState({
                     data: backData
                 });
@@ -59,6 +64,10 @@ class Index extends React.Component {
                 loading: false
             });
         });
+    }
+
+    setFields = value => {
+        this.props.form.setFieldsValue(value);
     }
 
     handleSubmit = (e) => {
@@ -92,7 +101,7 @@ class Index extends React.Component {
 
     render() {
         const {getFieldDecorator} = this.props.form;
-        const {data, loading, submitLoading} = this.state;
+        const {data, fileList, loading, submitLoading} = this.state;
 
         return (
             <div className="zui-content">
@@ -108,21 +117,34 @@ class Index extends React.Component {
                 </div>
                 <div className='pageContent'>
                     <div className='ibox-content'>
-                        <Spin spinning={loading} size='large'>
+                        <Spin spinning={loading}>
                             <Form onSubmit={this.handleSubmit}>
+                                <Divider>基本信息</Divider>
                                 <Row>
+                                    <Col {...itemGrid} style={{display: 'none'}}>
+                                        <FormItem
+                                            {...formItemLayout}
+                                            label="商家ID"
+                                        >
+                                            {getFieldDecorator('shop_id', {initialValue: '123456789'})(
+                                                <Input/>
+                                            )}
+                                        </FormItem>
+                                    </Col>
                                     <Col {...itemGrid}>
                                         <FormItem
                                             {...formItemLayout}
-                                            label="所属仓库"
+                                            label="产品分类"
                                         >
-                                            {getFieldDecorator('wareHouse', {
-                                                rules: [{required: true, message: '请输入所属仓库'}],
-                                                initialValue: data.wareHouse
+                                            {getFieldDecorator('product_category_id', {
+                                                rules: [{
+                                                    required: false, message: '请选择分类',
+                                                }],
+                                                initialValue: '123'
                                             })(
-                                                <Select placeholder="请输入所属仓库">
-                                                    <Option value='0'>武汉</Option>
-                                                    <Option value='1'>北京</Option>
+                                                <Select placeholder="请选择">
+                                                    <Option value='0'>1</Option>
+                                                    <Option value='1'>2</Option>
                                                 </Select>
                                             )}
                                         </FormItem>
@@ -130,11 +152,10 @@ class Index extends React.Component {
                                     <Col {...itemGrid}>
                                         <FormItem
                                             {...formItemLayout}
-                                            label="产品条码"
+                                            label="产品编码"
                                         >
-                                            {getFieldDecorator('barCode', {
-                                                rules: [{required: false, message: '请输入产品条码'}],
-                                                initialValue: data.barCode
+                                            {getFieldDecorator('product_code', {
+                                                rules: [{required: false, message: '请输入产品编码'}],
                                             })(
                                                 <Input/>
                                             )}
@@ -145,9 +166,10 @@ class Index extends React.Component {
                                             {...formItemLayout}
                                             label="产品名称"
                                         >
-                                            {getFieldDecorator('name', {
-                                                rules: [{required: true, message: '请输入产品名称'}],
-                                                initialValue: data.name
+                                            {getFieldDecorator('product_name', {
+                                                rules: [{
+                                                    required: true, message: '请输入产品名称',
+                                                }],
                                             })(
                                                 <Input/>
                                             )}
@@ -156,11 +178,12 @@ class Index extends React.Component {
                                     <Col {...itemGrid}>
                                         <FormItem
                                             {...formItemLayout}
-                                            label="产品单位"
+                                            label="产品简介"
                                         >
-                                            {getFieldDecorator('unit', {
-                                                rules: [{required: true, message: '请输入产品单位'}],
-                                                initialValue: data.unit
+                                            {getFieldDecorator('product_summary', {
+                                                rules: [{
+                                                    required: false, message: '请输入产品简介',
+                                                }],
                                             })(
                                                 <Input/>
                                             )}
@@ -169,11 +192,12 @@ class Index extends React.Component {
                                     <Col {...itemGrid}>
                                         <FormItem
                                             {...formItemLayout}
-                                            label="成本价格"
+                                            label="售价"
                                         >
-                                            {getFieldDecorator('costPrice', {
-                                                rules: [{required: true, message: '请输入成本价格'}],
-                                                initialValue: data.costPrice
+                                            {getFieldDecorator('product_sellingprice', {
+                                                rules: [{
+                                                    required: false, message: '请输入售价',
+                                                }],
                                             })(
                                                 <InputNumber
                                                     min={0}
@@ -184,17 +208,97 @@ class Index extends React.Component {
                                             )}
                                         </FormItem>
                                     </Col>
-
                                     <Col {...itemGrid}>
                                         <FormItem
                                             {...formItemLayout}
-                                            label="创建时间"
+                                            label="成本价格"
                                         >
-                                            {getFieldDecorator('createTime', {
-                                                rules: [{required: false}],
-                                                initialValue: data.createTime
+                                            {getFieldDecorator('product_costprice', {
+                                                rules: [{
+                                                    required: true, message: '请输入成本价格',
+                                                }],
                                             })(
-                                                <Input disabled/>
+                                                <InputNumber
+                                                    min={0}
+                                                    precision={2}
+                                                    step={1}
+                                                    style={{width: '100%'}}
+                                                />
+                                            )}
+                                        </FormItem>
+                                    </Col>
+                                    <Col {...itemGrid}>
+                                        <FormItem
+                                            {...formItemLayout}
+                                            label="产品单位"
+                                        >
+                                            {getFieldDecorator('product_unit', {
+                                                rules: [{
+                                                    required: false, message: '请输入产品单位',
+                                                }],
+                                            })(
+                                                <Input/>
+                                            )}
+                                        </FormItem>
+                                    </Col>
+                                    <Col {...itemGrid}>
+                                        <FormItem
+                                            {...formItemLayout}
+                                            label="产品规格"
+                                        >
+                                            {getFieldDecorator('product_unit', {
+                                                rules: [{
+                                                    required: false, message: '请输入产品规格',
+                                                }],
+                                            })(
+                                                <Input/>
+                                            )}
+                                        </FormItem>
+                                    </Col>
+                                    <Col {...itemGrid}>
+                                        <FormItem
+                                            {...formItemLayout}
+                                            label="产品型号"
+                                        >
+                                            {getFieldDecorator('product_model', {
+                                                rules: [{
+                                                    required: false, message: '请输入产品型号',
+                                                }],
+                                            })(
+                                                <Input/>
+                                            )}
+                                        </FormItem>
+                                    </Col>
+                                    <Col {...itemGrid}>
+                                        <FormItem
+                                            {...formItemLayout}
+                                            label="产品状态"
+                                        >
+                                            {getFieldDecorator('product_state', {
+                                                rules: [{
+                                                    required: false, message: '请输入产品状态',
+                                                }],
+                                                initialValue: 0
+                                            })(
+                                                <Select placeholder="请选择" disabled>
+                                                    <Option value={0}>未上架</Option>
+                                                    <Option value={1}>已上架</Option>
+                                                    <Option value={2}>已删除</Option>
+                                                </Select>
+                                            )}
+                                        </FormItem>
+                                    </Col>
+                                    <Col {...itemGrid}>
+                                        <FormItem
+                                            {...formItemLayout}
+                                            label="配送范围"
+                                        >
+                                            {getFieldDecorator('distribution_scope', {
+                                                rules: [{
+                                                    required: false, message: '请输入配送范围',
+                                                }],
+                                            })(
+                                                <TextArea/>
                                             )}
                                         </FormItem>
                                     </Col>
@@ -204,10 +308,165 @@ class Index extends React.Component {
                                             label="备注"
                                         >
                                             {getFieldDecorator('memo', {
-                                                rules: [{required: false, message: '请输入备注'}],
-                                                initialValue: data.memo
+                                                rules: [{
+                                                    required: false
+                                                }],
                                             })(
-                                                <TextArea autosize={{minRows: 2, maxRows: 6}}/>
+                                                <TextArea/>
+                                            )}
+                                        </FormItem>
+                                    </Col>
+                                </Row>
+                                <Divider>产品参数</Divider>
+                                <Row>
+                                    <Col {...itemGrid}>
+                                        <FormItem
+                                            {...formItemLayout}
+                                            label="产地"
+                                        >
+                                            {getFieldDecorator('product_origin', {
+                                                rules: [{
+                                                    required: false, message: '请输入产品产地',
+                                                }],
+                                            })(
+                                                <Input/>
+                                            )}
+                                        </FormItem>
+                                    </Col>
+                                    <Col {...itemGrid}>
+                                        <FormItem
+                                            {...formItemLayout}
+                                            label="食用办法"
+                                        >
+                                            {getFieldDecorator('product_usage', {
+                                                rules: [{
+                                                    required: false, message: '请输入产品食用办法',
+                                                }],
+                                            })(
+                                                <Input/>
+                                            )}
+                                        </FormItem>
+                                    </Col>
+                                    <Col {...itemGrid}>
+                                        <FormItem
+                                            {...formItemLayout}
+                                            label="贮藏办法"
+                                        >
+                                            {getFieldDecorator('product_storage', {
+                                                rules: [{
+                                                    required: false, message: '请输入产品贮藏办法',
+                                                }],
+                                            })(
+                                                <Input/>
+                                            )}
+                                        </FormItem>
+                                    </Col>
+                                    <Col {...itemGrid}>
+                                        <FormItem
+                                            {...formItemLayout}
+                                            label="口味"
+                                        >
+                                            {getFieldDecorator('product_taste', {
+                                                rules: [{
+                                                    required: false, message: '请输入产品口味',
+                                                }],
+                                            })(
+                                                <Input/>
+                                            )}
+                                        </FormItem>
+                                    </Col>
+                                    <Col {...itemGrid}>
+                                        <FormItem
+                                            {...formItemLayout}
+                                            label="口味"
+                                        >
+                                            {getFieldDecorator('product_taste', {
+                                                rules: [{
+                                                    required: false, message: '请输入产品口味',
+                                                }],
+                                            })(
+                                                <Input/>
+                                            )}
+                                        </FormItem>
+                                    </Col>
+                                    <Col {...itemGrid}>
+                                        <FormItem
+                                            {...formItemLayout}
+                                            label="品牌"
+                                        >
+                                            {getFieldDecorator('product_taste', {
+                                                rules: [{
+                                                    required: false, message: '请输入产品品牌',
+                                                }],
+                                            })(
+                                                <Input/>
+                                            )}
+                                        </FormItem>
+                                    </Col>
+                                    <Col {...itemGrid}>
+                                        <FormItem
+                                            {...formItemLayout}
+                                            label="配料"
+                                        >
+                                            {getFieldDecorator('product_batching', {
+                                                rules: [{
+                                                    required: false, message: '请输入产品配料',
+                                                }],
+                                            })(
+                                                <Input/>
+                                            )}
+                                        </FormItem>
+                                    </Col>
+                                    <Col {...itemGrid}>
+                                        <FormItem
+                                            {...formItemLayout}
+                                            label="保质期"
+                                        >
+                                            {getFieldDecorator('product_date', {
+                                                rules: [{
+                                                    required: false, message: '请输入产品保质期',
+                                                }],
+                                            })(
+                                                <Input/>
+                                            )}
+                                        </FormItem>
+                                    </Col>
+                                    <Col {...itemGrid}>
+                                        <FormItem
+                                            {...formItemLayout}
+                                            label="净含量"
+                                        >
+                                            {getFieldDecorator('product__net_weight', {
+                                                rules: [{
+                                                    required: false, message: '请输入产品净含量',
+                                                }],
+                                            })(
+                                                <Input/>
+                                            )}
+                                        </FormItem>
+                                    </Col>
+                                </Row>
+                                <Divider>产品详情</Divider>
+                                <Row>
+                                    <Col span={24}>
+                                        <FormItem
+                                        >
+                                            {getFieldDecorator('picSrc', {
+                                                valuePropName: 'fileList',
+                                                getValueFromEvent: this.normFile,
+                                                rules: [{required: false, message: '头像不能为空!'}],
+                                            })(
+                                                <Upload
+                                                    // headers={{
+                                                    //     'X-Auth-Token': sessionStorage.token
+                                                    // }}
+                                                    action={uploadUrl}
+                                                    listType="picture-card"
+                                                    onChange={this.handleChange}
+                                                >
+                                                    {fileList.length >= 1 ? null :
+                                                        <div><Icon type="plus"/> 上传</div>}
+                                                </Upload>
                                             )}
                                         </FormItem>
                                     </Col>
