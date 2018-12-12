@@ -30,7 +30,8 @@ class Index extends React.Component {
 
         this.state = {
             data: {},
-            fileList: [],
+            headerList: [],
+            detailList: [],
             loading: false,
             submitLoading: false
         };
@@ -66,24 +67,57 @@ class Index extends React.Component {
         });
     }
 
-    setFields = value => {
-        this.props.form.setFieldsValue(value);
+    setFields = val => {
+        const values = this.props.form.getFieldsValue();
+        for (let key in values) {
+            if(key === 'header_pic' || key === 'detail_pic'){
+                values[key] = [];
+                val[key].split(',').map((item, index) => {
+                    values[key].push({
+                        uid: index,
+                        name: `${item}.png`,
+                        status: 'done',
+                        url: restUrl.ADDR + '/public/' + `${item}.jpg`,
+                        thumbUrl: restUrl.ADDR + '/public/' + `${item}.jpg`,
+                        response: {
+                            id: item
+                        }
+                    });
+                });
+            }else {
+                values[key] = val[key];
+            }
+        }
+
+        this.props.form.setFieldsValue(values);
+    }
+
+    onHeaderChange = ({fileList}) => this.setState({headerList: fileList})
+
+    onDetailChange = ({fileList}) => this.setState({detailList: fileList})
+
+    normFile = (e) => {
+        if (Array.isArray(e)) return e;
+        return e && e.fileList;
     }
 
     handleSubmit = (e) => {
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
             if (!err) {
+                const {headerList, detailList} = this.state;
                 values.id = this.props.params.id;
+                values.header_pic = values.header_pic.map(item => item.response.id).join(',');
+                values.detail_pic = values.detail_pic.map(item => item.response.id).join(',');
                 console.log('handleSubmit  param === ', values);
                 this.setState({
                     submitLoading: true
                 });
-                axios.post('product/save', values).then(res => res.data).then(data => {
+                axios.post('product/update', values).then(res => res.data).then(data => {
                     if (data.success) {
                         Notification.success({
                             message: '提示',
-                            description: '产品信息保存成功！'
+                            description: data.backMsg
                         });
 
                         return this.context.router.push('/frame/product/list');
@@ -119,6 +153,27 @@ class Index extends React.Component {
                     <div className='ibox-content'>
                         <Spin spinning={loading}>
                             <Form onSubmit={this.handleSubmit}>
+                                <Divider>产品示意图</Divider>
+                                <Row>
+                                    <Col span={24}>
+                                        <FormItem
+                                        >
+                                            {getFieldDecorator('header_pic', {
+                                                valuePropName: 'fileList',
+                                                getValueFromEvent: this.normFile,
+                                                rules: [{required: false, message: '头像不能为空!'}],
+                                            })(
+                                                <Upload
+                                                    action={uploadUrl}
+                                                    listType="picture-card"
+                                                    onChange={this.onHeaderChange}
+                                                >
+                                                    <div><Icon type="plus"/> 上传</div>
+                                                </Upload>
+                                            )}
+                                        </FormItem>
+                                    </Col>
+                                </Row>
                                 <Divider>基本信息</Divider>
                                 <Row>
                                     <Col {...itemGrid} style={{display: 'none'}}>
@@ -446,26 +501,21 @@ class Index extends React.Component {
                                         </FormItem>
                                     </Col>
                                 </Row>
-                                <Divider>产品详情</Divider>
+                                <Divider>产品详情图</Divider>
                                 <Row>
                                     <Col span={24}>
                                         <FormItem
                                         >
-                                            {getFieldDecorator('picSrc', {
+                                            {getFieldDecorator('detail_pic', {
                                                 valuePropName: 'fileList',
-                                                getValueFromEvent: this.normFile,
-                                                rules: [{required: false, message: '头像不能为空!'}],
+                                                getValueFromEvent: this.normFile
                                             })(
                                                 <Upload
-                                                    // headers={{
-                                                    //     'X-Auth-Token': sessionStorage.token
-                                                    // }}
                                                     action={uploadUrl}
                                                     listType="picture-card"
-                                                    onChange={this.handleChange}
+                                                    onChange={this.onDetailChange}
                                                 >
-                                                    {fileList.length >= 1 ? null :
-                                                        <div><Icon type="plus"/> 上传</div>}
+                                                    <div><Icon type="plus"/> 上传</div>
                                                 </Upload>
                                             )}
                                         </FormItem>

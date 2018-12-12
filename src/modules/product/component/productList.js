@@ -80,6 +80,9 @@ class ProductList extends React.Component {
                 align: 'center',
                 dataIndex: 'update_time',
                 key: 'update_time',
+                render: text => (
+                    <span>{moment(text).format("YYYY-MM-DD hh:mm:ss")}</span>
+                )
             }, {
                 title: '创建时间',
                 width: 200,
@@ -87,7 +90,7 @@ class ProductList extends React.Component {
                 dataIndex: 'create_time',
                 key: 'create_time',
                 render: text => (
-                    <span>{moment(text).format("YYYY-MM-DD")}</span>
+                    <span>{moment(text).format("YYYY-MM-DD hh:mm:ss")}</span>
                 )
             }, {
                 title: <a><Icon type="setting" style={{fontSize: 18}}/></a>,

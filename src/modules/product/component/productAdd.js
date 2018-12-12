@@ -34,10 +34,7 @@ class Index extends React.Component {
     handleChange = ({fileList}) => this.setState({fileList})
 
     normFile = (e) => {
-        console.log('Upload event:', e);
-        if (Array.isArray(e)) {
-            return e;
-        }
+        if (Array.isArray(e)) return e;
         return e && e.fileList;
     }
 
