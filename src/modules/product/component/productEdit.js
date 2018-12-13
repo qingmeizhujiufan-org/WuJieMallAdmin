@@ -70,9 +70,9 @@ class Index extends React.Component {
     setFields = val => {
         const values = this.props.form.getFieldsValue();
         for (let key in values) {
-            if(key === 'header_pic' || key === 'detail_pic'){
+            if (key === 'header_pic' || key === 'detail_pic') {
                 values[key] = [];
-                val[key].split(',').map((item, index) => {
+                val[key] && val[key].split(',').map((item, index) => {
                     values[key].push({
                         uid: index,
                         name: `${item}.png`,
@@ -84,7 +84,7 @@ class Index extends React.Component {
                         }
                     });
                 });
-            }else {
+            } else {
                 values[key] = val[key];
             }
         }

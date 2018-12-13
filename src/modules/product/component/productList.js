@@ -48,7 +48,10 @@ class ProductList extends React.Component {
                 width: 300,
                 align: 'center',
                 dataIndex: 'product_name',
-                key: 'product_name'
+                key: 'product_name',
+                render: (text, record, index) => (
+                    <Link to={this.onEdit(record.id)}>{text}</Link>
+                )
             }, {
                 title: '单位',
                 width: 150,
