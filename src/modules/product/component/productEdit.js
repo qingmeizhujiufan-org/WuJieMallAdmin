@@ -72,15 +72,15 @@ class Index extends React.Component {
         for (let key in values) {
             if (key === 'header_pic' || key === 'detail_pic') {
                 values[key] = [];
-                val[key] && val[key].split(',').map((item, index) => {
+                val[key].map((item, index) => {
                     values[key].push({
                         uid: index,
-                        name: `${item}.png`,
+                        name: item.file_name,
                         status: 'done',
-                        url: restUrl.ADDR + '/public/' + `${item}.jpg`,
-                        thumbUrl: restUrl.ADDR + '/public/' + `${item}.jpg`,
+                        url: restUrl.ADDR + '/public/' + `${item.id + item.file_type}`,
+                        thumbUrl: restUrl.ADDR + '/public/' + `${item.id + item.file_type}`,
                         response: {
-                            id: item
+                            id: item.id
                         }
                     });
                 });
@@ -166,6 +166,7 @@ class Index extends React.Component {
                                                 <Upload
                                                     action={uploadUrl}
                                                     listType="picture-card"
+                                                    multiple
                                                     onChange={this.onHeaderChange}
                                                 >
                                                     <div><Icon type="plus"/> 上传</div>
@@ -513,6 +514,7 @@ class Index extends React.Component {
                                                 <Upload
                                                     action={uploadUrl}
                                                     listType="picture-card"
+                                                    multiple
                                                     onChange={this.onDetailChange}
                                                 >
                                                     <div><Icon type="plus"/> 上传</div>
