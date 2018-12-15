@@ -100,11 +100,11 @@ class Index extends React.Component {
           <div className="breadcrumb-block">
             <Breadcrumb>
               <Breadcrumb.Item>产品管理</Breadcrumb.Item>
-              <Breadcrumb.Item>产品列表</Breadcrumb.Item>
-              <Breadcrumb.Item>更新产品信息</Breadcrumb.Item>
+              <Breadcrumb.Item>产品类别</Breadcrumb.Item>
+              <Breadcrumb.Item>新增类别</Breadcrumb.Item>
             </Breadcrumb>
           </div>
-          <h1 className='title'>更新产品信息</h1>
+          <h1 className='title'>新增类别</h1>
         </div>
         <div className='pageContent'>
           <div className='ibox-content'>
@@ -114,26 +114,23 @@ class Index extends React.Component {
                   <Col {...itemGrid}>
                     <FormItem
                       {...formItemLayout}
-                      label="所属仓库"
+                      label="类别名称"
                     >
-                      {getFieldDecorator('wareHouse', {
-                        rules: [{required: true, message: '请输入所属仓库'}],
+                      {getFieldDecorator('productCategoryName', {
+                        rules: [{required: true, message: '请输入类别名称'}],
                         initialValue: data.wareHouse
                       })(
-                        <Select placeholder="请输入所属仓库">
-                          <Option value='0'>武汉</Option>
-                          <Option value='1'>北京</Option>
-                        </Select>
+                        <Input/>
                       )}
                     </FormItem>
                   </Col>
                   <Col {...itemGrid}>
                     <FormItem
                       {...formItemLayout}
-                      label="产品条码"
+                      label="类别编码"
                     >
-                      {getFieldDecorator('barCode', {
-                        rules: [{required: false, message: '请输入产品条码'}],
+                      {getFieldDecorator('productCategoryCode', {
+                        rules: [{required: false, message: '请输入产品类别条码'}],
                         initialValue: data.barCode
                       })(
                         <Input/>

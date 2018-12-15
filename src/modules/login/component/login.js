@@ -38,8 +38,8 @@ class Login extends React.Component {
             const loginedUser = backData;
             if (loginedUser) {
               sessionStorage.setItem('userId', loginedUser.id);
-              sessionStorage.setItem('userName', loginedUser.user_name);
-              sessionStorage.setItem('roleId', loginedUser.role_id);
+              sessionStorage.setItem('userName', loginedUser.userName);
+              sessionStorage.setItem('roleId', loginedUser.roleId);
               // if (loginedUser.assessorys && loginedUser.assessorys.length > 0) {
               //     sessionStorage.setItem('avatar', restUrl.ADDR + loginedUser.assessorys[0].path + loginedUser.assessorys[0].name);
               // } else {
@@ -110,7 +110,7 @@ class Login extends React.Component {
                   <p style={{margin: '0', color: '#999'}}>Welcome!</p>
                 </FormItem>
                 <FormItem>
-                  {getFieldDecorator('user_name', {
+                  {getFieldDecorator('userName', {
                     rules: [{required: true, message: '请输入您的用户名!'}],
                   })(
                     <Input prefix={<Icon type="user" style={{color: 'rgba(0,0,0,.25)'}}/>}
@@ -118,7 +118,7 @@ class Login extends React.Component {
                   )}
                 </FormItem>
                 <FormItem>
-                  {getFieldDecorator('user_pwd', {
+                  {getFieldDecorator('password', {
                     rules: [{required: true, message: '请输入您的密码!'}],
                   })(
                     <Input prefix={<Icon type="lock" style={{color: 'rgba(0,0,0,.25)'}}/>}

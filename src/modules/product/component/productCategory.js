@@ -178,8 +178,8 @@ class ProductList extends React.Component {
     });
   }
 
-  addProduct = () => {
-    return this.context.router.push('/frame/product/add');
+  addProductCategory = () => {
+    return this.context.router.push('/frame/product/category/add');
   }
 
   onDetail = id => {
@@ -248,9 +248,9 @@ class ProductList extends React.Component {
                 <Button
                   icon='plus'
                   size="large"
-                  onClick={this.addProduct}
+                  onClick={this.addProductCategory}
                   style={{marginLeft: 25}}
-                >新增产品</Button>
+                >新增产品类别</Button>
               </Col>
             </Row>
           </div>

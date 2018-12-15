@@ -86,19 +86,13 @@ class Index extends React.Component {
         width: 200,
         align: 'center',
         dataIndex: 'created_at',
-        key: 'created_at',
-        render: (text) => {
-          return util.FormatDate(text)
-        }
+        key: 'created_at'
       }, {
         title: '更新时间',
         width: 200,
         align: 'center',
         dataIndex: 'updated_at',
-        key: 'updated_at',
-        render: (text) => {
-          return util.FormatDate(text)
-        }
+        key: 'updated_at'
       }, {
         title: '备注',
         dataIndex: 'memo',
