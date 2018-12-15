@@ -12,13 +12,14 @@ import {
   Notification,
   Message,
   Modal,
-  Button
+  Button,
+  Card,
+  List
 } from 'antd';
 import assign from 'lodash/assign';
 import axios from "Utils/axios";
 import Util from 'Utils/util';
 import '../index.less';
-import {ZZCard, ZZTable} from 'Comps/zz-antD';
 
 const Search = Input.Search;
 
@@ -105,9 +106,10 @@ class ProductList extends React.Component {
       }];
 
     this.state = {
+      initLoading: true,
       loading: false,
-      dataSource: [],
-      pagination: {},
+      data: [],
+      list: [],
       params: {
         pageNumber: 1,
         pageSize: 10,
@@ -120,49 +122,64 @@ class ProductList extends React.Component {
   }
 
   componentDidMount = () => {
-    this.queryList();
+    this.queryList(res => {
+      this.setState({
+        data: res,
+        list: res,
+        loading: res.length <= this.state.params.pageSize || false,
+      });
+    });
   }
 
-  queryList = () => {
+  queryList = (callback) => {
     const {params, keyWords} = this.state;
     const param = assign({}, params, {keyWords});
-    this.setState({loading: true});
-    axios.get('product/queryList', {
+    axios.get('product/queryCategoryList', {
       params: param
     }).then(res => res.data).then(data => {
       if (data.success) {
-        if (data.backData) {
+        if (data.backData && data.backData.content) {
           const backData = data.backData;
           const dataSource = backData.content;
-          const total = backData.totalElements;
           dataSource.map(item => {
             item.key = item.id;
           });
 
-          this.setState({
-            dataSource,
-            pagination: {total}
-          });
+          callback(dataSource)
         } else {
-          this.setState({
-            dataSource: [],
-            pagination: {total: 0}
-          });
+          callback([])
         }
       } else {
         Message.error('查询列表失败');
       }
-      this.setState({loading: false});
+      this.setState({initLoading: false});
     });
   }
 
-  // 处理分页变化
-  handlePageChange = param => {
-    const params = assign({}, this.state.params, param);
-    this.setState({params}, () => {
-      this.queryList();
+  onLoadMore = () => {
+    const curPageNum = this.state.params.pageNumber + 1;
+    this.setState({
+      loading: true,
+      params: {
+        pageNumber: curPageNum,
+        pageSize: 10,
+      }
+    }, () => {
+      this.queryList((res) => {
+        const data = this.state.data.concat(res);
+
+        this.setState({
+          data,
+          list: data,
+          loading: res.length <= this.state.params.pageSize || false,
+        }, () => {
+          window.dispatchEvent(new Event('resize'));
+        });
+      });
     });
+
   }
+
 
   // 搜索
   onSearch = (value, event) => {
@@ -222,7 +239,23 @@ class ProductList extends React.Component {
   }
 
   render() {
-    const {dataSource, pagination, loading} = this.state;
+    const {data, list, loading, initLoading} = this.state;
+    const CardItem = ({data}) => (
+      <Card title={data.productCategoryName}>
+        <div className='img-box'>
+          <img src="" alt=""/>
+        </div>
+      </Card>
+    )
+
+    const loadMore = !initLoading && !loading ? (
+      <div style={{
+        textAlign: 'center', marginTop: 12, height: 32, lineHeight: '32px',
+      }}
+      >
+        <Button onClick={this.onLoadMore}>加载更多</Button>
+      </div>
+    ) : null;
 
     return (
       <div className="zui-content page-newsList">
@@ -230,15 +263,15 @@ class ProductList extends React.Component {
           <div className="breadcrumb-block">
             <Breadcrumb>
               <Breadcrumb.Item>产品管理</Breadcrumb.Item>
-              <Breadcrumb.Item>产品列表</Breadcrumb.Item>
+              <Breadcrumb.Item>产品类别</Breadcrumb.Item>
             </Breadcrumb>
           </div>
-          <h1 className='title'>产品列表</h1>
+          <h1 className='title'>产品类别</h1>
           <div className='search-area'>
             <Row type='flex' justify="center" align="middle">
               <Col span={8}>
                 <Search
-                  placeholder="搜索产品关键字"
+                  placeholder="搜索类别关键字"
                   enterButton='搜索'
                   size="large"
                   onSearch={this.onSearch}
@@ -256,16 +289,19 @@ class ProductList extends React.Component {
           </div>
         </div>
         <div className='pageContent'>
-          <ZZCard>
-            <ZZTable
-              columns={this.columns}
-              dataSource={dataSource}
-              pagination={pagination}
-              loading={loading}
-              scroll={{x: 1500}}
-              handlePageChange={this.handlePageChange.bind(this)}
-            />
-          </ZZCard>
+          <List
+            grid={{
+              gutter: 16, xs: 1, sm: 2, md: 4, lg: 4, xl: 4, xxl: 4,
+            }}
+            loading={initLoading}
+            dataSource={data}
+            loadMore={loadMore}
+            renderItem={item => (
+              <List.Item>
+                <CardItem data={item}/>
+              </List.Item>
+            )}
+          />
         </div>
       </div>
     );

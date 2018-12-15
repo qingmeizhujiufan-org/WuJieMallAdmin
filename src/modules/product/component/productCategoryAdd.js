@@ -5,79 +5,79 @@ import {
   Col,
   Form,
   Input,
-  Select,
+  Upload,
   Breadcrumb,
   Button,
-  Spin,
+  Modal,
+  Icon,
   Message,
-  Notification,
-  InputNumber
+  Notification
 } from 'antd';
 import axios from "Utils/axios";
 import {formItemLayout, itemGrid} from 'Utils/formItemGrid';
-import '../index.less';
 
+import '../index.less';
+import restUrl from "RestUrl";
+
+const uploadUrl = restUrl.BASE_HOST + 'attachment/upload';
 const FormItem = Form.Item;
-const { TextArea } = Input;
-const Option = Select.Option;
 
 class Index extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      data: {},
-      loading: false,
-      submitLoading: false
+      previewVisible: false,
+      previewImage: '',
+      submitLoading: false,
+      fileList: []
     };
   }
 
   componentDidMount = () => {
-    this.queryDetail();
+
   }
 
-  queryDetail = () => {
-    const id = this.props.params.id;
-    const param = {};
-    param.id = id;
-    this.setState({
-      loading: true
-    });
-    axios.get('product/findbyid', {
-      params: param
-    }).then(res => res.data).then(data => {
-      if (data.success) {
-        let backData = data.backData;
+  handleCancel = () => this.setState({ previewVisible: false })
 
-        this.setState({
-          data: backData
-        });
-      } else {
-        Message.error('产品信息查询失败');
-      }
-      this.setState({
-        loading: false
-      });
+  handlePreview = (file) => {
+    this.setState({
+      previewImage: file.url || file.thumbUrl,
+      previewVisible: true,
     });
+  }
+
+  handleChange = ({fileList}) => {
+    this.setState({fileList})
+  }
+
+  normFile = (e) => {
+    console.log('Upload event:', e);
+    if (Array.isArray(e)) {
+      return e;
+    }
+    return e && e.fileList;
   }
 
   handleSubmit = (e) => {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
       if (!err) {
-        values.id = this.props.params.id;
+        if(values.productCategoryPic) {
+          values.productCategoryPic = values.productCategoryPic.map(item => item.response.id).join(',');
+        }
         console.log('handleSubmit  param === ', values);
         this.setState({
           submitLoading: true
         });
-        axios.post('product/save', values).then(res => res.data).then(data => {
+        axios.post('product/categoryAdd', values).then(res => res.data).then(data => {
           if (data.success) {
             Notification.success({
               message: '提示',
               description: '产品信息保存成功！'
             });
 
-            return this.context.router.push('/frame/product/list');
+            return this.context.router.push('/frame/product/category/list');
           } else {
             Message.error(data.backMsg);
           }
@@ -92,8 +92,13 @@ class Index extends React.Component {
 
   render() {
     const {getFieldDecorator} = this.props.form;
-    const {data, loading, submitLoading} = this.state;
-
+    const {fileList, submitLoading, previewImage, previewVisible} = this.state;
+    const uploadButton = (
+      <div>
+        <Icon type="plus" />
+        <div className="ant-upload-text">上传</div>
+      </div>
+    );
     return (
       <div className="zui-content">
         <div className='pageHeader'>
@@ -108,114 +113,77 @@ class Index extends React.Component {
         </div>
         <div className='pageContent'>
           <div className='ibox-content'>
-            <Spin spinning={loading} size='large'>
-              <Form onSubmit={this.handleSubmit}>
-                <Row>
-                  <Col {...itemGrid}>
-                    <FormItem
-                      {...formItemLayout}
-                      label="类别名称"
-                    >
-                      {getFieldDecorator('productCategoryName', {
-                        rules: [{required: true, message: '请输入类别名称'}],
-                        initialValue: data.wareHouse
-                      })(
-                        <Input/>
-                      )}
-                    </FormItem>
-                  </Col>
-                  <Col {...itemGrid}>
-                    <FormItem
-                      {...formItemLayout}
-                      label="类别编码"
-                    >
-                      {getFieldDecorator('productCategoryCode', {
-                        rules: [{required: false, message: '请输入产品类别条码'}],
-                        initialValue: data.barCode
-                      })(
-                        <Input/>
-                      )}
-                    </FormItem>
-                  </Col>
-                  <Col {...itemGrid}>
-                    <FormItem
-                      {...formItemLayout}
-                      label="产品名称"
-                    >
-                      {getFieldDecorator('name', {
-                        rules: [{required: true, message: '请输入产品名称'}],
-                        initialValue: data.name
-                      })(
-                        <Input/>
-                      )}
-                    </FormItem>
-                  </Col>
-                  <Col {...itemGrid}>
-                    <FormItem
-                      {...formItemLayout}
-                      label="产品单位"
-                    >
-                      {getFieldDecorator('unit', {
-                        rules: [{required: true, message: '请输入产品单位'}],
-                        initialValue: data.unit
-                      })(
-                        <Input/>
-                      )}
-                    </FormItem>
-                  </Col>
-                  <Col {...itemGrid}>
-                    <FormItem
-                      {...formItemLayout}
-                      label="成本价格"
-                    >
-                      {getFieldDecorator('costPrice', {
-                        rules: [{required: true, message: '请输入成本价格'}],
-                        initialValue: data.costPrice
-                      })(
-                        <InputNumber
-                          min={0}
-                          precision={2}
-                          step={1}
-                          style={{width: '100%'}}
-                        />
-                      )}
-                    </FormItem>
-                  </Col>
-
-                  <Col {...itemGrid}>
-                    <FormItem
-                      {...formItemLayout}
-                      label="创建时间"
-                    >
-                      {getFieldDecorator('createTime', {
-                        rules: [{required: false}],
-                        initialValue: data.createTime
-                      })(
-                        <Input disabled/>
-                      )}
-                    </FormItem>
-                  </Col>
-                  <Col {...itemGrid}>
-                    <FormItem
-                      {...formItemLayout}
-                      label="备注"
-                    >
-                      {getFieldDecorator('memo', {
-                        rules: [{required: false, message: '请输入备注'}],
-                        initialValue: data.memo
-                      })(
-                        <TextArea  autosize={{ minRows: 2, maxRows: 6 }} />
-                      )}
-                    </FormItem>
-                  </Col>
-                </Row>
-                <Row type="flex" justify="center" style={{marginTop: 40}}>
-                  <Button type="primary" size='large' style={{width: 120}} htmlType="submit"
-                          loading={submitLoading}>保存</Button>
-                </Row>
-              </Form>
-            </Spin>
+            <Form onSubmit={this.handleSubmit}>
+              <Row>
+                <Col {...itemGrid}>
+                  <FormItem
+                    label="头像"
+                    {...formItemLayout}
+                  >
+                    {getFieldDecorator('productCategoryPic', {
+                      valuePropName: 'fileList',
+                      getValueFromEvent: this.normFile,
+                      rules: [{required: false, message: '类别图片不能为空!'}],
+                    })(
+                      <Upload
+                        name='bannerImage'
+                        action={uploadUrl}
+                        listType={'picture-card'}
+                        onPreview={this.handlePreview}
+                        onChange={this.handleChange}
+                      >
+                        {fileList.length >= 1 ? null : uploadButton}
+                      </Upload>
+                    )}
+                  </FormItem>
+                </Col>
+                <Col {...itemGrid}>
+                  <FormItem
+                    {...formItemLayout}
+                    label="类别名称"
+                  >
+                    {getFieldDecorator('productCategoryName', {
+                      rules: [{required: true, message: '请输入类别名称'}]
+                    })(
+                      <Input/>
+                    )}
+                  </FormItem>
+                </Col>
+                <Col {...itemGrid}>
+                  <FormItem
+                    {...formItemLayout}
+                    label="类别编码"
+                  >
+                    {getFieldDecorator('productCategoryCode', {
+                      rules: [{required: true, message: '请输入产品类别条码'}]
+                    })(
+                      <Input/>
+                    )}
+                  </FormItem>
+                </Col>
+                <Col {...itemGrid}>
+                  <FormItem
+                    {...formItemLayout}
+                    label="创建人"
+                  >
+                    {getFieldDecorator('createBy', {
+                      rules: [{required: true, message: '请输入产品名称'}],
+                      initialValue: sessionStorage.getItem('userName')
+                    })(
+                      <Input disabled/>
+                    )}
+                  </FormItem>
+                </Col>
+              </Row>
+              <Row type="flex" justify="center" style={{marginTop: 40}}>
+                <Button type="primary" size='large' style={{width: 120}} htmlType="submit"
+                        loading={submitLoading}>保存</Button>
+              </Row>
+            </Form>
           </div>
+          <Modal visible={previewVisible} footer={null} onCancel={this.handleCancel}>
+            <img alt="example" style={{ width: '100%' }} src={previewImage} />
+          </Modal>
         </div>
       </div>
     );
