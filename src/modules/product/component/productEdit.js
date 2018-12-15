@@ -13,10 +13,8 @@ import {
     Notification,
     InputNumber,
     Divider,
-    Upload,
-    Icon,
 } from 'antd';
-import {ZZDatePicker} from 'Comps/zzLib';
+import {ZZDatePicker, ZZUpload} from 'Comps/zzLib';
 import axios from "Utils/axios";
 import {formItemLayout, itemGrid} from 'Utils/formItemGrid';
 import '../index.less';
@@ -25,8 +23,6 @@ import restUrl from "RestUrl";
 const FormItem = Form.Item;
 const {TextArea} = Input;
 const Option = Select.Option;
-
-const uploadUrl = restUrl.BASE_HOST + 'attachment/upload';
 
 class Index extends React.Component {
     constructor(props) {
@@ -96,15 +92,6 @@ class Index extends React.Component {
         this.props.form.setFieldsValue(values);
     }
 
-    onHeaderChange = ({fileList}) => this.setState({headerList: fileList})
-
-    onDetailChange = ({fileList}) => this.setState({detailList: fileList})
-
-    normFile = (e) => {
-        if (Array.isArray(e)) return e;
-        return e && e.fileList;
-    }
-
     handleSubmit = (e) => {
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
@@ -163,18 +150,9 @@ class Index extends React.Component {
                                         <FormItem
                                         >
                                             {getFieldDecorator('headerPic', {
-                                                valuePropName: 'fileList',
-                                                getValueFromEvent: this.normFile,
-                                                rules: [{required: false, message: '头像不能为空!'}],
+                                                rules: [{required: true, message: '头像不能为空!'}],
                                             })(
-                                                <Upload
-                                                    action={uploadUrl}
-                                                    listType="picture-card"
-                                                    multiple
-                                                    onChange={this.onHeaderChange}
-                                                >
-                                                    <div><Icon type="plus"/> 上传</div>
-                                                </Upload>
+                                                <ZZUpload/>
                                             )}
                                         </FormItem>
                                     </Col>
@@ -517,18 +495,8 @@ class Index extends React.Component {
                                     <Col span={24}>
                                         <FormItem
                                         >
-                                            {getFieldDecorator('detailPic', {
-                                                valuePropName: 'fileList',
-                                                getValueFromEvent: this.normFile
-                                            })(
-                                                <Upload
-                                                    action={uploadUrl}
-                                                    listType="picture-card"
-                                                    multiple
-                                                    onChange={this.onDetailChange}
-                                                >
-                                                    <div><Icon type="plus"/> 上传</div>
-                                                </Upload>
+                                            {getFieldDecorator('detailPic')(
+                                                <ZZUpload/>
                                             )}
                                         </FormItem>
                                     </Col>
