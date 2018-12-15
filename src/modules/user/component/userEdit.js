@@ -20,7 +20,7 @@ import restUrl from 'RestUrl';
 import assign from 'lodash/assign';
 import '../index.less';
 
-const uploadUrl = restUrl.BASE_HOST + 'assessory/upload';
+const uploadUrl = restUrl.BASE_HOST + 'attachment/upload';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -62,25 +62,10 @@ class Index extends React.Component {
     }).then(res => res.data).then(data => {
       if (data.success) {
         let backData = data.backData;
-        if (backData.assessorys) {
-          backData.assessorys.map((item, index) => {
-            backData.assessorys[index] = assign({}, item, {
-              uid: item.id,
-              status: 'done',
-              url: restUrl.ADDR + item.path + item.name,
-              response: {
-                data: item
-              }
-            });
-          });
-        } else {
-          backData.assessorys = [];
-        }
-        const fileList = [].concat(backData.assessorys);
-
+        this.setFields(backData);
         this.setState({
           data: backData,
-          fileList
+          fileList: backData.avatarSrc
         });
       } else {
         Message.error('用户信息查询失败');
@@ -90,6 +75,32 @@ class Index extends React.Component {
       });
     });
   }
+
+  setFields = val => {
+    const values = this.props.form.getFieldsValue();
+    for (let key in values) {
+      if (key === 'avatarSrc') {
+        values[key] = [];
+        val[key].map((item, index) => {
+          values[key].push({
+            uid: index,
+            name: item.file_name,
+            status: 'done',
+            url: restUrl.ADDR + '/public/' + `${item.id + item.file_type}`,
+            thumbUrl: restUrl.ADDR + '/public/' + `${item.id + item.file_type}`,
+            response: {
+              id: item.id
+            }
+          });
+        });
+      } else {
+        values[key] = val[key];
+      }
+    }
+    values.created_at = util.FormatDate(values.created_at);
+    this.props.form.setFieldsValue(values);
+  }
+
 
   queryRole = () => {
     this.setState({roleLoading: true});
@@ -106,10 +117,12 @@ class Index extends React.Component {
     });
   }
 
-  handleChange = ({fileList}) => this.setState({fileList})
+  handleChange = ({fileList}) => {
+    console.log(fileList)
+    this.setState({fileList})
+  }
 
   normFile = (e) => {
-    console.log('Upload event:', e);
     if (Array.isArray(e)) {
       return e;
     }
@@ -132,10 +145,7 @@ class Index extends React.Component {
         values.id = this.props.params.id;
         values.update_by = sessionStorage.getItem('userName');
 
-        values.assessorys = values.assessorys ? values.assessorys.map(item => {
-          return item.response.backData;
-        }) : [];
-        delete values.assessorys;
+        values.avatarSrc = values.avatarSrc.map(item => item.response.id).join(',');
 
         console.log('handleSubmit  param === ', values);
         this.setState({
@@ -187,23 +197,19 @@ class Index extends React.Component {
                       label="头像"
                       {...formItemLayout}
                     >
-                      {getFieldDecorator('assessorys', {
+                      {getFieldDecorator('avatarSrc', {
                         valuePropName: 'fileList',
                         getValueFromEvent: this.normFile,
-                        rules: [{required: false, message: '头像不能为空!'}],
-                        initialValue: data.assessorys
+                        rules: [{required: false, message: '头像不能为空!'}]
                       })(
                         <Upload
-                          headers={{
-                            'X-Auth-Token': sessionStorage.token
-                          }}
                           name='bannerImage'
                           action={uploadUrl}
                           listType={'picture'}
                           onChange={this.handleChange}
                         >
                           {fileList.length >= 1 ? null :
-                            <Button><Icon type="upload"/> 上传</Button>}
+                            <Button><Icon type="upload"/>上传</Button>}
                         </Upload>
                       )}
                     </FormItem>
@@ -214,15 +220,14 @@ class Index extends React.Component {
                       {...formItemLayout}
                     >
                       <Spin spinning={roleLoading} indicator={<Icon type="loading"/>}>
-                        {getFieldDecorator('role_id', {
-                          rules: [{required: true, message: '角色不能为空!'}],
-                          initialValue: data.role_id
+                        {getFieldDecorator('roleId', {
+                          rules: [{required: true, message: '角色不能为空!'}]
                         })(
                           <Select>
                             {
                               roleList.map(item => {
-                                return (<Option key={item.role_id}
-                                                value={item.role_id}>{item.role_name}</Option>)
+                                return (<Option key={item.roleId}
+                                                value={item.roleId}>{item.roleName}</Option>)
                               })
                             }
                           </Select>
@@ -238,8 +243,7 @@ class Index extends React.Component {
                       label="用户编码"
                     >
                       {getFieldDecorator('id', {
-                        rules: [{required: true, message: '请输入用户编码'}],
-                        initialValue: data.id
+                        rules: [{required: true, message: '请输入用户编码'}]
                       })(
                         <Input disabled/>
                       )}
@@ -250,9 +254,8 @@ class Index extends React.Component {
                       {...formItemLayout}
                       label="用户名"
                     >
-                      {getFieldDecorator('user_name', {
-                        rules: [{required: true, message: '请输入用户名'}],
-                        initialValue: data.user_name
+                      {getFieldDecorator('userName', {
+                        rules: [{required: true, message: '请输入用户名'}]
                       })(
                         <Input disabled/>
                       )}
@@ -266,9 +269,8 @@ class Index extends React.Component {
                       {...formItemLayout}
                       label="真实姓名"
                     >
-                      {getFieldDecorator('real_name', {
-                        rules: [{required: true, message: '请输入真实姓名'}],
-                        initialValue: data.real_name
+                      {getFieldDecorator('realName', {
+                        rules: [{required: true, message: '请输入真实姓名'}]
                       })(
                         <Input/>
                       )}
@@ -282,8 +284,7 @@ class Index extends React.Component {
                       {getFieldDecorator('phone', {
                         rules: [{required: true, message: '请输入个人电话'}, {
                           validator: this.validatePhone
-                        }],
-                        initialValue: data.phone
+                        }]
                       })(
                         <Input/>
                       )}
@@ -296,9 +297,20 @@ class Index extends React.Component {
                       {...formItemLayout}
                       label="创建时间"
                     >
-                      {getFieldDecorator('create_time', {
-                        rules: [{required: false}],
-                        initialValue: util.FormatDate(data.create_time)
+                      {getFieldDecorator('created_at', {
+                        rules: [{required: false}]
+                      })(
+                        <Input disabled/>
+                      )}
+                    </FormItem>
+                  </Col>
+                  <Col span={12}>
+                    <FormItem
+                      {...formItemLayout}
+                      label="创建时间"
+                    >
+                      {getFieldDecorator('updated_at', {
+                        rules: [{required: false}]
                       })(
                         <Input disabled/>
                       )}

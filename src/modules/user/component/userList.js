@@ -17,7 +17,7 @@ import {
   Modal
 } from 'antd';
 import {ZZCard, ZZTable} from 'Comps/zz-antD';
-
+import util from "Utils/util";
 import assign from 'lodash/assign';
 import find from 'lodash/find';
 import axios from "Utils/axios";
@@ -43,14 +43,14 @@ class Index extends React.Component {
         title: '用户名',
         width: 120,
         align: 'center',
-        dataIndex: 'user_name',
-        key: 'user_name',
-      },{
+        dataIndex: 'userName',
+        key: 'userName',
+      }, {
         title: '真实姓名',
         width: 150,
         align: 'center',
-        dataIndex: 'real_name',
-        key: 'real_name',
+        dataIndex: 'realName',
+        key: 'realName',
       }, {
         title: '个人手机号',
         width: 150,
@@ -61,8 +61,8 @@ class Index extends React.Component {
         title: '用户角色',
         width: 120,
         align: 'center',
-        dataIndex: 'role_id',
-        key: 'role_id',
+        dataIndex: 'roleId',
+        key: 'roleId',
         render: (text, record, index) => {
           let role = find(this.state.roleList, {id: text});
           return (<span>{role ? role.name : null}</span>)
@@ -71,8 +71,8 @@ class Index extends React.Component {
         title: '是否冻结',
         width: 120,
         align: 'center',
-        dataIndex: 'is_frozen',
-        key: 'is_frozen',
+        dataIndex: 'isFrozen',
+        key: 'isFrozen',
         render: (text, record, index) => (
           <Switch
             checkedChildren="是"
@@ -81,18 +81,24 @@ class Index extends React.Component {
             onChange={checked => this.onFrozenChange(checked, record, index)}
           />
         )
-      },{
-        title: '更新时间',
-        width: 200,
-        align: 'center',
-        dataIndex: 'update_time',
-        key: 'update_time',
       }, {
         title: '创建时间',
         width: 200,
         align: 'center',
-        dataIndex: 'create_time',
-        key: 'create_time',
+        dataIndex: 'created_at',
+        key: 'created_at',
+        render: (text) => {
+          return util.FormatDate(text)
+        }
+      }, {
+        title: '更新时间',
+        width: 200,
+        align: 'center',
+        dataIndex: 'updated_at',
+        key: 'updated_at',
+        render: (text) => {
+          return util.FormatDate(text)
+        }
       }, {
         title: '备注',
         dataIndex: 'memo',
@@ -157,8 +163,8 @@ class Index extends React.Component {
       params: param
     }).then(res => res.data).then(data => {
       if (data.success) {
-        if (data.backData) {
-          const backData = data.backData;
+        if (data.backData && data.backData.content) {
+          const backData = data.backData.content;
           const total = backData.length;
           backData.map(item => {
             item.key = item.id;
@@ -190,8 +196,8 @@ class Index extends React.Component {
         let roleList = [];
         content.map(item => {
           roleList.push({
-            id: item.role_id,
-            name: item.role_name
+            id: item.roleId,
+            name: item.roleName
           });
         });
 
@@ -242,7 +248,7 @@ class Index extends React.Component {
       onOk: () => {
         const param = {
           id: id,
-          update_by: sessionStorage.getItem('userName')
+          updateBy: sessionStorage.getItem('userName')
         };
         param.id = id;
         axios.post('admin/resetPassword', param).then(res => res.data).then(data => {
@@ -269,9 +275,9 @@ class Index extends React.Component {
 
   onFrozenChange = (checked, record, index) => {
     const param = {
-      id: id,
-      is_frozen: checked ? 1 : 0,
-      update_by: sessionStorage.getItem('userName')
+      id: record.id,
+      isFrozen: checked ? 1 : 0,
+      updateBy: sessionStorage.getItem('userName')
     };
 
     axios.post('admin/frozen', param).then(res => res.data).then(data => {
@@ -281,7 +287,7 @@ class Index extends React.Component {
           description: data.backMsg
         });
         const dataSource = this.state.dataSource;
-        dataSource[index].is_frozen = checked ? 1 : 0;
+        dataSource[index].isFrozen = checked ? 1 : 0;
         this.setState({dataSource});
       } else {
         Message.error(data.backMsg);
@@ -307,8 +313,9 @@ class Index extends React.Component {
 
             this.setState({
               params: {
-                pageNumber: 1
-              },
+                pageNumber: 1,
+                pageSize: 10
+              }
             }, () => {
               this.queryList();
             });

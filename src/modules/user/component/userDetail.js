@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {Form, Input, Breadcrumb, Icon, Button, Modal, Upload, Row, Col} from 'antd';
+import {Form, Input, Breadcrumb, Icon, Button, Modal, Upload, Row, Col, Message} from 'antd';
 import {ZZCard} from 'Comps/zz-antD';
 import {formItemLayout} from 'Utils/formItemGrid';
 import axios from "Utils/axios";
@@ -12,7 +12,6 @@ import '../index.less';
 const FormItem = Form.Item;
 
 class Index extends React.Component {
-
   constructor(props) {
     super(props);
     this.state = {
@@ -38,27 +37,47 @@ class Index extends React.Component {
     }).then(res => res.data).then(data => {
       if (data.success) {
         let backData = data.backData;
-        if (backData.assessorys) {
-          backData.assessorys.map((item, index) => {
-            backData.assessorys[index] = assign({}, item, {
-              uid: item.id,
+        this.setFields(backData);
+        this.setState({
+          userInfo: backData
+        });
+      } else {
+        Message.error('信息查询失败');
+      }
+      this.setState({
+        loading: false
+      });
+    })
+  }
+
+  setFields = val => {
+    const values = this.props.form.getFieldsValue();
+    for (let key in values) {
+      if (key === 'avatarSrc') {
+        values[key] = [];
+        if (val[key]) {
+          val[key].map((item, index) => {
+            values[key].push({
+              uid: index,
+              name: item.file_name,
               status: 'done',
-              url: restUrl.ADDR + item.path + item.name,
+              url: restUrl.ADDR + '/public/' + `${item.id + item.file_type}`,
+              thumbUrl: restUrl.ADDR + '/public/' + `${item.id + item.file_type}`,
               response: {
-                data: item
+                id: item.id
               }
             });
           });
-        } else {
-          backData.assessorys = [];
         }
 
-        this.setState({
-          userInfo: backData,
-          loading: false
-        });
+      } else {
+        values[key] = val[key];
       }
-    })
+    }
+    values.created_at = util.FormatDate(values.created_at);
+    values.updated_at = util.FormatDate(values.updated_at);
+
+    this.props.form.setFieldsValue(values);
   }
 
   handleSubmit = (e) => {
@@ -72,7 +91,6 @@ class Index extends React.Component {
 
   render() {
     const {getFieldDecorator} = this.props.form;
-    const {autoCompleteResult, userInfo} = this.state;
 
     const mainForm = (
         <Form>
@@ -82,9 +100,7 @@ class Index extends React.Component {
                 {...formItemLayout}
                 label="用户ID"
               >
-                {getFieldDecorator('id', {
-                  initialValue: userInfo.id
-                })(
+                {getFieldDecorator('id')(
                   <Input disabled={true}/>
                 )}
               </FormItem>
@@ -92,9 +108,7 @@ class Index extends React.Component {
                 {...formItemLayout}
                 label="用户名"
               >
-                {getFieldDecorator('user_name', {
-                  initialValue: userInfo.user_name
-                })(
+                {getFieldDecorator('userName')(
                   <Input disabled={true}/>
                 )}
               </FormItem>
@@ -102,9 +116,7 @@ class Index extends React.Component {
                 {...formItemLayout}
                 label="真实姓名"
               >
-                {getFieldDecorator('real_name', {
-                  initialValue: userInfo.real_name
-                })(
+                {getFieldDecorator('realName')(
                   <Input disabled={true}/>
                 )}
               </FormItem>
@@ -112,9 +124,7 @@ class Index extends React.Component {
                 {...formItemLayout}
                 label="密码"
               >
-                {getFieldDecorator('user_pwd', {
-                  initialValue: userInfo.user_pwd
-                })(
+                {getFieldDecorator('password')(
                   <Input type="password" disabled={true}/>
                 )}
               </FormItem>
@@ -122,9 +132,7 @@ class Index extends React.Component {
                 {...formItemLayout}
                 label="个人电话"
               >
-                {getFieldDecorator('phone', {
-                  initialValue: userInfo.phone
-                })(
+                {getFieldDecorator('phone')(
                   <Input disabled={true}/>
                 )}
               </FormItem>
@@ -132,9 +140,7 @@ class Index extends React.Component {
                 {...formItemLayout}
                 label="创建时间"
               >
-                {getFieldDecorator('create_time', {
-                  initialValue: util.FormatDate(userInfo.create_time)
-                })(
+                {getFieldDecorator('created_at')(
                   <Input disabled={true}/>
                 )}
               </FormItem>
@@ -142,9 +148,7 @@ class Index extends React.Component {
                 {...formItemLayout}
                 label="更新时间"
               >
-                {getFieldDecorator('update_time', {
-                  initialValue: util.FormatDate(userInfo.update_time)
-                })(
+                {getFieldDecorator('updated_at')(
                   <Input disabled={true}/>
                 )}
               </FormItem>
@@ -154,15 +158,15 @@ class Index extends React.Component {
                 {...formItemLayout}
                 label="头像"
               >
-                {getFieldDecorator('assessorys', {
+                {getFieldDecorator('avatarSrc', {
                   valuePropName: 'fileList',
                   getValueFromEvent: this.normFile,
-                  rules: [{required: false, message: '头像不能为空!'}],
-                  initialValue: userInfo.assessorys
+                  rules: [{required: false, message: '头像不能为空!'}]
                 })(
                   <Upload
                     disabled={true}
                     listType="picture-card"
+                    onRemove={() => false}
                   >
                   </Upload>
                 )}

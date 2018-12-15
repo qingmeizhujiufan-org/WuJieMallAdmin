@@ -22,7 +22,8 @@ import axios from "Utils/axios";
 
 import '../index.less';
 
-const uploadUrl = restUrl.BASE_HOST + 'assessory/upload';
+const uploadUrl = restUrl.BASE_HOST + 'attachment/upload';
+
 const FormItem = Form.Item;
 const Option = Select.Option;
 
@@ -58,7 +59,9 @@ class Index extends React.Component {
     });
   }
 
-  handleChange = ({fileList}) => this.setState({fileList})
+  handleChange = ({fileList}) => {
+    this.setState({fileList})
+  }
 
   normFile = (e) => {
     console.log('Upload event:', e);
@@ -75,7 +78,7 @@ class Index extends React.Component {
 
   compareToFirstPassword = (rule, value, callback) => {
     const form = this.props.form;
-    if (value && value !== form.getFieldValue('user_pwd')) {
+    if (value && value !== form.getFieldValue('password')) {
       callback('密码不一致!');
     } else {
       callback();
@@ -103,9 +106,11 @@ class Index extends React.Component {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
       if (!err) {
-        delete values.picSrc;
+        if(values.avatarSrc) {
+          values.avatarSrc = values.avatarSrc.map(item => item.response.id).join(',');
+        }
         delete values.confirm;
-        values.create_by = sessionStorage.getItem('userName');
+        values.createBy = sessionStorage.getItem('userName');
         console.log('handleSubmit  param === ', values);
         this.setState({
           submitLoading: true
@@ -154,15 +159,12 @@ class Index extends React.Component {
                     label="头像"
                     {...formItemLayout}
                   >
-                    {getFieldDecorator('picSrc', {
+                    {getFieldDecorator('avatarSrc', {
                       valuePropName: 'fileList',
                       getValueFromEvent: this.normFile,
                       rules: [{required: false, message: '头像不能为空!'}],
                     })(
                       <Upload
-                        headers={{
-                          'X-Auth-Token': sessionStorage.token
-                        }}
                         name='bannerImage'
                         action={uploadUrl}
                         listType={'picture'}
@@ -180,14 +182,14 @@ class Index extends React.Component {
                     {...formItemLayout}
                   >
                     <Spin spinning={roleLoading} indicator={<Icon type="loading"/>}>
-                      {getFieldDecorator('role_id', {
+                      {getFieldDecorator('roleId', {
                         rules: [{required: true, message: '角色不能为空!'}]
                       })(
                         <Select>
                           {
                             roleList.map(item => {
-                              return (<Option key={item.role_id}
-                                              value={item.role_id}>{item.role_name}</Option>)
+                              return (<Option key={item.roleId}
+                                              value={item.roleId}>{item.roleName}</Option>)
                             })
                           }
                         </Select>
@@ -201,7 +203,7 @@ class Index extends React.Component {
                     {...formItemLayout}
                     label="用户名"
                   >
-                    {getFieldDecorator('user_name', {
+                    {getFieldDecorator('userName', {
                       rules: [{
                         required: true, message: '请输入用户名',
                       }],
@@ -215,7 +217,7 @@ class Index extends React.Component {
                     {...formItemLayout}
                     label="真实姓名"
                   >
-                    {getFieldDecorator('real_name', {
+                    {getFieldDecorator('realName', {
                       rules: [{
                         required: true, message: '请输入真实姓名'
                       }]
@@ -235,7 +237,7 @@ class Index extends React.Component {
                     </span>
                     )}
                   >
-                    {getFieldDecorator('user_pwd', {
+                    {getFieldDecorator('password', {
                       rules: [{
                         required: true, message: '请输入密码',
                       }, {
