@@ -10,9 +10,12 @@ import {
     Button,
     Notification,
     Message,
-    InputNumber, Divider, Upload, Icon
+    InputNumber,
+    Divider,
+    Upload,
+    Icon
 } from 'antd';
-
+import {ZZDatePicker} from 'Comps/zzLib';
 import {formItemLayout, itemGrid} from 'Utils/formItemGrid';
 import restUrl from 'RestUrl';
 import axios from "Utils/axios";
@@ -27,11 +30,14 @@ const uploadUrl = restUrl.BASE_HOST + 'attachment/upload';
 
 class Index extends React.Component {
     state = {
-        fileList: [],
+        headerList: [],
+        detailList: [],
         submitLoading: false,
     };
 
-    handleChange = ({fileList}) => this.setState({fileList})
+    onHeaderChange = ({fileList}) => this.setState({headerList: fileList})
+
+    onDetailChange = ({fileList}) => this.setState({detailList: fileList})
 
     normFile = (e) => {
         if (Array.isArray(e)) return e;
@@ -42,11 +48,10 @@ class Index extends React.Component {
         e.preventDefault();
         this.props.form.validateFieldsAndScroll((err, values) => {
             if (!err) {
-                this.setState({
-                    submitLoading: true
-                });
-
                 console.log('handleSubmit  param === ', values);
+                values.headerPic = values.headerPic && values.headerPic.map(item => item.response.id).join(',');
+                values.detailPic = values.detailPic && values.detailPic.map(item => item.response.id).join(',');
+
                 this.setState({
                     submitLoading: true
                 });
@@ -57,7 +62,7 @@ class Index extends React.Component {
                             description: '新增产品成功！'
                         });
 
-                        // return this.context.router.push('/frame/product/list');
+                        return this.context.router.push('/frame/product/list');
                     } else {
                         Message.error(data.backMsg);
                     }
@@ -89,6 +94,28 @@ class Index extends React.Component {
                 <div className='pageContent'>
                     <div className='ibox-content'>
                         <Form onSubmit={this.handleSubmit}>
+                            <Divider>产品示意图</Divider>
+                            <Row>
+                                <Col span={24}>
+                                    <FormItem
+                                    >
+                                        {getFieldDecorator('headerPic', {
+                                            valuePropName: 'fileList',
+                                            getValueFromEvent: this.normFile,
+                                            rules: [{required: false, message: '头像不能为空!'}],
+                                        })(
+                                            <Upload
+                                                action={uploadUrl}
+                                                listType="picture-card"
+                                                multiple
+                                                onChange={this.onHeaderChange}
+                                            >
+                                                <div><Icon type="plus"/> 上传</div>
+                                            </Upload>
+                                        )}
+                                    </FormItem>
+                                </Col>
+                            </Row>
                             <Divider>基本信息</Divider>
                             <Row>
                                 <Col {...itemGrid} style={{display: 'none'}}>
@@ -96,7 +123,7 @@ class Index extends React.Component {
                                         {...formItemLayout}
                                         label="商家ID"
                                     >
-                                        {getFieldDecorator('shop_id', {initialValue: '123456789'})(
+                                        {getFieldDecorator('shopId', {initialValue: '123456789'})(
                                             <Input/>
                                         )}
                                     </FormItem>
@@ -106,7 +133,7 @@ class Index extends React.Component {
                                         {...formItemLayout}
                                         label="产品分类"
                                     >
-                                        {getFieldDecorator('product_category_id', {
+                                        {getFieldDecorator('productCategoryId', {
                                             rules: [{
                                                 required: false, message: '请选择分类',
                                             }],
@@ -124,7 +151,7 @@ class Index extends React.Component {
                                         {...formItemLayout}
                                         label="产品编码"
                                     >
-                                        {getFieldDecorator('product_code', {
+                                        {getFieldDecorator('productCode', {
                                             rules: [{required: false, message: '请输入产品编码'}],
                                         })(
                                             <Input/>
@@ -136,7 +163,7 @@ class Index extends React.Component {
                                         {...formItemLayout}
                                         label="产品名称"
                                     >
-                                        {getFieldDecorator('product_name', {
+                                        {getFieldDecorator('productName', {
                                             rules: [{
                                                 required: true, message: '请输入产品名称',
                                             }],
@@ -150,7 +177,7 @@ class Index extends React.Component {
                                         {...formItemLayout}
                                         label="产品简介"
                                     >
-                                        {getFieldDecorator('product_summary', {
+                                        {getFieldDecorator('productSummary', {
                                             rules: [{
                                                 required: false, message: '请输入产品简介',
                                             }],
@@ -164,7 +191,7 @@ class Index extends React.Component {
                                         {...formItemLayout}
                                         label="售价"
                                     >
-                                        {getFieldDecorator('product_sellingprice', {
+                                        {getFieldDecorator('productSellingprice', {
                                             rules: [{
                                                 required: false, message: '请输入售价',
                                             }],
@@ -183,7 +210,7 @@ class Index extends React.Component {
                                         {...formItemLayout}
                                         label="成本价格"
                                     >
-                                        {getFieldDecorator('product_costprice', {
+                                        {getFieldDecorator('productCostprice', {
                                             rules: [{
                                                 required: true, message: '请输入成本价格',
                                             }],
@@ -216,7 +243,7 @@ class Index extends React.Component {
                                         {...formItemLayout}
                                         label="产品规格"
                                     >
-                                        {getFieldDecorator('product_unit', {
+                                        {getFieldDecorator('product_spec', {
                                             rules: [{
                                                 required: false, message: '请输入产品规格',
                                             }],
@@ -263,7 +290,7 @@ class Index extends React.Component {
                                         {...formItemLayout}
                                         label="配送范围"
                                     >
-                                        {getFieldDecorator('distribution_scope', {
+                                        {getFieldDecorator('distributionScope', {
                                             rules: [{
                                                 required: false, message: '请输入配送范围',
                                             }],
@@ -277,7 +304,7 @@ class Index extends React.Component {
                                         {...formItemLayout}
                                         label="备注"
                                     >
-                                        {getFieldDecorator('memo', {
+                                        {getFieldDecorator('mark', {
                                             rules: [{
                                                 required: false
                                             }],
@@ -294,7 +321,7 @@ class Index extends React.Component {
                                         {...formItemLayout}
                                         label="产地"
                                     >
-                                        {getFieldDecorator('product_origin', {
+                                        {getFieldDecorator('productOrigin', {
                                             rules: [{
                                                 required: false, message: '请输入产品产地',
                                             }],
@@ -308,7 +335,7 @@ class Index extends React.Component {
                                         {...formItemLayout}
                                         label="食用办法"
                                     >
-                                        {getFieldDecorator('product_usage', {
+                                        {getFieldDecorator('productUsage', {
                                             rules: [{
                                                 required: false, message: '请输入产品食用办法',
                                             }],
@@ -322,7 +349,7 @@ class Index extends React.Component {
                                         {...formItemLayout}
                                         label="贮藏办法"
                                     >
-                                        {getFieldDecorator('product_storage', {
+                                        {getFieldDecorator('productStorage', {
                                             rules: [{
                                                 required: false, message: '请输入产品贮藏办法',
                                             }],
@@ -336,21 +363,7 @@ class Index extends React.Component {
                                         {...formItemLayout}
                                         label="口味"
                                     >
-                                        {getFieldDecorator('product_taste', {
-                                            rules: [{
-                                                required: false, message: '请输入产品口味',
-                                            }],
-                                        })(
-                                            <Input/>
-                                        )}
-                                    </FormItem>
-                                </Col>
-                                <Col {...itemGrid}>
-                                    <FormItem
-                                        {...formItemLayout}
-                                        label="口味"
-                                    >
-                                        {getFieldDecorator('product_taste', {
+                                        {getFieldDecorator('productTaste', {
                                             rules: [{
                                                 required: false, message: '请输入产品口味',
                                             }],
@@ -364,7 +377,7 @@ class Index extends React.Component {
                                         {...formItemLayout}
                                         label="品牌"
                                     >
-                                        {getFieldDecorator('product_taste', {
+                                        {getFieldDecorator('productBrand', {
                                             rules: [{
                                                 required: false, message: '请输入产品品牌',
                                             }],
@@ -378,7 +391,7 @@ class Index extends React.Component {
                                         {...formItemLayout}
                                         label="配料"
                                     >
-                                        {getFieldDecorator('product_batching', {
+                                        {getFieldDecorator('productBatching', {
                                             rules: [{
                                                 required: false, message: '请输入产品配料',
                                             }],
@@ -392,12 +405,12 @@ class Index extends React.Component {
                                         {...formItemLayout}
                                         label="保质期"
                                     >
-                                        {getFieldDecorator('product_date', {
+                                        {getFieldDecorator('productDate', {
                                             rules: [{
                                                 required: false, message: '请输入产品保质期',
                                             }],
                                         })(
-                                            <Input/>
+                                            <ZZDatePicker/>
                                         )}
                                     </FormItem>
                                 </Col>
@@ -406,7 +419,7 @@ class Index extends React.Component {
                                         {...formItemLayout}
                                         label="净含量"
                                     >
-                                        {getFieldDecorator('product__net_weight', {
+                                        {getFieldDecorator('productNetWeight', {
                                             rules: [{
                                                 required: false, message: '请输入产品净含量',
                                             }],
@@ -416,26 +429,22 @@ class Index extends React.Component {
                                     </FormItem>
                                 </Col>
                             </Row>
-                            <Divider>产品详情</Divider>
+                            <Divider>产品详情图</Divider>
                             <Row>
                                 <Col span={24}>
                                     <FormItem
                                     >
-                                        {getFieldDecorator('picSrc', {
+                                        {getFieldDecorator('detailPic', {
                                             valuePropName: 'fileList',
-                                            getValueFromEvent: this.normFile,
-                                            rules: [{required: false, message: '头像不能为空!'}],
+                                            getValueFromEvent: this.normFile
                                         })(
                                             <Upload
-                                                // headers={{
-                                                //     'X-Auth-Token': sessionStorage.token
-                                                // }}
                                                 action={uploadUrl}
                                                 listType="picture-card"
-                                                onChange={this.handleChange}
+                                                multiple
+                                                onChange={this.onDetailChange}
                                             >
-                                                {fileList.length >= 1 ? null :
-                                                    <div><Icon type="plus"/> 上传</div>}
+                                                <div><Icon type="plus"/> 上传</div>
                                             </Upload>
                                         )}
                                     </FormItem>

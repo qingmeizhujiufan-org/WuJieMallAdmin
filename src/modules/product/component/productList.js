@@ -19,10 +19,6 @@ import axios from "Utils/axios";
 import Util from 'Utils/util';
 import '../index.less';
 import {ZZCard, ZZTable} from 'Comps/zz-antD';
-import moment from 'moment';
-import 'moment/locale/zh-cn';
-
-moment.locale('zh-cn');
 
 const Search = Input.Search;
 
@@ -33,22 +29,22 @@ class ProductList extends React.Component {
         this.columns = [
             {
                 title: '店家ID',
-                dataIndex: 'shop_id',
+                dataIndex: 'shopId',
                 width: 150,
                 align: 'center',
-                key: 'shop_id'
+                key: 'shopId'
             }, {
                 title: '产品分类ID',
-                dataIndex: 'product_category_id',
+                dataIndex: 'productCategoryId',
                 width: 150,
                 align: 'center',
-                key: 'product_category_id'
+                key: 'productCategoryId'
             }, {
                 title: '产品名称',
                 width: 300,
                 align: 'center',
-                dataIndex: 'product_name',
-                key: 'product_name',
+                dataIndex: 'productName',
+                key: 'productName',
                 render: (text, record, index) => (
                     <Link to={this.onEdit(record.id)}>{text}</Link>
                 )
@@ -56,14 +52,14 @@ class ProductList extends React.Component {
                 title: '单位',
                 width: 150,
                 align: 'center',
-                dataIndex: 'product_unit',
-                key: 'product_unit',
+                dataIndex: 'productUnit',
+                key: 'productUnit',
             }, {
                 title: '成本价格',
                 width: 150,
                 align: 'right',
-                dataIndex: 'product_costprice',
-                key: 'product_costprice',
+                dataIndex: 'productCostprice',
+                key: 'productCostprice',
                 render: (text, record, index) => (
                     <span>{Util.shiftThousands(text)}</span>
                 )
@@ -81,20 +77,14 @@ class ProductList extends React.Component {
                 title: '更新时间',
                 width: 200,
                 align: 'center',
-                dataIndex: 'update_time',
-                key: 'update_time',
-                render: text => (
-                    <span>{moment(text).format("YYYY-MM-DD hh:mm:ss")}</span>
-                )
+                dataIndex: 'updated_at',
+                key: 'updated_at'
             }, {
                 title: '创建时间',
                 width: 200,
                 align: 'center',
-                dataIndex: 'create_time',
-                key: 'create_time',
-                render: text => (
-                    <span>{moment(text).format("YYYY-MM-DD hh:mm:ss")}</span>
-                )
+                dataIndex: 'created_at',
+                key: 'created_at'
             }, {
                 title: <a><Icon type="setting" style={{fontSize: 18}}/></a>,
                 key: 'operation',
