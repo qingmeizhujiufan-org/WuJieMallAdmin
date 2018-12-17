@@ -8,7 +8,6 @@ import {
   Select,
   Breadcrumb,
   Button,
-  Upload,
   Icon,
   Spin,
   Switch,
@@ -19,10 +18,8 @@ import {
 import {formItemLayout, itemGrid} from 'Utils/formItemGrid';
 import restUrl from 'RestUrl';
 import axios from "Utils/axios";
-
+import {ZZUpload} from 'Comps/zzLib';
 import '../index.less';
-
-const uploadUrl = restUrl.BASE_HOST + 'attachment/upload';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -59,16 +56,8 @@ class Index extends React.Component {
     });
   }
 
-  handleChange = ({fileList}) => {
+  handleChange = (fileList) => {
     this.setState({fileList})
-  }
-
-  normFile = (e) => {
-    console.log('Upload event:', e);
-    if (Array.isArray(e)) {
-      return e;
-    }
-    return e && e.fileList;
   }
 
   handleConfirmBlur = (e) => {
@@ -160,19 +149,15 @@ class Index extends React.Component {
                     {...formItemLayout}
                   >
                     {getFieldDecorator('avatarSrc', {
-                      valuePropName: 'fileList',
-                      getValueFromEvent: this.normFile,
                       rules: [{required: false, message: '头像不能为空!'}],
                     })(
-                      <Upload
-                        name='bannerImage'
-                        action={uploadUrl}
+                      <ZZUpload
                         listType={'picture'}
                         onChange={this.handleChange}
                       >
                         {fileList.length >= 1 ? null :
                           <Button><Icon type="upload"/> 上传</Button>}
-                      </Upload>
+                      </ZZUpload>
                     )}
                   </FormItem>
                 </Col>

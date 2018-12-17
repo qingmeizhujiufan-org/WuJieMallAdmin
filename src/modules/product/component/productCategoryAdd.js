@@ -5,7 +5,6 @@ import {
   Col,
   Form,
   Input,
-  Upload,
   Breadcrumb,
   Button,
   Modal,
@@ -15,11 +14,11 @@ import {
 } from 'antd';
 import axios from "Utils/axios";
 import {formItemLayout, itemGrid} from 'Utils/formItemGrid';
+import {ZZUpload} from 'Comps/zzLib';
 
 import '../index.less';
 import restUrl from "RestUrl";
 
-const uploadUrl = restUrl.BASE_HOST + 'attachment/upload';
 const FormItem = Form.Item;
 
 class Index extends React.Component {
@@ -47,16 +46,8 @@ class Index extends React.Component {
     });
   }
 
-  handleChange = ({fileList}) => {
+  handleChange = (fileList) => {
     this.setState({fileList})
-  }
-
-  normFile = (e) => {
-    console.log('Upload event:', e);
-    if (Array.isArray(e)) {
-      return e;
-    }
-    return e && e.fileList;
   }
 
   handleSubmit = (e) => {
@@ -121,19 +112,14 @@ class Index extends React.Component {
                     {...formItemLayout}
                   >
                     {getFieldDecorator('productCategoryPic', {
-                      valuePropName: 'fileList',
-                      getValueFromEvent: this.normFile,
-                      rules: [{required: false, message: '类别图片不能为空!'}],
+                      rules: [{required: true, message: '类别图片不能为空!'}],
                     })(
-                      <Upload
-                        name='bannerImage'
-                        action={uploadUrl}
-                        listType={'picture-card'}
+                      <ZZUpload
                         onPreview={this.handlePreview}
                         onChange={this.handleChange}
                       >
                         {fileList.length >= 1 ? null : uploadButton}
-                      </Upload>
+                      </ZZUpload>
                     )}
                   </FormItem>
                 </Col>

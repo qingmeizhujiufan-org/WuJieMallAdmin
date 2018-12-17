@@ -20,6 +20,7 @@ import assign from 'lodash/assign';
 import axios from "Utils/axios";
 import Util from 'Utils/util';
 import '../index.less';
+import restUrl from "RestUrl";
 
 const Search = Input.Search;
 
@@ -143,6 +144,7 @@ class ProductList extends React.Component {
           const dataSource = backData.content;
           dataSource.map(item => {
             item.key = item.id;
+            item.url = restUrl.ADDR + '/public/' + `${item.productCategoryPic[0].id + item.productCategoryPic[0].file_type}`
           });
 
           callback(dataSource)
@@ -155,6 +157,7 @@ class ProductList extends React.Component {
       this.setState({initLoading: false});
     });
   }
+
 
   onLoadMore = () => {
     const curPageNum = this.state.params.pageNumber + 1;
@@ -241,11 +244,12 @@ class ProductList extends React.Component {
   render() {
     const {data, list, loading, initLoading} = this.state;
     const CardItem = ({data}) => (
-      <Card title={data.productCategoryName}>
+      <div className='card-box'>
+        <div className='card-title'>{data.productCategoryName}</div>
         <div className='img-box'>
-          <img src="" alt=""/>
+          <img src={data.url} alt=""/>
         </div>
-      </Card>
+      </div>
     )
 
     const loadMore = !initLoading && !loading ? (
@@ -258,7 +262,7 @@ class ProductList extends React.Component {
     ) : null;
 
     return (
-      <div className="zui-content page-newsList">
+      <div className="zui-content" id="product">
         <div className='pageHeader'>
           <div className="breadcrumb-block">
             <Breadcrumb>
@@ -289,19 +293,21 @@ class ProductList extends React.Component {
           </div>
         </div>
         <div className='pageContent'>
-          <List
-            grid={{
-              gutter: 16, xs: 1, sm: 2, md: 4, lg: 4, xl: 4, xxl: 4,
-            }}
-            loading={initLoading}
-            dataSource={data}
-            loadMore={loadMore}
-            renderItem={item => (
-              <List.Item>
-                <CardItem data={item}/>
-              </List.Item>
-            )}
-          />
+          <div className='ibox-content'>
+            <List
+              grid={{
+                gutter: 16, xs: 2, sm: 3, md: 4, lg: 4, xl: 4, xxl: 6,
+              }}
+              loading={initLoading}
+              dataSource={data}
+              loadMore={loadMore}
+              renderItem={item => (
+                <List.Item>
+                  <CardItem data={item}/>
+                </List.Item>
+              )}
+            />
+          </div>
         </div>
       </div>
     );
