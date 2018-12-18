@@ -57,6 +57,21 @@ const Menu = [
       }
     ]
   }, {
+    key: '6',
+    iconType: 'shop',
+    label: '商户管理',
+    children: [
+      {
+        key: '6_1',
+        link: '/frame/shop/list',
+        label: '商户列表'
+      }, {
+        key: '6_2',
+        link: '/frame/shop/add',
+        label: '新增商户'
+      }
+    ]
+  },{
     key: '4',
     iconType: 'idcard',
     label: '用户管理',

@@ -28,28 +28,26 @@ class ProductList extends React.Component {
 
     this.columns = [
       {
-        title: '店家ID',
+        title: '店铺ID',
         dataIndex: 'shopId',
         width: 150,
         align: 'center',
         key: 'shopId'
       }, {
-        title: '产品分类',
-        dataIndex: 'productCategoryName',
+        title: '店铺名称',
+        dataIndex: 'productCategoryId',
         width: 150,
         align: 'center',
-        key: 'productCategoryName'
+        key: 'productCategoryId'
       }, {
-        title: '产品名称',
+        title: '店铺地址',
         width: 300,
         align: 'center',
         dataIndex: 'productName',
-        key: 'productName',
-        render: (text, record, index) => (
-          <Link to={this.onEdit(record.id)}>{text}</Link>
-        )
+        key: 'productName'
       }, {
         title: '单位',
+        width: 150,
         align: 'center',
         dataIndex: 'productUnit',
         key: 'productUnit',
@@ -65,7 +63,6 @@ class ProductList extends React.Component {
       }, {
         title: '产品条码',
         align: 'center',
-        width: 200,
         dataIndex: 'barCode',
         key: 'barCode'
       }, {
@@ -133,7 +130,7 @@ class ProductList extends React.Component {
     const {params, keyWords} = this.state;
     const param = assign({}, params, {keyWords});
     this.setState({loading: true});
-    axios.get('product/queryList', {
+    axios.get('shop/queryList', {
       params: param
     }).then(res => res.data).then(data => {
       if (data.success) {
@@ -143,7 +140,6 @@ class ProductList extends React.Component {
           const total = backData.totalElements;
           dataSource.map(item => {
             item.key = item.id;
-            item.productCategoryName = item.ProductCategory.productCategoryName
           });
 
           this.setState({
@@ -186,15 +182,15 @@ class ProductList extends React.Component {
   }
 
   addProduct = () => {
-    return this.context.router.push('/frame/product/add');
+    return this.context.router.push('/frame/shop/add');
   }
 
   onDetail = id => {
-    return `/frame/product/list/detail/${id}`
+    return `/frame/shop/list/detail/${id}`
   }
 
   onEdit = id => {
-    return `/frame/product/list/edit/${id}`
+    return `/frame/shop/list/edit/${id}`
   }
 
   onDelete = (key) => {
@@ -206,7 +202,7 @@ class ProductList extends React.Component {
       onOk: () => {
         let param = {};
         param.id = key;
-        axios.post('product/delete', param).then(res => res.data).then(data => {
+        axios.post('shop/delete', param).then(res => res.data).then(data => {
           if (data.success) {
             Notification.success({
               message: '提示',
@@ -236,16 +232,16 @@ class ProductList extends React.Component {
         <div className='pageHeader'>
           <div className="breadcrumb-block">
             <Breadcrumb>
-              <Breadcrumb.Item>产品管理</Breadcrumb.Item>
-              <Breadcrumb.Item>产品列表</Breadcrumb.Item>
+              <Breadcrumb.Item>店铺管理</Breadcrumb.Item>
+              <Breadcrumb.Item>店铺列表</Breadcrumb.Item>
             </Breadcrumb>
           </div>
-          <h1 className='title'>产品列表</h1>
+          <h1 className='title'>店铺列表</h1>
           <div className='search-area'>
             <Row type='flex' justify="center" align="middle">
               <Col span={8}>
                 <Search
-                  placeholder="搜索产品关键字"
+                  placeholder="搜索店铺关键字"
                   enterButton='搜索'
                   size="large"
                   onSearch={this.onSearch}
@@ -257,7 +253,7 @@ class ProductList extends React.Component {
                   size="large"
                   onClick={this.addProduct}
                   style={{marginLeft: 25}}
-                >新增产品</Button>
+                >新增店铺</Button>
               </Col>
             </Row>
           </div>

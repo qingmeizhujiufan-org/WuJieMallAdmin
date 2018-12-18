@@ -10,13 +10,11 @@ import {
   Button,
   Icon,
   Spin,
-  Switch,
   Notification,
   Message,
   Tooltip
 } from 'antd';
 import {formItemLayout, itemGrid} from 'Utils/formItemGrid';
-import restUrl from 'RestUrl';
 import axios from "Utils/axios";
 import {ZZUpload} from 'Comps/zzLib';
 import '../index.less';

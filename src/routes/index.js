@@ -57,6 +57,17 @@ const UserResource = Loadable({
   loader: () => import("../modules/user/component/userResource"),
   loading: Loading
 });
+
+/* 商户管理 */
+const ShopList = Loadable({
+  loader: () => import("../modules/shop/component/shopList"),
+  loading: Loading
+});
+const ShopAdd = Loadable({
+  loader: () => import("../modules/shop/component/shopAdd"),
+  loading: Loading
+});
+
 /* 商品管理 */
 const ProductList = Loadable({
   loader: () => import("../modules/product/component/productList"),
@@ -156,6 +167,15 @@ class PageRouter extends React.Component {
               <Route path="resource" component={UserResource}/>
               <Route path="list/detail/:id" component={UserDetail}/>
               <Route path="list/edit/:id" component={UserEdit}/>
+            </Route>
+            {/* 商户管理 */}
+            <Route path="shop" component={App}>
+              <IndexRoute component={ShopList}/>
+              <Route path="list" component={ShopList}/>
+              <Route path="add" component={ShopAdd}/>
+              {/*<Route path="resource" component={UserResource}/>*/}
+              {/*<Route path="list/detail/:id" component={UserDetail}/>*/}
+              {/*<Route path="list/edit/:id" component={UserEdit}/>*/}
             </Route>
             {/* 产品管理 */}
             <Route path="product" component={App}>

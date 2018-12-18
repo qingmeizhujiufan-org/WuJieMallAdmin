@@ -8,7 +8,6 @@ import {
   Select,
   Breadcrumb,
   Button,
-  Upload,
   Icon,
   Spin,
   Message,
@@ -16,11 +15,9 @@ import {
 } from 'antd';
 import axios from "Utils/axios";
 import util from "Utils/util";
-import restUrl from 'RestUrl';
+import {ZZUpload} from 'Comps/zzLib';
 import assign from 'lodash/assign';
 import '../index.less';
-
-const uploadUrl = restUrl.BASE_HOST + 'attachment/upload';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -202,15 +199,13 @@ class Index extends React.Component {
                         getValueFromEvent: this.normFile,
                         rules: [{required: false, message: '头像不能为空!'}]
                       })(
-                        <Upload
-                          name='bannerImage'
-                          action={uploadUrl}
+                        <ZZUpload
                           listType={'picture'}
                           onChange={this.handleChange}
                         >
                           {fileList.length >= 1 ? null :
                             <Button><Icon type="upload"/>上传</Button>}
-                        </Upload>
+                        </ZZUpload>
                       )}
                     </FormItem>
                   </Col>
