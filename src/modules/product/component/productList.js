@@ -143,7 +143,7 @@ class ProductList extends React.Component {
           const total = backData.totalElements;
           dataSource.map(item => {
             item.key = item.id;
-            item.productCategoryName = item.ProductCategory.productCategoryName
+            item.productCategoryName = item.productCategory.productCategoryName
           });
 
           this.setState({

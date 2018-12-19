@@ -28,48 +28,50 @@ class ProductList extends React.Component {
 
     this.columns = [
       {
-        title: '店铺ID',
-        dataIndex: 'shopId',
-        width: 150,
-        align: 'center',
-        key: 'shopId'
-      }, {
         title: '店铺名称',
-        dataIndex: 'productCategoryId',
+        dataIndex: 'shopName',
         width: 150,
         align: 'center',
-        key: 'productCategoryId'
+        key: 'shopName'
       }, {
         title: '店铺地址',
-        width: 300,
+        dataIndex: 'shopAddress',
+        width: 200,
         align: 'center',
-        dataIndex: 'productName',
-        key: 'productName'
+        key: 'shopAddress'
       }, {
-        title: '单位',
-        width: 150,
+        title: '店铺持有人',
+        width: 100,
         align: 'center',
-        dataIndex: 'productUnit',
-        key: 'productUnit',
+        dataIndex: 'shopOwner',
+        key: 'shopOwner'
       }, {
-        title: '成本价格',
-        width: 150,
-        align: 'right',
-        dataIndex: 'productCostprice',
-        key: 'productCostprice',
-        render: (text, record, index) => (
-          <span>{Util.shiftThousands(text)}</span>
-        )
-      }, {
-        title: '产品条码',
+        title: '手机号码',
+        width: 100,
         align: 'center',
-        dataIndex: 'barCode',
-        key: 'barCode'
+        dataIndex: 'shopTelephone',
+        key: 'shopTelephone',
+      }, {
+        title: '固定电话',
+        width: 100,
+        align: 'center',
+        dataIndex: 'shopPhone',
+        key: 'shopPhone'
+      }, {
+        title: '微信号',
+        width: 100,
+        align: 'center',
+        dataIndex: 'shopWeixin',
+        key: 'shopWeixin'
+      },{
+        title: '状态',
+        width: 100,
+        dataIndex: 'shopStatus',
+        key: 'shopStatus'
       }, {
         title: '备注',
-        width: 120,
-        dataIndex: 'memo',
-        key: 'memo'
+        dataIndex: 'mark',
+        key: 'mark'
       }, {
         title: '更新时间',
         width: 200,

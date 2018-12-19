@@ -168,7 +168,7 @@ class PageRouter extends React.Component {
               <Route path="list/detail/:id" component={UserDetail}/>
               <Route path="list/edit/:id" component={UserEdit}/>
             </Route>
-            {/* 商户管理 */}
+            {/* 店铺管理 */}
             <Route path="shop" component={App}>
               <IndexRoute component={ShopList}/>
               <Route path="list" component={ShopList}/>

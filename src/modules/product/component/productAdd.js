@@ -144,8 +144,8 @@ class Index extends React.Component {
                       <Select placeholder="请选择">
                         {
                           categoryList.map(item => {
-                            return (<Option key={item.productCategoryCode}
-                                            value={item.productCategoryCode}>{item.productCategoryName}</Option>)
+                            return (<Option key={item.id}
+                                            value={item.id}>{item.productCategoryName}</Option>)
                           })
                         }
                       </Select>
