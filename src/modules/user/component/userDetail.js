@@ -61,8 +61,8 @@ class Index extends React.Component {
               uid: index,
               name: item.file_name,
               status: 'done',
-              url: restUrl.ADDR + '/public/' + `${item.id + item.file_type}`,
-              thumbUrl: restUrl.ADDR + '/public/' + `${item.id + item.file_type}`,
+              url: restUrl.ADDR + '/public/' + `${item.id + item.fileType}`,
+              thumbUrl: restUrl.ADDR + '/public/' + `${item.id + item.fileType}`,
               response: {
                 id: item.id
               }

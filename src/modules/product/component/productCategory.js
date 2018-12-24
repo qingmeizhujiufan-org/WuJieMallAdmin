@@ -144,7 +144,7 @@ class ProductList extends React.Component {
           const dataSource = backData.content;
           dataSource.map(item => {
             item.key = item.id;
-            item.url = restUrl.ADDR + '/public/' + `${item.productCategoryPic[0].id + item.productCategoryPic[0].file_type}`
+            item.url = restUrl.ADDR + '/public/' + `${item.productCategoryPic[0].id + item.productCategoryPic[0].fileType}`
           });
 
           callback(dataSource)
@@ -170,7 +170,6 @@ class ProductList extends React.Component {
     }, () => {
       this.queryList((res) => {
         const data = this.state.data.concat(res);
-
         this.setState({
           data,
           list: data,
@@ -194,7 +193,15 @@ class ProductList extends React.Component {
       },
       keyWords: value
     }, () => {
-      this.queryList();
+      this.queryList((res) => {
+        this.setState({
+          data: res,
+          list: res,
+          loading: res.length <= this.state.params.pageSize || false,
+        }, () => {
+          window.dispatchEvent(new Event('resize'));
+        });
+      });
     });
   }
 
@@ -296,7 +303,7 @@ class ProductList extends React.Component {
           <div className='ibox-content'>
             <List
               grid={{
-                gutter: 16, xs: 2, sm: 3, md: 4, lg: 4, xl: 4, xxl: 6,
+                gutter: 16, xs: 2, sm: 3, md: 4, lg: 6, xl: 6, xxl: 6,
               }}
               loading={initLoading}
               dataSource={data}

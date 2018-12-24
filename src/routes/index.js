@@ -67,6 +67,10 @@ const ShopAdd = Loadable({
   loader: () => import("../modules/shop/component/shopAdd"),
   loading: Loading
 });
+const ShopEdit = Loadable({
+  loader: () => import("../modules/shop/component/shopEdit"),
+  loading: Loading
+});
 
 /* 商品管理 */
 const ProductList = Loadable({
@@ -175,7 +179,7 @@ class PageRouter extends React.Component {
               <Route path="add" component={ShopAdd}/>
               {/*<Route path="resource" component={UserResource}/>*/}
               {/*<Route path="list/detail/:id" component={UserDetail}/>*/}
-              {/*<Route path="list/edit/:id" component={UserEdit}/>*/}
+              <Route path="list/edit/:id" component={ShopEdit}/>
             </Route>
             {/* 产品管理 */}
             <Route path="product" component={App}>

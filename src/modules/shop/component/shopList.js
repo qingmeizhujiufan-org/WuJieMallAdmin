@@ -47,7 +47,7 @@ class ProductList extends React.Component {
         key: 'shopOwner'
       }, {
         title: '手机号码',
-        width: 100,
+        width: 120,
         align: 'center',
         dataIndex: 'shopTelephone',
         key: 'shopTelephone',

@@ -8,13 +8,16 @@ import {
   Select,
   Breadcrumb,
   Button,
+  Icon,
   Notification,
   Message,
   Divider,
 } from 'antd';
-import {ZZDatePicker, ZZUpload} from 'Comps/zzLib';
+import {ZZUpload} from 'Comps/zzLib';
 import {formItemLayout, itemGrid} from 'Utils/formItemGrid';
 import axios from "Utils/axios";
+import restUrl from "RestUrl";
+
 import '../index.less';
 
 const FormItem = Form.Item;
@@ -23,12 +26,40 @@ const {TextArea} = Input;
 
 class Index extends React.Component {
   state = {
+    loading: false,
     submitLoading: false,
-    categoryList: []
+    categoryList: [],
+    fileList: [],
+    certificateFileList: []
   };
 
   componentDidMount = () => {
+    this.queryDetail()
+  }
 
+  queryDetail = () => {
+    const id = this.props.params.id;
+    const param = {};
+    param.id = id;
+    this.setState({
+      loading: true
+    });
+    axios.get('shop/queryDetail', {
+      params: param
+    }).then(res => res.data).then(data => {
+      if (data.success) {
+        let backData = data.backData;
+        this.setFields(backData);
+        this.setState({
+          data: backData
+        });
+      } else {
+        Message.error('产品信息查询失败');
+      }
+      this.setState({
+        loading: false
+      });
+    });
   }
 
   validatePhone = (rule, value, callback) => {
@@ -38,6 +69,39 @@ class Index extends React.Component {
     } else {
       callback();
     }
+  }
+
+  setFields = val => {
+    const values = this.props.form.getFieldsValue();
+    for (let key in values) {
+      if (key === 'shopPic' || key === 'shopCertificate') {
+        values[key] = [];
+        val[key].map((item, index) => {
+          values[key].push({
+            uid: index,
+            name: item.fileTame,
+            status: 'done',
+            url: restUrl.ADDR + '/public/' + `${item.id + item.fileType}`,
+            thumbUrl: restUrl.ADDR + '/public/' + `${item.id + item.fileType}`,
+            response: {
+              id: item.id
+            }
+          });
+        });
+      } else {
+        values[key] = val[key];
+      }
+    }
+    values['updateBy'] = sessionStorage.getItem('userName');
+    this.props.form.setFieldsValue(values);
+  }
+
+  handleShopPicChange = (fileList) => {
+    this.setState({fileList})
+  }
+
+  handleShopCertificateChange = (fileList) => {
+    this.setState({certificateFileList: fileList})
   }
 
   handleSubmit = (e) => {
@@ -51,11 +115,11 @@ class Index extends React.Component {
         this.setState({
           submitLoading: true
         });
-        axios.post('shop/add', values).then(res => res.data).then(data => {
+        axios.post('shop/update', values).then(res => res.data).then(data => {
           if (data.success) {
             Notification.success({
               message: '提示',
-              description: '新增店铺成功！'
+              description: '修改店铺成功！'
             });
 
             return this.context.router.push('/frame/shop/list');
@@ -73,8 +137,13 @@ class Index extends React.Component {
 
   render() {
     const {getFieldDecorator} = this.props.form;
-    const {submitLoading} = this.state;
-
+    const {submitLoading, certificateFileList, fileList} = this.state;
+    const uploadButton = (
+      <div>
+        <Icon type="plus" />
+        <div className="ant-upload-text">上传</div>
+      </div>
+    );
     return (
 
       <div className="zui-content">
@@ -99,12 +168,12 @@ class Index extends React.Component {
                       rules: [{required: false, message: '店铺描述图片不能为空!'}],
                     })(
                       <ZZUpload
-                        onPreview={this.handlePreview}
-                        onChange={this.handleChange}
+                        onChange={this.handleShopPicChange}
                       >
                         {fileList.length >= 5 ? null : uploadButton}
                       </ZZUpload>
                     )}
+
                   </FormItem>
                 </Col>
               </Row>
@@ -202,8 +271,7 @@ class Index extends React.Component {
                     {getFieldDecorator('createBy', {
                       rules: [{
                         required: false,
-                      }],
-                      initialValue: sessionStorage.getItem('userName')
+                      }]
                     })(
                       <Input disabled/>
                     )}
@@ -217,7 +285,7 @@ class Index extends React.Component {
                     {getFieldDecorator('updateBy', {
                       rules: [{
                         required: false,
-                      }],
+                      }]
                     })(
                       <Input disabled/>
                     )}
@@ -265,7 +333,11 @@ class Index extends React.Component {
                   <FormItem
                   >
                     {getFieldDecorator('shopCertificate')(
-                      <ZZUpload/>
+                      <ZZUpload
+                        onChange={this.handleShopCertificateChange}
+                      >
+                        {certificateFileList.length >= 1 ? null : uploadButton}
+                      </ZZUpload>
                     )}
                   </FormItem>
                 </Col>
