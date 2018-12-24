@@ -28,20 +28,8 @@ class ProductList extends React.Component {
 
         this.columns = [
             {
-                title: '店家ID',
-                dataIndex: 'shopId',
-                width: 150,
-                align: 'center',
-                key: 'shopId'
-            }, {
-                title: '产品分类',
-                dataIndex: 'productCategoryName',
-                width: 150,
-                align: 'center',
-                key: 'productCategoryName'
-            }, {
                 title: '产品名称',
-                width: 300,
+                width: 200,
                 align: 'center',
                 dataIndex: 'productName',
                 key: 'productName',
@@ -49,13 +37,29 @@ class ProductList extends React.Component {
                     <Link to={this.onEdit(record.id)}>{text}</Link>
                 )
             }, {
-                title: '单位',
+                title: '店家名称',
+                dataIndex: 'shopName',
+                width: 150,
                 align: 'center',
-                dataIndex: 'productUnit',
-                key: 'productUnit',
+                key: 'shopName'
+            }, {
+                title: '产品分类',
+                dataIndex: 'productCategoryName',
+                width: 150,
+                align: 'center',
+                key: 'productCategoryName'
+            }, {
+                title: '售价',
+                width: 100,
+                align: 'right',
+                dataIndex: 'productSellingprice',
+                key: 'productSellingprice',
+                render: (text, record, index) => (
+                    <span>{Util.shiftThousands(text)}</span>
+                )
             }, {
                 title: '成本价格',
-                width: 150,
+                width: 100,
                 align: 'right',
                 dataIndex: 'productCostprice',
                 key: 'productCostprice',
@@ -63,11 +67,29 @@ class ProductList extends React.Component {
                     <span>{Util.shiftThousands(text)}</span>
                 )
             }, {
-                title: '产品条码',
+                title: '产品编码',
                 align: 'center',
-                width: 200,
-                dataIndex: 'barCode',
-                key: 'barCode'
+                width: 100,
+                dataIndex: 'productCode',
+                key: 'productCode'
+            }, {
+                title: '产品规格',
+                align: 'center',
+                width: 100,
+                dataIndex: 'productSpec',
+                key: 'productSpec'
+            }, {
+                title: '产品品牌',
+                align: 'center',
+                width: 100,
+                dataIndex: 'productBrand',
+                key: 'productBrand'
+            }, {
+                title: '产品产地',
+                align: 'center',
+                width: 100,
+                dataIndex: 'productOrigin',
+                key: 'productOrigin'
             }, {
                 title: '备注',
                 width: 120,
@@ -241,7 +263,7 @@ class ProductList extends React.Component {
                         <Row type='flex' justify="center" align="middle">
                             <Col span={8}>
                                 <Search
-                                    placeholder="搜索产品关键字"
+                                    placeholder="产品名称/品牌/产地"
                                     enterButton='搜索'
                                     size="large"
                                     onSearch={this.onSearch}
@@ -265,7 +287,7 @@ class ProductList extends React.Component {
                             dataSource={dataSource}
                             pagination={pagination}
                             loading={loading}
-                            scroll={{x: 1500}}
+                            scroll={{x: 2500}}
                             handlePageChange={this.handlePageChange.bind(this)}
                         />
                     </ZZCard>
