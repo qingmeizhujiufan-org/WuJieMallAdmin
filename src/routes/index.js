@@ -89,7 +89,7 @@ const ProductAdd = Loadable({
   loader: () => import("../modules/product/component/productAdd"),
   loading: Loading
 });
-
+/*  分类管理*/
 const ProductCategoryList = Loadable({
   loader: () => import("../modules/product/component/productCategory"),
   loading: Loading
@@ -98,6 +98,15 @@ const ProductCategoryAdd = Loadable({
   loader: () => import("../modules/product/component/productCategoryAdd"),
   loading: Loading
 });
+const ProductCategoryDetail = Loadable({
+  loader: () => import("../modules/product/component/productCategoryDetail"),
+  loading: Loading
+});
+const ProductCategoryEdit = Loadable({
+  loader: () => import("../modules/product/component/productCategoryEdit"),
+  loading: Loading
+});
+
 /* 订单管理 */
 const OrderList = Loadable({
   loader: () => import("../modules/order/component/orderList"),
@@ -190,6 +199,8 @@ class PageRouter extends React.Component {
               <Route path="list/edit/:id" component={ProductEdit}/>
               <Route path="category/list" component={ProductCategoryList}/>
               <Route path="category/add" component={ProductCategoryAdd}/>
+              <Route path="category/detail/:id" component={ProductCategoryDetail}/>
+              <Route path="category/edit/:id" component={ProductCategoryEdit}/>
             </Route>
             {/* 订单管理 */}
             <Route path="order" component={App}>

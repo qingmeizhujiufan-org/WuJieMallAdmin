@@ -23,6 +23,7 @@ import '../index.less';
 import restUrl from "RestUrl";
 
 const Search = Input.Search;
+const ButtonGroup = Button.Group;
 
 class ProductList extends React.Component {
   constructor(props) {
@@ -210,11 +211,11 @@ class ProductList extends React.Component {
   }
 
   onDetail = id => {
-    return `/frame/product/list/detail/${id}`
+    return this.context.router.push(`/frame/product/category/detail/${id}`);
   }
 
   onEdit = id => {
-    return `/frame/product/list/edit/${id}`
+    return this.context.router.push(`/frame/product/category/edit/${id}`);
   }
 
   onDelete = (key) => {
@@ -226,7 +227,7 @@ class ProductList extends React.Component {
       onOk: () => {
         let param = {};
         param.id = key;
-        axios.post('product/delete', param).then(res => res.data).then(data => {
+        axios.post('product/categoryDelete', param).then(res => res.data).then(data => {
           if (data.success) {
             Notification.success({
               message: '提示',
@@ -235,10 +236,17 @@ class ProductList extends React.Component {
 
             this.setState({
               params: {
-                pageNumber: 1
+                pageNumber: 1,
+                pageSize: 10
               },
             }, () => {
-              this.queryList();
+              this.queryList(res => {
+                this.setState({
+                  data: res,
+                  list: res,
+                  loading: res.length <= this.state.params.pageSize || false,
+                });
+              });
             });
           } else {
             Message.error(data.backMsg);
@@ -252,10 +260,17 @@ class ProductList extends React.Component {
     const {data, list, loading, initLoading} = this.state;
     const CardItem = ({data}) => (
       <div className='card-box'>
-        <div className='card-title'>{data.productCategoryName}</div>
+        <div className='card-title'>
+          <span>{data.productCategoryName}</span>
+        </div>
         <div className='img-box'>
           <img src={data.url} alt=""/>
         </div>
+        <ButtonGroup className='tool-box'>
+          <Button onClick={() => this.onDetail(data.id)}>查看</Button>
+          <Button onClick={() => this.onEdit(data.id)}>编辑</Button>
+          <Button onClick={() => this.onDelete(data.id)}>删除</Button>
+        </ButtonGroup>
       </div>
     )
 

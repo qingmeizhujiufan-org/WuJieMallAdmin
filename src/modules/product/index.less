@@ -1,10 +1,11 @@
 #product {
   .card-box {
-    box-sizing: border-box;
     position: relative;
     width: 100%;
     padding-bottom: calc(~'100% + 40px');
     border: 1px solid #e8e8e8;
+    overflow: hidden;
+    text-align: center;
     .img-box {
       position: absolute;
       top: 40px;
@@ -26,13 +27,36 @@
       line-height: 40px;
       font-size: 16px;
       border-bottom: 1px solid #e8e8e8;
-      text-align: center;
       z-index: 100;
+    }
+
+    .tool-box {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      bottom: 0;
+      right: 0;
+      width: 100%;
+      height: 32px;
+      transition: all .3s ease-in;
+      z-index: 1000;
+      button {
+        height: 100%;
+      }
+    }
+
+    &:hover {
+      .card-title {
+        background-color: #5578DC;
+      }
+      .tool-box {
+        transform: translate3d(0, -32px, 0);
+      }
     }
   }
 
-  @media (max-width: 960px){
-    body{
+  @media (max-width: 960px) {
+    body {
       background: #000;
     }
   }

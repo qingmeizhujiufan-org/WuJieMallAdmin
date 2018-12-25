@@ -27,14 +27,62 @@ class Index extends React.Component {
 
     this.state = {
       previewVisible: false,
-      previewImage: '',
-      submitLoading: false,
-      fileList: []
+      loading: false,
+      previewImage: ''
     };
   }
 
   componentDidMount = () => {
+    this.queryDetail()
+  }
 
+  queryDetail = () => {
+    const id = this.props.params.id;
+    const param = {};
+    param.id = id;
+    this.setState({
+      loading: true
+    });
+    axios.get('product/categoryDetail', {
+      params: param
+    }).then(res => res.data).then(data => {
+      if (data.success) {
+        let backData = data.backData;
+        this.setFields(backData);
+        this.setState({
+          data: backData
+        });
+      } else {
+        Message.error('产品信息查询失败');
+      }
+      this.setState({
+        loading: false
+      });
+    });
+  }
+
+  setFields = val => {
+    const values = this.props.form.getFieldsValue();
+    for (let key in values) {
+      if (key === 'productCategoryPic') {
+        values[key] = [];
+        val[key].map((item, index) => {
+          values[key].push({
+            uid: index,
+            name: item.fileTame,
+            status: 'done',
+            url: restUrl.ADDR + '/public/' + `${item.id + item.fileType}`,
+            thumbUrl: restUrl.ADDR + '/public/' + `${item.id + item.fileType}`,
+            response: {
+              id: item.id
+            }
+          });
+        });
+      } else {
+        values[key] = val[key];
+      }
+    }
+    this.props.form.setFieldsValue(values);
   }
 
   handleCancel = () => this.setState({ previewVisible: false })
@@ -46,50 +94,10 @@ class Index extends React.Component {
     });
   }
 
-  handleChange = (fileList) => {
-    this.setState({fileList})
-  }
-
-  handleSubmit = (e) => {
-    e.preventDefault();
-    this.props.form.validateFields((err, values) => {
-      if (!err) {
-        if(values.productCategoryPic) {
-          values.productCategoryPic = values.productCategoryPic.map(item => item.response.id).join(',');
-        }
-        console.log('handleSubmit  param === ', values);
-        this.setState({
-          submitLoading: true
-        });
-        axios.post('product/categoryAdd', values).then(res => res.data).then(data => {
-          if (data.success) {
-            Notification.success({
-              message: '提示',
-              description: '产品信息保存成功！'
-            });
-
-            return this.context.router.push('/frame/product/category/list');
-          } else {
-            Message.error(data.backMsg);
-          }
-
-          this.setState({
-            submitLoading: false
-          });
-        });
-      }
-    });
-  }
-
   render() {
     const {getFieldDecorator} = this.props.form;
-    const {fileList, submitLoading, previewImage, previewVisible} = this.state;
-    const uploadButton = (
-      <div>
-        <Icon type="plus" />
-        <div className="ant-upload-text">上传</div>
-      </div>
-    );
+    const { previewImage, previewVisible} = this.state;
+
     return (
       <div className="zui-content">
         <div className='pageHeader'>
@@ -115,10 +123,11 @@ class Index extends React.Component {
                       rules: [{required: true, message: '类别图片不能为空!'}],
                     })(
                       <ZZUpload
+                        disabled={true}
                         onPreview={this.handlePreview}
-                        onChange={this.handleChange}
+                        onRemove={() => false}
                       >
-                        {fileList.length >= 1 ? null : uploadButton}
+                        {null}
                       </ZZUpload>
                     )}
                   </FormItem>
@@ -131,7 +140,7 @@ class Index extends React.Component {
                     {getFieldDecorator('productCategoryName', {
                       rules: [{required: true, message: '请输入类别名称'}]
                     })(
-                      <Input/>
+                      <Input disabled/>
                     )}
                   </FormItem>
                 </Col>
@@ -143,7 +152,7 @@ class Index extends React.Component {
                     {getFieldDecorator('productCategoryCode', {
                       rules: [{required: true, message: '请输入产品类别条码'}]
                     })(
-                      <Input/>
+                      <Input disabled/>
                     )}
                   </FormItem>
                 </Col>
@@ -160,10 +169,18 @@ class Index extends React.Component {
                     )}
                   </FormItem>
                 </Col>
-              </Row>
-              <Row type="flex" justify="center" style={{marginTop: 40}}>
-                <Button type="primary" size='large' style={{width: 120}} htmlType="submit"
-                        loading={submitLoading}>保存</Button>
+                <Col {...itemGrid}>
+                  <FormItem
+                    {...formItemLayout}
+                    label="修改人"
+                  >
+                    {getFieldDecorator('updateBy', {
+                      rules: [{required: false}]
+                    })(
+                      <Input disabled/>
+                    )}
+                  </FormItem>
+                </Col>
               </Row>
             </Form>
           </div>
@@ -176,10 +193,10 @@ class Index extends React.Component {
   }
 }
 
-const productCategoryAdd = Form.create()(Index);
+const productCategoryDetail = Form.create()(Index);
 
 Index.contextTypes = {
   router: PropTypes.object
 }
 
-export default productCategoryAdd;
+export default productCategoryDetail;
