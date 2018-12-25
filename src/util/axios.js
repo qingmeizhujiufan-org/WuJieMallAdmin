@@ -2,13 +2,14 @@ import axios from 'axios';
 import restUrl from 'RestUrl';
 
 axios.defaults.baseURL = restUrl.BASE_HOST;
+axios.defaults.withCredentials = true;
 axios.defaults.headers['Content-Type'] = 'application/json;charset=UTF-8';
 
 // 添加请求拦截器
 axios.interceptors.request.use(config => {
     // 在发送请求之前做些什么
     const token = sessionStorage.getItem('token');
-    if(token){
+    if (token) {
         config.headers['X-Auth-Token'] = `${token}`;
     }
     return config;
