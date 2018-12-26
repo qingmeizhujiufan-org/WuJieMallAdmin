@@ -52,6 +52,7 @@ Index.defaultProps = {
     action: uploadUrl,
     listType: "picture-card",
     multiple: true,
+    withCredentials: true,
     children: <div><Icon type="plus"/> 上传</div>
 }
 
