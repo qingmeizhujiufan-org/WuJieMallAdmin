@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {Layout, Row, Col, Icon, Badge, Dropdown, Menu, Avatar, Notification, Divider} from 'antd';
+import io from 'socket.io-client';
 import restUrl from 'RestUrl';
 import './zzHeader.less';
 
@@ -42,6 +43,17 @@ class ZZHeader extends React.Component {
             if (e.key === 'avatar' && e.newValue) {
                 this.setState({avatar: e.newValue});
             }
+        });
+
+        const socket = io('http://127.0.0.1:7001');
+
+        socket.on('connect', () => {
+            console.log('connect!');
+            socket.emit('chat', 'hello world!');
+        });
+
+        socket.on('res', msg => {
+            console.log('res from server: %s!', msg);
         });
     }
 
@@ -88,12 +100,13 @@ class ZZHeader extends React.Component {
                         type={collapsed ? 'menu-unfold' : 'menu-fold'}
                         onClick={onToggleClick}
                     />
-                    {/*<Badge dot>*/}
-                    {/*<span onClick={this.checkMessage}>*/}
-                    {/*<Icon type="bell" theme="outlined" style={{fontSize: 20, color: '#fff', verticalAlign: 'text-bottom'}}/>*/}
-                    {/*</span>*/}
-                    {/*</Badge>*/}
-                    {/*<Divider type="vertical" style={{margin: '0 30px'}}/>*/}
+                    <Badge dot>
+                    <span onClick={this.checkMessage}>
+                    <Icon type="bell" theme="outlined"
+                          style={{fontSize: 20, color: '#fff', verticalAlign: 'text-bottom'}}/>
+                    </span>
+                    </Badge>
+                    <Divider type="vertical" style={{margin: '0 30px'}}/>
                     <Dropdown overlay={this.menu}>
                         <a className="ant-dropdown-link" style={{color: '#fff'}}>
                             <Avatar
