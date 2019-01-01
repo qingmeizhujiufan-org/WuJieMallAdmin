@@ -22,9 +22,13 @@ axios.interceptors.response.use(response => {
 }, error => {
     // 对响应错误做点什么
     const response = error.response;
-    if (response.status === 401 || response.status === 403) {
-        const data = response.data || {};
-        message.error(data.message);
+    if(response) {
+        if (response.status === 401 || response.status === 403) {
+            const data = response.data || {};
+            message.error(data.message);
+        }
+    }else {
+        message.error('服务异常');
     }
 
     return Promise.reject(error);

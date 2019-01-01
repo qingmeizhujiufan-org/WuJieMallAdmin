@@ -100,23 +100,25 @@ class ZZHeader extends React.Component {
                         type={collapsed ? 'menu-unfold' : 'menu-fold'}
                         onClick={onToggleClick}
                     />
-                    <Badge dot>
+                    <div>
+                        <Badge dot>
                     <span onClick={this.checkMessage}>
                     <Icon type="bell" theme="outlined"
                           style={{fontSize: 20, color: '#fff', verticalAlign: 'text-bottom'}}/>
                     </span>
-                    </Badge>
-                    <Divider type="vertical" style={{margin: '0 30px'}}/>
-                    <Dropdown overlay={this.menu}>
-                        <a className="ant-dropdown-link" style={{color: '#fff'}}>
-                            <Avatar
-                                className='zui-avatar'
-                                size="small"
-                                icon={avatar ? avatar : "user"}
-                                src={avatar ? avatar : null}
-                            /> {sessionStorage.userName} <Icon type="down"/>
-                        </a>
-                    </Dropdown>
+                        </Badge>
+                        <Divider type="vertical" style={{margin: '0 30px'}}/>
+                        <Dropdown overlay={this.menu}>
+                            <a className="ant-dropdown-link" style={{color: '#fff'}}>
+                                <Avatar
+                                    className='zui-avatar'
+                                    size="small"
+                                    icon={avatar ? avatar : "user"}
+                                    src={avatar ? avatar : null}
+                                /> {sessionStorage.userName} <Icon type="down"/>
+                            </a>
+                        </Dropdown>
+                    </div>
                 </Row>
             </Header>
         );
