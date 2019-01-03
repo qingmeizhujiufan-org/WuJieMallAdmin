@@ -16,7 +16,7 @@ import {
 import axios from "Utils/axios";
 import restUrl from 'RestUrl';
 import util from "Utils/util";
-import {ZZUpload} from 'Comps/zzLib';
+import {ZZUpload} from 'Comps/zui';
 import assign from 'lodash/assign';
 import '../index.less';
 

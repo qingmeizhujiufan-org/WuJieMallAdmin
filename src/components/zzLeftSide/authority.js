@@ -1,4 +1,7 @@
 const admin = [{
+    key: '0',
+    children: ['0_1']
+}, {
     key: '1',
     children: ['1_1', '1_2', '1_3']
 }, {
@@ -9,13 +12,13 @@ const admin = [{
     children: ['3_1', '3_2', '3_3', '3_4']
 }, {
     key: '4',
-    children: ['4_1', '4_2','4_3']
+    children: ['4_1', '4_2', '4_3']
 }, {
     key: '5',
     children: ['5_1', '5_2']
-},{
-  key: '6',
-  children: ['6_1', '6_2']
+}, {
+    key: '6',
+    children: ['6_1', '6_2']
 }];
 
 const subAdmin = [{
@@ -29,7 +32,7 @@ const subAdmin = [{
     children: ['3_1', '3_2']
 }, {
     key: '4',
-    children: ['4_1', '4_2','4_3']
+    children: ['4_1', '4_2', '4_3']
 }, {
     key: '5',
     children: ['5_1', '5_2']

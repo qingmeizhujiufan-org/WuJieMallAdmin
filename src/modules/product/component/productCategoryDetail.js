@@ -14,7 +14,7 @@ import {
 } from 'antd';
 import axios from "Utils/axios";
 import {formItemLayout, itemGrid} from 'Utils/formItemGrid';
-import {ZZUpload} from 'Comps/zzLib';
+import {ZZUpload} from 'Comps/zui';
 
 import '../index.less';
 import restUrl from "RestUrl";

@@ -13,7 +13,7 @@ import {
     InputNumber,
     Divider,
 } from 'antd';
-import {ZZDatePicker, ZZUpload} from 'Comps/zzLib';
+import {ZZDatePicker, ZZUpload} from 'Comps/zui';
 import {formItemLayout, itemGrid} from 'Utils/formItemGrid';
 import restUrl from 'RestUrl';
 import axios from "Utils/axios";

@@ -13,7 +13,7 @@ import {
   Message,
   Divider,
 } from 'antd';
-import {ZZUpload} from 'Comps/zzLib';
+import {ZZUpload} from 'Comps/zui';
 import {formItemLayout, itemGrid} from 'Utils/formItemGrid';
 import axios from "Utils/axios";
 import restUrl from "RestUrl";

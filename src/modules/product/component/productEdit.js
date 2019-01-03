@@ -14,7 +14,7 @@ import {
   InputNumber,
   Divider,
 } from 'antd';
-import {ZZDatePicker, ZZUpload} from 'Comps/zzLib';
+import {ZZDatePicker, ZZUpload} from 'Comps/zui';
 import axios from "Utils/axios";
 import {formItemLayout, itemGrid} from 'Utils/formItemGrid';
 import '../index.less';
