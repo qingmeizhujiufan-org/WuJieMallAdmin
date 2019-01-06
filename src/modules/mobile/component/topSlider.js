@@ -139,6 +139,7 @@ class Index extends React.Component {
                                     return (
                                         <Col span={6} key={index}>
                                             <Card
+                                                hoverable
                                                 cover={<img alt="example"
                                                             src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"/>}
                                                 actions={[<Icon type="edit"/>, <Icon type="delete"/>]}

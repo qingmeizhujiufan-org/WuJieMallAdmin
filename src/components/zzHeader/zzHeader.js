@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {Layout, Row, Col, Icon, Badge, Dropdown, Menu, Avatar, Notification, Divider} from 'antd';
+import {Layout, Row, Col, Icon, Badge, Dropdown, Menu, Avatar, notification, Divider} from 'antd';
 import io from 'socket.io-client';
 import restUrl from 'RestUrl';
 import './zzHeader.less';
@@ -45,16 +45,53 @@ class ZZHeader extends React.Component {
             }
         });
 
-        const socket = io('http://127.0.0.1:7001');
+        //如果是管理员，那么创建socket，加入管理员房间
+        if(sessionStorage.type === '1'){
+            const socket = io(restUrl.ADDR, {
+                // 实际使用中可以在这里传递参数
+                query: {
+                    room: 'admin',
+                    userId: sessionStorage.userId,
+                },
+                transports: ['websocket']
+            });
 
-        socket.on('connect', () => {
-            console.log('connect!');
-            socket.emit('chat', 'hello world!');
-        });
+            socket.on('connect', () => {
+                const id = socket.id;
+                console.log('#connect,', id, socket);
+                // 监听自身 id 以实现 p2p 通讯
+                socket.on(id, msg => {
+                    console.log('#receive,', msg);
+                });
+            });
 
-        socket.on('res', msg => {
-            console.log('res from server: %s!', msg);
-        });
+            //接收审核新增的产品消息
+            socket.on('review_product', msg => {
+                console.log('#review_product,', msg);
+                notification.open({
+                    icon: <Icon type="notification" />,
+                    message: '消息',
+                    description: msg,
+                });
+            });
+
+            // 接收在线用户信息
+            socket.on('online', msg => {
+                console.log('#online,', msg);
+            });
+            // 系统事件
+            socket.on('disconnect', msg => {
+                console.log('#disconnect', msg);
+            });
+            socket.on('disconnecting', () => {
+                console.log('#disconnecting');
+            });
+            socket.on('error', () => {
+                console.log('#error');
+            });
+
+            window.socket = socket;
+        }
     }
 
     goUserCenter = () => {
@@ -67,7 +104,7 @@ class ZZHeader extends React.Component {
 
     logout = () => {
         sessionStorage.clear();
-        Notification.success({
+        notification.success({
             message: '提示',
             description: '已安全退出！'
         });
