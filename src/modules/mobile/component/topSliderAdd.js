@@ -10,8 +10,7 @@ import {
     Button,
     Notification,
     Message,
-    InputNumber,
-    Divider, Icon, Spin, Tooltip,
+    Icon
 } from 'antd';
 import {ZZDatePicker, ZZUpload} from 'Comps/zui';
 import {formItemLayout, itemGrid} from 'Utils/formItemGrid';
@@ -20,7 +19,6 @@ import axios from "Utils/axios";
 
 import '../index.less';
 import assign from "lodash/assign";
-import productAdd from "../../product/component/productAdd";
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -33,49 +31,27 @@ class Index extends React.Component {
     };
 
     componentDidMount = () => {
-        this.queryAllCategoryList();
     }
 
-    queryAllCategoryList = () => {
-        const {params, keyWords} = this.state;
-        const param = assign({}, params, {keyWords});
-        axios.get('product/queryAllCategoryList', {
-            params: param
-        }).then(res => res.data).then(data => {
-            if (data.success) {
-                if (data.backData && data.backData.length !== 0) {
-                    const categoryList = data.backData;
-                    this.setState({
-                        categoryList: categoryList
-                    })
-                } else {
-                    Message.error('当前没有产品分类，请先添加产品分类');
-                }
-            } else {
-                Message.error('查询列表失败');
-            }
-        });
-    }
 
     handleSubmit = (e) => {
         e.preventDefault();
         this.props.form.validateFieldsAndScroll((err, values) => {
             if (!err) {
                 console.log('handleSubmit  param === ', values);
-                values.headerPic = values.headerPic && values.headerPic.map(item => item.response.id).join(',');
-                values.detailPic = values.detailPic && values.detailPic.map(item => item.response.id).join(',');
+                values.imgId = values.imgId && values.imgId.map(item => item.response.id).join(',');
 
                 this.setState({
                     submitLoading: true
                 });
-                axios.post('product/add', values).then(res => res.data).then(data => {
+                axios.post('app/addTopSlider', values).then(res => res.data).then(data => {
                     if (data.success) {
                         Notification.success({
                             message: '提示',
-                            description: '新增产品成功！'
+                            description: data.backMsg
                         });
 
-                        return this.context.router.push('/frame/product/list');
+                        // return this.context.router.push('/frame/product/list');
                     } else {
                         Message.error(data.backMsg);
                     }
@@ -114,7 +90,7 @@ class Index extends React.Component {
                                         label="图片"
                                         {...formItemLayout}
                                     >
-                                        {getFieldDecorator('avatarSrc', {
+                                        {getFieldDecorator('imgId', {
                                             rules: [{required: false, message: '图片不能为空!'}],
                                         })(
                                             <ZZUpload
@@ -130,11 +106,11 @@ class Index extends React.Component {
                                 <Col {...itemGrid}>
                                     <FormItem
                                         {...formItemLayout}
-                                        label="用户名"
+                                        label="产品链接"
                                     >
-                                        {getFieldDecorator('userName', {
+                                        {getFieldDecorator('productLink', {
                                             rules: [{
-                                                required: true, message: '请输入用户名',
+                                                required: true, message: '请选择商品',
                                             }],
                                         })(
                                             <Input/>
@@ -144,28 +120,14 @@ class Index extends React.Component {
                                 <Col {...itemGrid}>
                                     <FormItem
                                         {...formItemLayout}
-                                        label="真实姓名"
+                                        label="描述"
                                     >
-                                        {getFieldDecorator('realName', {
+                                        {getFieldDecorator('desc', {
                                             rules: [{
-                                                required: true, message: '请输入真实姓名'
+                                                required: false, message: '请输入真实姓名'
                                             }]
                                         })(
-                                            <Input/>
-                                        )}
-                                    </FormItem>
-                                </Col>
-                                <Col {...itemGrid}>
-                                    <FormItem
-                                        {...formItemLayout}
-                                        label="个人电话"
-                                    >
-                                        {getFieldDecorator('phone', {
-                                            rules: [{required: true, message: '请输入个人电话'}, {
-                                                validator: this.validatePhone,
-                                            }],
-                                        })(
-                                            <Input/>
+                                            <TextArea/>
                                         )}
                                     </FormItem>
                                 </Col>
