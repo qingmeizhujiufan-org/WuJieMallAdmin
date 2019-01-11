@@ -41,30 +41,22 @@ class Index extends React.Component {
     }
 
     componentDidMount = () => {
-        // this.queryList();
+        this.queryList();
     }
 
     queryList = () => {
-        const {params, keyWords} = this.state;
-        const param = assign({}, params, {keyWords});
         this.setState({loading: true});
-        axios.get('product/queryList', {
-            params: param
-        }).then(res => res.data).then(data => {
+        axios.get('app/queryTopSliderList').then(res => res.data).then(data => {
             if (data.success) {
                 if (data.backData) {
                     const backData = data.backData;
-                    const dataSource = backData.content;
-                    const total = backData.totalElements;
 
                     this.setState({
-                        dataSource,
-                        pagination: {total}
+                        dataSource: backData
                     });
                 } else {
                     this.setState({
-                        dataSource: [],
-                        pagination: {total: 0}
+                        dataSource: []
                     });
                 }
             } else {
@@ -118,7 +110,7 @@ class Index extends React.Component {
     }
 
     render() {
-        const {dataSource, pagination, loading} = this.state;
+        const {dataSource, loading} = this.state;
 
         return (
             <div className="zui-content page-newsList">
@@ -135,7 +127,7 @@ class Index extends React.Component {
                     <Card title={<Button type='primary' onClick={this.add}>添加滚动图</Button>}>
                         <Row gutter={24}>
                             {
-                                [1, 2, 3, 4, 5, 6].map((item, index) => {
+                                dataSource.map((item, index) => {
                                     return (
                                         <Col span={6} key={index}>
                                             <Card
