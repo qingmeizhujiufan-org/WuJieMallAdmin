@@ -20,6 +20,7 @@ import axios from "Utils/axios";
 import Util from 'Utils/util';
 import '../index.less';
 import {ZZCard, ZZTable} from 'Comps/zz-antD';
+import restUrl from "RestUrl";
 
 class Index extends React.Component {
     constructor(props) {
@@ -50,6 +51,11 @@ class Index extends React.Component {
             if (data.success) {
                 if (data.backData) {
                     const backData = data.backData;
+                    backData.map(item => {
+                        if(item.File){
+                            item.imgSrc = restUrl.ADDR + '/public/' + `${item.File.id + item.File.fileType}`;
+                        }
+                    });
 
                     this.setState({
                         dataSource: backData
@@ -132,8 +138,7 @@ class Index extends React.Component {
                                         <Col span={6} key={index}>
                                             <Card
                                                 hoverable
-                                                cover={<img alt="example"
-                                                            src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"/>}
+                                                cover={<img src={item.imgSrc}/>}
                                                 actions={[<Icon type="edit"/>, <Icon type="delete"/>]}
                                             >
                                                 <Card.Meta
