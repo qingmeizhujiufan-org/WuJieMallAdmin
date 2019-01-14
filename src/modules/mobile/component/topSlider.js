@@ -73,15 +73,11 @@ class Index extends React.Component {
     }
 
     add = () => {
-        return this.context.router.push('/frame/mobile/topSlider/add');
-    }
-
-    onDetail = id => {
-        return `/frame/product/list/detail/${id}`
+        this.context.router.push('/frame/mobile/topSlider/add');
     }
 
     onEdit = id => {
-        return `/frame/product/list/edit/${id}`
+        this.context.router.push(`/frame/mobile/topSlider/list/edit/${id}`);
     }
 
     onDelete = id => {
@@ -134,7 +130,7 @@ class Index extends React.Component {
                                                 hoverable
                                                 cover={<img src={item.imgSrc}/>}
                                                 actions={[
-                                                    <Icon type="edit"/>,
+                                                    <Icon type="edit" onClick={() => this.onEdit(item.id)}/>,
                                                     <Icon type="delete" onClick={() => this.onDelete(item.id)}/>
                                                 ]}
                                             >
