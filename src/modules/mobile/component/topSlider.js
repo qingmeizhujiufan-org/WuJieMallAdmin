@@ -9,8 +9,8 @@ import {
     Menu,
     Breadcrumb,
     Dropdown,
-    Notification,
-    Message,
+    notification,
+    message,
     Modal,
     Button,
     Card
@@ -52,7 +52,7 @@ class Index extends React.Component {
                 if (data.backData) {
                     const backData = data.backData;
                     backData.map(item => {
-                        if(item.File){
+                        if (item.File) {
                             item.imgSrc = restUrl.ADDR + '/public/' + `${item.File.id + item.File.fileType}`;
                         }
                     });
@@ -84,7 +84,7 @@ class Index extends React.Component {
         return `/frame/product/list/edit/${id}`
     }
 
-    onDelete = (key) => {
+    onDelete = id => {
         Modal.confirm({
             title: '提示',
             content: '确认要删除吗？',
@@ -92,21 +92,15 @@ class Index extends React.Component {
             cancelText: '取消',
             onOk: () => {
                 let param = {};
-                param.id = key;
-                axios.post('product/delete', param).then(res => res.data).then(data => {
+                param.id = id;
+                axios.post('app/delTopSlider', param).then(res => res.data).then(data => {
                     if (data.success) {
-                        Notification.success({
+                        notification.success({
                             message: '提示',
                             description: '删除成功！'
                         });
 
-                        this.setState({
-                            params: {
-                                pageNumber: 1
-                            },
-                        }, () => {
-                            this.queryList();
-                        });
+                        this.queryList();
                     } else {
                         Message.error(data.backMsg);
                     }
@@ -139,7 +133,10 @@ class Index extends React.Component {
                                             <Card
                                                 hoverable
                                                 cover={<img src={item.imgSrc}/>}
-                                                actions={[<Icon type="edit"/>, <Icon type="delete"/>]}
+                                                actions={[
+                                                    <Icon type="edit"/>,
+                                                    <Icon type="delete" onClick={() => this.onDelete(item.id)}/>
+                                                ]}
                                             >
                                                 <Card.Meta
                                                     title="Card title"
