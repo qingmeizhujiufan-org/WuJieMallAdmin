@@ -75,6 +75,10 @@ class Login extends React.Component {
                         //     return;
                         // }
                         sessionStorage.setItem('type', '1');
+                        const location = this.props.location;
+                        const back_url = location.hash && location.hash.split('back_url=')[1];
+                        initUrl = back_url && back_url.split('#')[1] || initUrl;
+
                         return this.context.router.push(initUrl);
                     } else {
                         this.setState({loading: false});

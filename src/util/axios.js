@@ -26,6 +26,7 @@ axios.interceptors.response.use(response => {
         if (response.status === 401 || response.status === 403) {
             const data = response.data || {};
             message.error(data.message);
+            window.location.hash = `/login?back_url=${window.location.href}`;
         }
     }else {
         message.error('服务异常');
