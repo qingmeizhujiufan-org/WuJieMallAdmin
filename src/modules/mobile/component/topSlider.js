@@ -135,8 +135,7 @@ class Index extends React.Component {
                                                 ]}
                                             >
                                                 <Card.Meta
-                                                    title="Card title"
-                                                    description="This is the description"
+                                                    title={item.desc}
                                                 />
                                             </Card>
                                         </Col>
