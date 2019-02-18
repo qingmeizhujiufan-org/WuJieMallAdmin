@@ -7,7 +7,7 @@ import _isFunction from 'lodash/isFunction';
 import _isArray from 'lodash/isArray';
 import restUrl from "RestUrl";
 
-const uploadUrl = restUrl.BASE_HOST + 'attachment/upload';
+const uploadUrl = restUrl.FILE_UPLOAD_HOST + 'attachment/upload';
 
 class Index extends Component {
     constructor(props) {

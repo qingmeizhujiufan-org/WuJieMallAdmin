@@ -102,8 +102,8 @@ class Index extends React.Component {
                         uid: index,
                         name: item.fileName,
                         status: 'done',
-                        url: restUrl.ADDR + '/public/' + `${item.id + item.fileType}`,
-                        thumbUrl: restUrl.ADDR + '/public/' + `${item.id + item.fileType}`,
+                        url: restUrl.FILE_ASSET + `${item.id + item.fileType}`,
+                        thumbUrl: restUrl.FILE_ASSET + `${item.id + item.fileType}`,
                         response: {
                             id: item.id
                         }
@@ -123,6 +123,7 @@ class Index extends React.Component {
             if (!err) {
                 console.log('handleSubmit  param === ', values);
                 values.id = this.props.params.id;
+                values.thumbnail = values.headerPic[0].response.id;
                 values.headerPic = values.headerPic.map(item => item.response.id).join(',');
                 values.detailPic = values.detailPic.map(item => item.response.id).join(',');
 
