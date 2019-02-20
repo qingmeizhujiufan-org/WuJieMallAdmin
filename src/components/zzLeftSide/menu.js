@@ -83,6 +83,21 @@ const Menu = [
             }
         ]
     }, {
+        key: '7',
+        iconType: 'shop',
+        label: '主题旅游管理',
+        children: [
+            {
+                key: '7_1',
+                link: '/frame/travel/list',
+                label: '主题旅游列表'
+            }, {
+                key: '7_2',
+                link: '/frame/travel/add',
+                label: '新增主题旅游'
+            }
+        ]
+    }, {
         key: '4',
         iconType: 'idcard',
         label: '用户管理',

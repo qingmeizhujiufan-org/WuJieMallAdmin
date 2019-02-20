@@ -139,6 +139,7 @@ const SenderList = Loadable({
     loader: () => import("../modules/order/component/sender"),
     loading: Loading
 });
+
 /* 报表管理 */
 const ReportList = Loadable({
     loader: () => import("../modules/report/component/reportList"),
@@ -146,6 +147,16 @@ const ReportList = Loadable({
 });
 const ReportHChart = Loadable({
     loader: () => import("../modules/report/component/reportHChart"),
+    loading: Loading
+});
+
+/* 主题旅游管理 */
+const TravelList = Loadable({
+    loader: () => import("../modules/travel/component/travelList"),
+    loading: Loading
+});
+const TravelAdd = Loadable({
+    loader: () => import("../modules/travel/component/travelAdd"),
     loading: Loading
 });
 
@@ -232,10 +243,17 @@ class PageRouter extends React.Component {
                             <Route path="list/edit/:id" component={OrderEdit}/>
                             <Route path="sender" component={SenderList}/>
                         </Route>
+                        {/* 报表管理 */}
                         <Route path="report" component={App}>
                             <IndexRoute component={ReportList}/>
                             <Route path="list" component={ReportList}/>
                             <Route path="chart" component={ReportHChart}/>
+                        </Route>
+                        {/* 主题旅游管理 */}
+                        <Route path="travel" component={App}>
+                            <IndexRoute component={TravelList}/>
+                            <Route path="list" component={TravelList}/>
+                            <Route path="add" component={TravelAdd}/>
                         </Route>
                         {/* 个人设置 */}
                         <Route path="setting" component={App}>
