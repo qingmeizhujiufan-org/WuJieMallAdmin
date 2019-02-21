@@ -159,6 +159,10 @@ const TravelAdd = Loadable({
     loader: () => import("../modules/travel/component/travelAdd"),
     loading: Loading
 });
+const TravelEdit = Loadable({
+    loader: () => import("../modules/travel/component/travelEdit"),
+    loading: Loading
+});
 
 /* 个人设置 */
 const SettingList = Loadable({
@@ -254,6 +258,7 @@ class PageRouter extends React.Component {
                             <IndexRoute component={TravelList}/>
                             <Route path="list" component={TravelList}/>
                             <Route path="add" component={TravelAdd}/>
+                            <Route path="list/edit/:id" component={TravelEdit}/>
                         </Route>
                         {/* 个人设置 */}
                         <Route path="setting" component={App}>

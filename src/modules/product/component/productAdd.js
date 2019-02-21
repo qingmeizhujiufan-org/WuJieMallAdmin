@@ -61,6 +61,7 @@ class Index extends React.Component {
         this.props.form.validateFieldsAndScroll((err, values) => {
             if (!err) {
                 console.log('handleSubmit  param === ', values);
+                values.thumbnail = values.headerPic[0].response.id;
                 values.headerPic = values.headerPic && values.headerPic.map(item => item.response.id).join(',');
                 values.detailPic = values.detailPic && values.detailPic.map(item => item.response.id).join(',');
 

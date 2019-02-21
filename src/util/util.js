@@ -1,79 +1,6 @@
 import assign from 'lodash/assign';
 
 export default {
-
-    //日期格式
-    FormatDate: function (date, type) {
-        var seperator1 = "-";
-        var seperator2 = ":";
-        if (date == null) {
-            date = new Date();
-        } else if (typeof(date) === "number") {
-            date = new Date(date);
-        } else {
-            date = new Date(date);
-        }
-        var curyear = date.getFullYear();
-        var curmonth = date.getMonth() + 1;
-        var curday = date.getDate();
-        if (curmonth >= 1 && curmonth <= 9) {
-            curmonth = "0" + curmonth;
-        }
-        if (curday >= 0 && curday <= 9) {
-            curday = "0" + curday;
-        }
-
-        if ('date' === type) {
-            var curDate = curyear + seperator1 + curmonth + seperator1 + curday; //可以获取当前日期
-            return curDate;
-        }
-        else if ('dateHM' === type) {
-            var curhour = date.getHours();
-            if (curhour >= 0 && curhour <= 9) {
-                curhour = "0" + curhour;
-            }
-            var curmin = date.getMinutes();
-            if (curmin >= 0 && curmin <= 9) {
-                curmin = "0" + curmin;
-            }
-            var curDate = curyear + seperator1 + curmonth + seperator1 + curday + " " +
-                curhour + seperator2 + curmin; //可以获取当前时间
-            return curDate;
-        } else {
-            var curhour = date.getHours();
-            if (curhour >= 0 && curhour <= 9) {
-                curhour = "0" + curhour;
-            }
-            var curmin = date.getMinutes();
-            if (curmin >= 0 && curmin <= 9) {
-                curmin = "0" + curmin;
-            }
-            var cursec = date.getSeconds();
-            if (cursec >= 0 && cursec <= 9) {
-                cursec = "0" + cursec;
-            }
-            var curDate = curyear + seperator1 + curmonth + seperator1 + curday + " " +
-                curhour + seperator2 + curmin + seperator2 + cursec; //可以获取当前时间
-            return curDate;
-        }
-    },
-
-    //金钱格式
-    fmoney: function (s, n) {
-        var plus_minus = '';
-        n = n > 0 && n <= 20 ? n : 2;
-        if (parseFloat(s) < 0)
-            plus_minus = '-';
-        s = parseFloat((Math.abs(s) + "").replace(/[^\d\.-]/g, "")).toFixed(n) + "";
-        var l = s.split(".")[0].split("").reverse(),
-            r = s.split(".")[1];
-        var t = "";
-        for (var i = 0; i < l.length; i++) {
-            t += l[i] + ((i + 1) % 3 == 0 && (i + 1) != l.length ? "," : "");
-        }
-        return plus_minus + t.split("").reverse().join("") + "." + r;
-    },
-
     //list 转 tree
     listToTree: (list) => {
         if (list.length === 0) return;
@@ -116,11 +43,23 @@ export default {
     /**
      * @param 使用js让数字的千分位用,分隔
      */
-    shiftThousands: val => {
+    shiftThousands: (val, precision) => {
         if (typeof val !== "number") {
-            return null;
+            return val;
         }
-        return val.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,');//使用正则替换，每隔三个数加一个','
+        let _val;
+        /* 判断传入的小数点保留位数，没有则不截取 */
+        if (arguments.length === 1) {
+            _val = val.toString();
+        } else {
+            _val = val.toFixed(precision);
+        }
+        /* 判断传入的数值是否是整数，如果是，直接走原生千分位方法，不是，则通过正则处理为千分位 */
+        if (_val.indexOf('.') === -1) {
+            return val.toLocaleString();
+        } else {
+            return _val.replace(/(\d)(?=(\d{3})+\.)/g, '$1,');
+        }
     },
 
     //导出excel文件

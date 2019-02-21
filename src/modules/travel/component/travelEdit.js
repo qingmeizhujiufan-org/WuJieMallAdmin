@@ -32,6 +32,58 @@ class Index extends React.Component {
     };
 
     componentDidMount = () => {
+        this.queryDetail();
+    }
+
+    queryDetail = () => {
+        const id = this.props.params.id;
+        const param = {};
+        param.id = id;
+        this.setState({
+            loading: true
+        });
+        axios.get('travel/queryDetail', {
+            params: param
+        }).then(res => res.data).then(data => {
+            if (data.success) {
+                let backData = data.backData;
+
+                this.setFields(backData);
+                this.setState({
+                    data: backData
+                });
+            } else {
+                Message.error('产品信息查询失败');
+            }
+            this.setState({
+                loading: false
+            });
+        });
+    }
+
+    setFields = val => {
+        const values = this.props.form.getFieldsValue();
+        for (let key in values) {
+            if (key === 'headerPic' || key === 'detailPic') {
+                values[key] = [];
+                val[key].map((item, index) => {
+                    values[key].push({
+                        uid: index,
+                        name: item.fileName,
+                        status: 'done',
+                        url: restUrl.FILE_ASSET + `${item.id + item.fileType}`,
+                        thumbUrl: restUrl.FILE_ASSET + `${item.id + item.fileType}`,
+                        response: {
+                            id: item.id
+                        }
+                    });
+                });
+            } else {
+                values[key] = val[key];
+            }
+        }
+
+        this.props.form.setFieldsValue(values);
     }
 
     handleSubmit = (e) => {
@@ -39,6 +91,7 @@ class Index extends React.Component {
         this.props.form.validateFieldsAndScroll((err, values) => {
             if (!err) {
                 console.log('handleSubmit  param === ', values);
+                values.id = this.props.params.id;
                 values.thumbnail = values.headerPic[0].response.id;
                 values.headerPic = values.headerPic && values.headerPic.map(item => item.response.id).join(',');
                 // values.detailPic = values.detailPic && values.detailPic.map(item => item.response.id).join(',');
@@ -46,14 +99,14 @@ class Index extends React.Component {
                 this.setState({
                     submitLoading: true
                 });
-                axios.post('travel/add', values).then(res => res.data).then(data => {
+                axios.post('travel/update', values).then(res => res.data).then(data => {
                     if (data.success) {
                         Notification.success({
                             message: '提示',
-                            description: '新增主题旅游成功！'
+                            description: '更新主题旅游信息成功！'
                         });
 
-                        return this.context.router.push('/frame/travel/list');
+                        // return this.context.router.push('/frame/travel/list');
                     } else {
                         Message.error(data.backMsg);
                     }
@@ -77,10 +130,10 @@ class Index extends React.Component {
                     <div className="breadcrumb-block">
                         <Breadcrumb>
                             <Breadcrumb.Item>主题旅游管理</Breadcrumb.Item>
-                            <Breadcrumb.Item>新增旅游</Breadcrumb.Item>
+                            <Breadcrumb.Item>更新旅游</Breadcrumb.Item>
                         </Breadcrumb>
                     </div>
-                    <h1 className='title'>新增旅游</h1>
+                    <h1 className='title'>更新旅游信息</h1>
                 </div>
                 <div className='pageContent'>
                     <div className='ibox-content'>
@@ -275,10 +328,10 @@ class Index extends React.Component {
     }
 }
 
-const TravelAdd = Form.create()(Index);
+const TravelEdit = Form.create()(Index);
 
 Index.contextTypes = {
     router: PropTypes.object
 }
 
-export default TravelAdd;
+export default TravelEdit;

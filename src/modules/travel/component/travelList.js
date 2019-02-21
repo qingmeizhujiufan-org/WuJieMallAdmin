@@ -28,68 +28,68 @@ class ProductList extends React.Component {
 
         this.columns = [
             {
-                title: '产品名称',
+                title: '旅游主题名称',
                 width: 200,
                 align: 'center',
-                dataIndex: 'productName',
-                key: 'productName',
+                dataIndex: 'travelTheme',
+                key: 'travelTheme',
                 render: (text, record, index) => (
                     <Link to={this.onEdit(record.id)}>{text}</Link>
                 )
             }, {
-                title: '店家名称',
-                dataIndex: 'shopName',
+                title: '游玩时间',
+                dataIndex: 'travelLastTime',
                 width: 150,
                 align: 'center',
-                key: 'shopName'
+                key: 'travelLastTime'
             }, {
-                title: '产品分类',
-                dataIndex: 'productCategoryName',
+                title: '包含元素',
+                dataIndex: 'travelHas',
                 width: 150,
                 align: 'center',
-                key: 'productCategoryName'
+                key: 'travelHas'
             }, {
-                title: '售价',
+                title: '限行人数',
                 width: 100,
                 align: 'right',
-                dataIndex: 'productSellingprice',
-                key: 'productSellingprice',
+                dataIndex: 'travelLimiteNumber',
+                key: 'travelLimiteNumber',
                 render: (text, record, index) => (
                     <span>{Util.shiftThousands(text)}</span>
                 )
             }, {
-                title: '成本价格',
+                title: '开始时间',
                 width: 100,
+                align: 'center',
+                dataIndex: 'travelBeginTime',
+                key: 'travelBeginTime',
+            }, {
+                title: '结束时间',
+                align: 'center',
+                width: 100,
+                dataIndex: 'travelEndTime',
+                key: 'travelEndTime'
+            }, {
+                title: '旅游费用',
                 align: 'right',
-                dataIndex: 'productCostprice',
-                key: 'productCostprice',
+                width: 100,
+                dataIndex: 'travelPrice',
+                key: 'travelPrice',
                 render: (text, record, index) => (
                     <span>{Util.shiftThousands(text)}</span>
                 )
             }, {
-                title: '产品编码',
+                title: '出发地',
                 align: 'center',
                 width: 100,
-                dataIndex: 'productCode',
-                key: 'productCode'
+                dataIndex: 'travelFrom',
+                key: 'travelFrom'
             }, {
-                title: '产品规格',
+                title: '目的地',
                 align: 'center',
                 width: 100,
-                dataIndex: 'productSpec',
-                key: 'productSpec'
-            }, {
-                title: '产品品牌',
-                align: 'center',
-                width: 100,
-                dataIndex: 'productBrand',
-                key: 'productBrand'
-            }, {
-                title: '产品产地',
-                align: 'center',
-                width: 100,
-                dataIndex: 'productOrigin',
-                key: 'productOrigin'
+                dataIndex: 'travelTo',
+                key: 'travelTo'
             }, {
                 title: '备注',
                 width: 120,
@@ -155,7 +155,7 @@ class ProductList extends React.Component {
         const {params, keyWords} = this.state;
         const param = assign({}, params, {keyWords});
         this.setState({loading: true});
-        axios.get('product/queryList', {
+        axios.get('travel/queryList', {
             params: param
         }).then(res => res.data).then(data => {
             if (data.success) {
@@ -203,16 +203,16 @@ class ProductList extends React.Component {
         });
     }
 
-    addProduct = () => {
-        return this.context.router.push('/frame/product/add');
+    addTravel = () => {
+        return this.context.router.push('/frame/travel/add');
     }
 
     onDetail = id => {
-        return `/frame/product/list/detail/${id}`
+        return `/frame/travel/list/detail/${id}`
     }
 
     onEdit = id => {
-        return `/frame/product/list/edit/${id}`
+        return `/frame/travel/list/edit/${id}`
     }
 
     onDelete = (key) => {
@@ -273,7 +273,7 @@ class ProductList extends React.Component {
                                 <Button
                                     icon='plus'
                                     size="large"
-                                    onClick={this.addProduct}
+                                    onClick={this.addTravel}
                                     style={{marginLeft: 25}}
                                 >新增主题旅游</Button>
                             </Col>
