@@ -41,7 +41,7 @@ class Index extends React.Component {
                 console.log('handleSubmit  param === ', values);
                 values.thumbnail = values.headerPic[0].response.id;
                 values.headerPic = values.headerPic && values.headerPic.map(item => item.response.id).join(',');
-                // values.detailPic = values.detailPic && values.detailPic.map(item => item.response.id).join(',');
+                values.detailPic = values.detailPic && values.detailPic.map(item => item.response.id).join(',');
 
                 this.setState({
                     submitLoading: true
@@ -117,25 +117,11 @@ class Index extends React.Component {
                                 <Col {...itemGrid}>
                                     <FormItem
                                         {...formItemLayout}
-                                        label="旅游时间"
+                                        label="咨询电话"
                                     >
-                                        {getFieldDecorator('travelLastTime', {
+                                        {getFieldDecorator('telephone', {
                                             rules: [{
-                                                required: false, message: '请输入产品简介',
-                                            }],
-                                        })(
-                                            <Input/>
-                                        )}
-                                    </FormItem>
-                                </Col>
-                                <Col {...itemGrid}>
-                                    <FormItem
-                                        {...formItemLayout}
-                                        label="包含元素"
-                                    >
-                                        {getFieldDecorator('travelHas', {
-                                            rules: [{
-                                                required: false, message: '请输入包含元素',
+                                                required: true, message: '请输入咨询电话',
                                             }],
                                         })(
                                             <Input/>
@@ -203,6 +189,9 @@ class Index extends React.Component {
                                         )}
                                     </FormItem>
                                 </Col>
+                            </Row>
+                            <Divider>行程介绍</Divider>
+                            <Row>
                                 <Col {...itemGrid}>
                                     <FormItem
                                         {...formItemLayout}
@@ -227,7 +216,7 @@ class Index extends React.Component {
                                                 required: false, message: '请输入目的地',
                                             }],
                                         })(
-                                            <TextArea/>
+                                            <Input/>
                                         )}
                                     </FormItem>
                                 </Col>
@@ -241,7 +230,35 @@ class Index extends React.Component {
                                                 required: false
                                             }],
                                         })(
-                                            <TextArea/>
+                                            <Input/>
+                                        )}
+                                    </FormItem>
+                                </Col>
+                                <Col {...itemGrid}>
+                                    <FormItem
+                                        {...formItemLayout}
+                                        label="旅游时间"
+                                    >
+                                        {getFieldDecorator('travelLastTime', {
+                                            rules: [{
+                                                required: false, message: '请输入产品简介',
+                                            }],
+                                        })(
+                                            <Input/>
+                                        )}
+                                    </FormItem>
+                                </Col>
+                                <Col {...itemGrid}>
+                                    <FormItem
+                                        {...formItemLayout}
+                                        label="包含元素"
+                                    >
+                                        {getFieldDecorator('travelHas', {
+                                            rules: [{
+                                                required: false, message: '请输入包含元素',
+                                            }],
+                                        })(
+                                            <Input/>
                                         )}
                                     </FormItem>
                                 </Col>
@@ -260,7 +277,17 @@ class Index extends React.Component {
                                     </FormItem>
                                 </Col>
                             </Row>
-                            <Divider>行程介绍</Divider>
+                            <Divider>图文介绍</Divider>
+                            <Row>
+                                <Col span={24}>
+                                    <FormItem
+                                    >
+                                        {getFieldDecorator('detailPic')(
+                                            <ZZUpload/>
+                                        )}
+                                    </FormItem>
+                                </Col>
+                            </Row>
                             <Divider>行程详情</Divider>
                             <Divider>旅游须知</Divider>
                             <Row type="flex" justify="center" style={{marginTop: 40}}>
