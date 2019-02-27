@@ -8,15 +8,18 @@ import {
     Select,
     Breadcrumb,
     Button,
-    Notification,
-    Message,
+    notification,
+    message,
     InputNumber,
     Divider,
+    DatePicker,
+    Card,
 } from 'antd';
 import {ZZDatePicker, ZZUpload} from 'Comps/zui';
 import {formItemLayout, itemGrid} from 'Utils/formItemGrid';
 import restUrl from 'RestUrl';
 import axios from "Utils/axios";
+import moment from 'moment';
 
 import '../index.less';
 import assign from "lodash/assign";
@@ -24,25 +27,54 @@ import assign from "lodash/assign";
 const FormItem = Form.Item;
 const Option = Select.Option;
 const {TextArea} = Input;
+const {RangePicker} = DatePicker;
 
 class Index extends React.Component {
     state = {
         submitLoading: false,
-        categoryList: []
+        categoryList: [],
+        travelDays: [],
     };
 
     componentDidMount = () => {
+    }
+
+    disabledDate = current => {
+        return current && current < moment().endOf('day');
+    }
+
+    onRangeChange = date => {
+        const diffDays = date[1].diff(date[0], 'day');
+        console.log('date === ', date);
+        console.log('diffDays === ', diffDays);
+        this.props.form.setFieldsValue({
+            travelRegionTime: date,
+            travelLastTime: `${diffDays + 1}天${diffDays}晚`
+        });
+        console.log('values === ', this.props.form.getFieldsValue());
+        const travelDays = [];
+        for (let i = 0; i <= diffDays; i++) {
+            let beginDate = new moment(date[0]);
+            travelDays.push({
+                dayTime: beginDate.add(i, 'days').format('YYYY-MM-DD')
+            });
+        }
+
+        this.setState({travelDays});
     }
 
     handleSubmit = (e) => {
         e.preventDefault();
         this.props.form.validateFieldsAndScroll((err, values) => {
             if (!err) {
-                console.log('handleSubmit  param === ', values);
                 values.thumbnail = values.headerPic[0].response.id;
                 values.headerPic = values.headerPic && values.headerPic.map(item => item.response.id).join(',');
                 values.detailPic = values.detailPic && values.detailPic.map(item => item.response.id).join(',');
-
+                values.travelBeginTime = values.travelRegionTime[0].format('YYYY-MM-DD');
+                values.travelEndTime = values.travelRegionTime[1].format('YYYY-MM-DD');
+                delete values.travelRegionTime;
+                console.log('handleSubmit  param === ', values);
+                // return;
                 this.setState({
                     submitLoading: true
                 });
@@ -68,10 +100,9 @@ class Index extends React.Component {
 
     render() {
         const {getFieldDecorator} = this.props.form;
-        const {submitLoading} = this.state;
+        const {submitLoading, travelDays} = this.state;
 
         return (
-
             <div className="zui-content">
                 <div className='pageHeader'>
                     <div className="breadcrumb-block">
@@ -150,28 +181,32 @@ class Index extends React.Component {
                                 <Col {...itemGrid}>
                                     <FormItem
                                         {...formItemLayout}
-                                        label="旅游开始时间"
+                                        label="时间区间"
                                     >
-                                        {getFieldDecorator('travelBeginTime', {
+                                        {getFieldDecorator('travelRegionTime', {
                                             rules: [{
-                                                required: false, message: '请输入旅游开始时间',
+                                                required: false, message: '请输入时间区间',
                                             }],
                                         })(
-                                            <ZZDatePicker/>
+                                            <RangePicker
+                                                disabledDate={this.disabledDate}
+                                                format="YYYY-MM-DD"
+                                                onChange={this.onRangeChange}
+                                            />
                                         )}
                                     </FormItem>
                                 </Col>
                                 <Col {...itemGrid}>
                                     <FormItem
                                         {...formItemLayout}
-                                        label="旅游结束时间"
+                                        label="旅游时间"
                                     >
-                                        {getFieldDecorator('travelEndTime', {
+                                        {getFieldDecorator('travelLastTime', {
                                             rules: [{
-                                                required: false, message: '请输入旅游结束时间',
+                                                required: false, message: '请输入产品简介',
                                             }],
                                         })(
-                                            <ZZDatePicker/>
+                                            <Input disabled/>
                                         )}
                                     </FormItem>
                                 </Col>
@@ -237,20 +272,6 @@ class Index extends React.Component {
                                 <Col {...itemGrid}>
                                     <FormItem
                                         {...formItemLayout}
-                                        label="旅游时间"
-                                    >
-                                        {getFieldDecorator('travelLastTime', {
-                                            rules: [{
-                                                required: false, message: '请输入产品简介',
-                                            }],
-                                        })(
-                                            <Input/>
-                                        )}
-                                    </FormItem>
-                                </Col>
-                                <Col {...itemGrid}>
-                                    <FormItem
-                                        {...formItemLayout}
                                         label="包含元素"
                                     >
                                         {getFieldDecorator('travelHas', {
@@ -289,6 +310,103 @@ class Index extends React.Component {
                                 </Col>
                             </Row>
                             <Divider>行程详情</Divider>
+                            {
+                                travelDays.map((item, index) => {
+                                    return (
+                                        <div key={index}>
+                                            <Card title={item.dayTime}>
+                                                <Row>
+                                                    <Col {...itemGrid}>
+                                                        <FormItem
+                                                            {...formItemLayout}
+                                                            label="起点"
+                                                        >
+                                                            {getFieldDecorator(`travelDay[${index}].dayFrom`, {
+                                                                rules: [{
+                                                                    required: true, message: '请输入起点',
+                                                                }]
+                                                            })(
+                                                                <Input/>
+                                                            )}
+                                                        </FormItem>
+                                                    </Col>
+                                                    <Col {...itemGrid}>
+                                                        <FormItem
+                                                            {...formItemLayout}
+                                                            label="目的地"
+                                                        >
+                                                            {getFieldDecorator(`travelDay[${index}].dayTo`, {
+                                                                rules: [{
+                                                                    required: true, message: '请输入目的地',
+                                                                }]
+                                                            })(
+                                                                <Input/>
+                                                            )}
+                                                        </FormItem>
+                                                    </Col>
+                                                    <Col {...itemGrid}>
+                                                        <FormItem
+                                                            {...formItemLayout}
+                                                            label="当日车程"
+                                                        >
+                                                            {getFieldDecorator(`travelDay[${index}].dayDrive`, {
+                                                                rules: [{
+                                                                    required: true, message: '请输入当日车程',
+                                                                }]
+                                                            })(
+                                                                <Input/>
+                                                            )}
+                                                        </FormItem>
+                                                    </Col>
+                                                    <Col {...itemGrid}>
+                                                        <FormItem
+                                                            {...formItemLayout}
+                                                            label="住宿"
+                                                        >
+                                                            {getFieldDecorator(`travelDay[${index}].dayStay`, {
+                                                                rules: [{
+                                                                    required: true, message: '请输入住宿',
+                                                                }]
+                                                            })(
+                                                                <Input/>
+                                                            )}
+                                                        </FormItem>
+                                                    </Col>
+                                                    <Col {...itemGrid}>
+                                                        <FormItem
+                                                            {...formItemLayout}
+                                                            label="包含用餐"
+                                                        >
+                                                            {getFieldDecorator(`travelDay[${index}].dayDinner`, {
+                                                                rules: [{
+                                                                    required: true, message: '请输入包含用餐',
+                                                                }]
+                                                            })(
+                                                                <Input/>
+                                                            )}
+                                                        </FormItem>
+                                                    </Col>
+                                                    <Col {...itemGrid}>
+                                                        <FormItem
+                                                            {...formItemLayout}
+                                                            label="游玩内容"
+                                                        >
+                                                            {getFieldDecorator(`travelDay[${index}].dayPlay`, {
+                                                                rules: [{
+                                                                    required: true, message: '请输入游玩内容',
+                                                                }]
+                                                            })(
+                                                                <Input/>
+                                                            )}
+                                                        </FormItem>
+                                                    </Col>
+                                                </Row>
+                                            </Card>
+                                            <br/>
+                                        </div>
+                                    )
+                                })
+                            }
                             <Divider>旅游须知</Divider>
                             <Row type="flex" justify="center" style={{marginTop: 40}}>
                                 <Button type="primary" size='large' style={{width: 120}} htmlType="submit"
