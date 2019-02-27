@@ -67,27 +67,30 @@ class Index extends React.Component {
         e.preventDefault();
         this.props.form.validateFieldsAndScroll((err, values) => {
             if (!err) {
+                const travelDays = this.state.travelDays;
                 values.thumbnail = values.headerPic[0].response.id;
                 values.headerPic = values.headerPic && values.headerPic.map(item => item.response.id).join(',');
                 values.detailPic = values.detailPic && values.detailPic.map(item => item.response.id).join(',');
                 values.travelBeginTime = values.travelRegionTime[0].format('YYYY-MM-DD');
                 values.travelEndTime = values.travelRegionTime[1].format('YYYY-MM-DD');
+                values.travelDay.map((item, index) => {
+                    values.travelDay[index].dayTime = travelDays[index].dayTime;
+                });
                 delete values.travelRegionTime;
                 console.log('handleSubmit  param === ', values);
-                // return;
                 this.setState({
                     submitLoading: true
                 });
                 axios.post('travel/add', values).then(res => res.data).then(data => {
                     if (data.success) {
-                        Notification.success({
+                        notification.success({
                             message: '提示',
                             description: '新增主题旅游成功！'
                         });
 
                         return this.context.router.push('/frame/travel/list');
                     } else {
-                        Message.error(data.backMsg);
+                        message.error(data.backMsg);
                     }
                     this.setState({
                         submitLoading: false
@@ -185,7 +188,7 @@ class Index extends React.Component {
                                     >
                                         {getFieldDecorator('travelRegionTime', {
                                             rules: [{
-                                                required: false, message: '请输入时间区间',
+                                                required: true, message: '请输入时间区间',
                                             }],
                                         })(
                                             <RangePicker
@@ -220,7 +223,12 @@ class Index extends React.Component {
                                                 required: false, message: '请输入旅游价格',
                                             }],
                                         })(
-                                            <Input/>
+                                            <InputNumber
+                                                min={0}
+                                                precision={2}
+                                                step={1}
+                                                style={{width: '100%'}}
+                                            />
                                         )}
                                     </FormItem>
                                 </Col>
