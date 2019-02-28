@@ -78,6 +78,7 @@ class Index extends React.Component {
                 });
                 delete values.travelRegionTime;
                 console.log('handleSubmit  param === ', values);
+                // return;
                 this.setState({
                     submitLoading: true
                 });
@@ -206,7 +207,7 @@ class Index extends React.Component {
                                     >
                                         {getFieldDecorator('travelLastTime', {
                                             rules: [{
-                                                required: false, message: '请输入产品简介',
+                                                required: false, message: '请输入旅游时间',
                                             }],
                                         })(
                                             <Input disabled/>
