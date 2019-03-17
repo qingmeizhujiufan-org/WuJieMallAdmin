@@ -9,12 +9,12 @@ import {
     Breadcrumb,
     Button,
     Spin,
-    Message,
-    Notification,
+    message,
+    notification,
     InputNumber,
     Divider,
 } from 'antd';
-import {ZZDatePicker, ZZUpload} from 'Comps/zui';
+import {DatePicker, Upload} from 'Comps/zui';
 import axios from "Utils/axios";
 import {formItemLayout, itemGrid} from 'Utils/formItemGrid';
 import '../index.less';
@@ -178,7 +178,7 @@ class Index extends React.Component {
                                             {getFieldDecorator('headerPic', {
                                                 rules: [{required: true, message: '头像不能为空!'}],
                                             })(
-                                                <ZZUpload/>
+                                                <Upload/>
                                             )}
                                         </FormItem>
                                     </Col>
@@ -500,7 +500,7 @@ class Index extends React.Component {
                                                     required: false, message: '请输入产品保质期',
                                                 }],
                                             })(
-                                                <ZZDatePicker/>
+                                                <DatePicker/>
                                             )}
                                         </FormItem>
                                     </Col>
@@ -525,7 +525,7 @@ class Index extends React.Component {
                                         <FormItem
                                         >
                                             {getFieldDecorator('detailPic')(
-                                                <ZZUpload/>
+                                                <Upload/>
                                             )}
                                         </FormItem>
                                     </Col>

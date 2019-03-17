@@ -8,12 +8,12 @@ import {
     Select,
     Breadcrumb,
     Button,
-    Notification,
-    Message,
+    notification,
+    message,
     InputNumber,
     Divider,
 } from 'antd';
-import {ZZDatePicker, ZZUpload} from 'Comps/zui';
+import {DatePicker, Upload} from 'Comps/zui';
 import {formItemLayout, itemGrid} from 'Utils/formItemGrid';
 import restUrl from 'RestUrl';
 import axios from "Utils/axios";
@@ -48,10 +48,10 @@ class Index extends React.Component {
                         categoryList: categoryList
                     })
                 } else {
-                    Message.error('当前没有产品分类，请先添加产品分类');
+                    message.error('当前没有产品分类，请先添加产品分类');
                 }
             } else {
-                Message.error('查询列表失败');
+                message.error('查询列表失败');
             }
         });
     }
@@ -70,14 +70,14 @@ class Index extends React.Component {
                 });
                 axios.post('product/add', values).then(res => res.data).then(data => {
                     if (data.success) {
-                        Notification.success({
+                        notification.success({
                             message: '提示',
                             description: '新增产品成功！'
                         });
 
                         return this.context.router.push('/frame/product/list');
                     } else {
-                        Message.error(data.backMsg);
+                        message.error(data.backMsg);
                     }
                     this.setState({
                         submitLoading: false
@@ -115,7 +115,7 @@ class Index extends React.Component {
                                         {getFieldDecorator('headerPic', {
                                             rules: [{required: true, message: '头像不能为空!'}],
                                         })(
-                                            <ZZUpload/>
+                                            <Upload/>
                                         )}
                                     </FormItem>
                                 </Col>
@@ -417,7 +417,7 @@ class Index extends React.Component {
                                                 required: false, message: '请输入产品保质期',
                                             }],
                                         })(
-                                            <ZZDatePicker/>
+                                            <DatePicker/>
                                         )}
                                     </FormItem>
                                 </Col>
@@ -442,7 +442,7 @@ class Index extends React.Component {
                                     <FormItem
                                     >
                                         {getFieldDecorator('detailPic')(
-                                            <ZZUpload/>
+                                            <Upload/>
                                         )}
                                     </FormItem>
                                 </Col>
@@ -459,10 +459,10 @@ class Index extends React.Component {
     }
 }
 
-const productAdd = Form.create()(Index);
-
 Index.contextTypes = {
     router: PropTypes.object
-}
+};
+
+const productAdd = Form.create()(Index);
 
 export default productAdd;

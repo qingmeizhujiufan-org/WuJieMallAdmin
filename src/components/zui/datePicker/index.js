@@ -36,6 +36,8 @@ class Index extends Component {
     }
 }
 
-Index.defaultProps = {}
+Index.defaultProps = {};
+
+Index.RangePicker = DatePicker.RangePicker;
 
 export default Index;

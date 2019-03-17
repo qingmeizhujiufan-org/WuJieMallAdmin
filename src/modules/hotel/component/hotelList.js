@@ -22,13 +22,13 @@ import {ZZCard, ZZTable} from 'Comps/zz-antD';
 
 const Search = Input.Search;
 
-class TravelList extends React.Component {
+class HotelList extends React.Component {
     constructor(props) {
         super(props);
 
         this.columns = [
             {
-                title: '旅游主题名称',
+                title: '特色民宿名称',
                 width: 200,
                 align: 'center',
                 dataIndex: 'travelTheme',
@@ -155,7 +155,7 @@ class TravelList extends React.Component {
         const {params, keyWords} = this.state;
         const param = assign({}, params, {keyWords});
         this.setState({loading: true});
-        axios.get('travel/queryList', {
+        axios.get('hotel/queryList', {
             params: param
         }).then(res => res.data).then(data => {
             if (data.success) {
@@ -175,7 +175,7 @@ class TravelList extends React.Component {
                     });
                 }
             } else {
-                Message.error('查询列表失败');
+                message.error('查询列表失败');
             }
             this.setState({loading: false});
         });
@@ -203,8 +203,8 @@ class TravelList extends React.Component {
         });
     }
 
-    addTravel = () => {
-        return this.context.router.push('/frame/travel/add');
+    addHotel = () => {
+        return this.context.router.push('/frame/hotel/add');
     }
 
     onDetail = id => {
@@ -254,16 +254,16 @@ class TravelList extends React.Component {
                 <div className='pageHeader'>
                     <div className="breadcrumb-block">
                         <Breadcrumb>
-                            <Breadcrumb.Item>主题旅游管理</Breadcrumb.Item>
-                            <Breadcrumb.Item>主题旅游列表</Breadcrumb.Item>
+                            <Breadcrumb.Item>特色民宿管理</Breadcrumb.Item>
+                            <Breadcrumb.Item>特色民宿列表</Breadcrumb.Item>
                         </Breadcrumb>
                     </div>
-                    <h1 className='title'>主题旅游列表</h1>
+                    <h1 className='title'>特色民宿列表</h1>
                     <div className='search-area'>
                         <Row type='flex' justify="center" align="middle">
                             <Col span={8}>
                                 <Search
-                                    placeholder="主题名称"
+                                    placeholder="民宿名称"
                                     enterButton='搜索'
                                     size="large"
                                     onSearch={this.onSearch}
@@ -273,9 +273,9 @@ class TravelList extends React.Component {
                                 <Button
                                     icon='plus'
                                     size="large"
-                                    onClick={this.addTravel}
+                                    onClick={this.addHotel}
                                     style={{marginLeft: 25}}
-                                >新增主题旅游</Button>
+                                >新增特色民宿</Button>
                             </Col>
                         </Row>
                     </div>
@@ -297,8 +297,8 @@ class TravelList extends React.Component {
     }
 }
 
-TravelList.contextTypes = {
+HotelList.contextTypes = {
     router: PropTypes.object
 }
 
-export default TravelList;
+export default HotelList;

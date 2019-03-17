@@ -22,6 +22,9 @@ const admin = [{
 }, {
     key: '7',
     children: ['7_1', '7_2']
+}, {
+    key: '8',
+    children: ['8_1', '8_2']
 }];
 
 const subAdmin = [{

@@ -12,10 +12,11 @@ import {
     message,
     InputNumber,
     Divider,
-    DatePicker,
     Card,
+    Empty,
 } from 'antd';
-import {ZZDatePicker, ZZUpload} from 'Comps/zui';
+import {DatePicker, Upload, Editor} from 'Comps/zui';
+import {EditorState, convertToRaw} from 'draft-js';
 import {formItemLayout, itemGrid} from 'Utils/formItemGrid';
 import restUrl from 'RestUrl';
 import axios from "Utils/axios";
@@ -34,6 +35,8 @@ class Index extends React.Component {
         submitLoading: false,
         categoryList: [],
         travelDays: [],
+        expenseDesc: EditorState.createEmpty(),
+        lineInfo: EditorState.createEmpty(),
     };
 
     componentDidMount = () => {
@@ -63,11 +66,19 @@ class Index extends React.Component {
         this.setState({travelDays});
     }
 
+    onExpenseDescChange = value => {
+        this.setState({expenseDesc: value});
+    }
+
+    onLineInfoChange = value => {
+        this.setState({lineInfo: value});
+    }
+
     handleSubmit = (e) => {
         e.preventDefault();
         this.props.form.validateFieldsAndScroll((err, values) => {
             if (!err) {
-                const travelDays = this.state.travelDays;
+                const {travelDays, expenseDesc, lineInfo} = this.state;
                 values.thumbnail = values.headerPic[0].response.id;
                 values.headerPic = values.headerPic && values.headerPic.map(item => item.response.id).join(',');
                 values.detailPic = values.detailPic && values.detailPic.map(item => item.response.id).join(',');
@@ -77,8 +88,9 @@ class Index extends React.Component {
                     values.travelDay[index].dayTime = travelDays[index].dayTime;
                 });
                 delete values.travelRegionTime;
+                values.expenseDesc = JSON.stringify(convertToRaw(expenseDesc.getCurrentContent()));
+                values.lineInfo = JSON.stringify(convertToRaw(lineInfo.getCurrentContent()));
                 console.log('handleSubmit  param === ', values);
-                // return;
                 this.setState({
                     submitLoading: true
                 });
@@ -100,7 +112,6 @@ class Index extends React.Component {
             }
         });
     }
-
 
     render() {
         const {getFieldDecorator} = this.props.form;
@@ -128,7 +139,7 @@ class Index extends React.Component {
                                         {getFieldDecorator('headerPic', {
                                             rules: [{required: true, message: '示意图不能为空!'}],
                                         })(
-                                            <ZZUpload/>
+                                            <Upload/>
                                         )}
                                     </FormItem>
                                 </Col>
@@ -217,11 +228,30 @@ class Index extends React.Component {
                                 <Col {...itemGrid}>
                                     <FormItem
                                         {...formItemLayout}
-                                        label="旅游价格"
+                                        label="成年人价格"
                                     >
-                                        {getFieldDecorator('travelPrice', {
+                                        {getFieldDecorator('manPrice', {
                                             rules: [{
-                                                required: false, message: '请输入旅游价格',
+                                                required: false, message: '请输入成年人价格',
+                                            }],
+                                        })(
+                                            <InputNumber
+                                                min={0}
+                                                precision={2}
+                                                step={1}
+                                                style={{width: '100%'}}
+                                            />
+                                        )}
+                                    </FormItem>
+                                </Col>
+                                <Col {...itemGrid}>
+                                    <FormItem
+                                        {...formItemLayout}
+                                        label="未成年人价格"
+                                    >
+                                        {getFieldDecorator('childPrice', {
+                                            rules: [{
+                                                required: false, message: '请输入未成年人价格',
                                             }],
                                         })(
                                             <InputNumber
@@ -313,14 +343,14 @@ class Index extends React.Component {
                                     <FormItem
                                     >
                                         {getFieldDecorator('detailPic')(
-                                            <ZZUpload/>
+                                            <Upload/>
                                         )}
                                     </FormItem>
                                 </Col>
                             </Row>
                             <Divider>行程详情</Divider>
                             {
-                                travelDays.map((item, index) => {
+                                travelDays.length > 0 ? travelDays.map((item, index) => {
                                     return (
                                         <div key={index}>
                                             <Card title={item.dayTime}>
@@ -414,9 +444,19 @@ class Index extends React.Component {
                                             <br/>
                                         </div>
                                     )
-                                })
+                                }) : (<div><Empty description='请选择时间区间'/></div>)
                             }
                             <Divider>旅游须知</Divider>
+                            <Row gutter={48}>
+                                <Col span={12}>
+                                    <Divider>费用说明</Divider>
+                                    <Editor onEditorStateChange={this.onExpenseDescChange}/>
+                                </Col>
+                                <Col span={12}>
+                                    <Divider>路线说明</Divider>
+                                    <Editor onEditorStateChange={this.onLineInfoChange}/>
+                                </Col>
+                            </Row>
                             <Row type="flex" justify="center" style={{marginTop: 40}}>
                                 <Button type="primary" size='large' style={{width: 120}} htmlType="submit"
                                         loading={submitLoading}>提交</Button>

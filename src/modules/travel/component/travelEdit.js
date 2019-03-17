@@ -13,9 +13,8 @@ import {
     InputNumber,
     Divider,
     Card,
-    DatePicker,
 } from 'antd';
-import {ZZDatePicker, ZZUpload} from 'Comps/zui';
+import {DatePicker, Upload, Editor} from 'Comps/zui';
 import {formItemLayout, itemGrid} from 'Utils/formItemGrid';
 import restUrl from 'RestUrl';
 import axios from "Utils/axios";
@@ -23,6 +22,9 @@ import moment from 'moment';
 
 import '../index.less';
 import assign from "lodash/assign";
+import {EditorState, convertFromRaw, convertToRaw, ContentState} from 'draft-js';
+import draftToHtml from 'draftjs-to-html';
+import htmlToDraft from 'html-to-draftjs';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -34,6 +36,8 @@ class Index extends React.Component {
         submitLoading: false,
         categoryList: [],
         travelDays: [],
+        expenseDesc: EditorState.createEmpty(),
+        lineInfo: EditorState.createEmpty(),
     };
 
     componentDidMount = () => {
@@ -52,7 +56,24 @@ class Index extends React.Component {
         }).then(res => res.data).then(data => {
             if (data.success) {
                 let backData = data.backData;
+                if(backData.expenseDesc && backData.expenseDesc !== ''){
+                    let expenseDesc = backData.expenseDesc;
+                    expenseDesc = draftToHtml(JSON.parse(expenseDesc));
+                    const contentBlock = htmlToDraft(expenseDesc);
+                    const contentState = ContentState.createFromBlockArray(contentBlock.contentBlocks);
+                    const editorState = EditorState.createWithContent(contentState);
 
+                    this.setState({expenseDesc: editorState});
+                }
+                if(backData.lineInfo && backData.lineInfo !== ''){
+                    let lineInfo = backData.lineInfo;
+                    lineInfo = draftToHtml(JSON.parse(lineInfo));
+                    const contentBlock = htmlToDraft(lineInfo);
+                    const contentState = ContentState.createFromBlockArray(contentBlock.contentBlocks);
+                    const editorState = EditorState.createWithContent(contentState);
+
+                    this.setState({lineInfo: editorState});
+                }
                 this.setFields(backData);
                 this.setState({travelDays: backData.TravelDays});
             } else {
@@ -85,29 +106,6 @@ class Index extends React.Component {
                 });
             } else if (key === 'travelRegionTime') {
                 values[key] = [new moment(val['travelBeginTime']), new moment(val['travelEndTime'])];
-
-                // const travelDay = [];
-                // const dayList = val.TravelDays || [];
-                // dayList.map(item => {
-                //     travelDay.push({
-                //         id: item.id,
-                //         travelId: item.travelId,
-                //         dayTime: item.dayTime,
-                //         dayFrom: item.dayFrom,
-                //         dayTo: item.dayTo,
-                //         dayDrive: item.dayDrive,
-                //         dayStay: item.dayStay,
-                //         dayDinner: item.dayDinner,
-                //         dayPlay: item.dayPlay
-                //     });
-                // });
-                // console.log('travelDay == ', travelDay);
-                // values.travelDay = travelDay;
-                // travelDay.map((item, index) => {
-                //     for (let i in item) {
-                //         values[`travelDay[${index}].${i}`] = item[i];
-                //     }
-                // });
             } else {
                 values[key] = val[key];
             }
@@ -140,14 +138,25 @@ class Index extends React.Component {
         this.setState({travelDays});
     }
 
+    onExpenseDescChange = value => {
+        this.setState({expenseDesc: value});
+    }
+
+    onLineInfoChange = value => {
+        this.setState({lineInfo: value});
+    }
+
     handleSubmit = (e) => {
         e.preventDefault();
         this.props.form.validateFieldsAndScroll((err, values) => {
             if (!err) {
+                const {expenseDesc, lineInfo} = this.state;
                 values.id = this.props.params.id;
                 values.thumbnail = values.headerPic[0].response.id;
                 values.headerPic = values.headerPic && values.headerPic.map(item => item.response.id).join(',');
                 values.detailPic = values.detailPic && values.detailPic.map(item => item.response.id).join(',');
+                values.expenseDesc = JSON.stringify(convertToRaw(expenseDesc.getCurrentContent()));
+                values.lineInfo = JSON.stringify(convertToRaw(lineInfo.getCurrentContent()));
                 console.log('handleSubmit  param === ', values);
                 this.setState({
                     submitLoading: true
@@ -174,7 +183,7 @@ class Index extends React.Component {
 
     render() {
         const {getFieldDecorator, getFieldValue} = this.props.form;
-        const {submitLoading, travelDays} = this.state;
+        const {submitLoading, travelDays, expenseDesc, lineInfo} = this.state;
         const dayFormItems = (travelDays || []).map((item, index) => (
             <div key={index}>
                 <Card title={item.dayTime}>
@@ -322,7 +331,7 @@ class Index extends React.Component {
                                         {getFieldDecorator('headerPic', {
                                             rules: [{required: true, message: '示意图不能为空!'}],
                                         })(
-                                            <ZZUpload/>
+                                            <Upload/>
                                         )}
                                     </FormItem>
                                 </Col>
@@ -387,6 +396,7 @@ class Index extends React.Component {
                                             }],
                                         })(
                                             <RangePicker
+                                                disabled
                                                 disabledDate={this.disabledDate}
                                                 format="YYYY-MM-DD"
                                                 onChange={this.onRangeChange}
@@ -411,11 +421,30 @@ class Index extends React.Component {
                                 <Col {...itemGrid}>
                                     <FormItem
                                         {...formItemLayout}
-                                        label="旅游价格"
+                                        label="成年人价格"
                                     >
-                                        {getFieldDecorator('travelPrice', {
+                                        {getFieldDecorator('manPrice', {
                                             rules: [{
-                                                required: false, message: '请输入旅游价格',
+                                                required: false, message: '请输入成年人价格',
+                                            }],
+                                        })(
+                                            <InputNumber
+                                                min={0}
+                                                precision={2}
+                                                step={1}
+                                                style={{width: '100%'}}
+                                            />
+                                        )}
+                                    </FormItem>
+                                </Col>
+                                <Col {...itemGrid}>
+                                    <FormItem
+                                        {...formItemLayout}
+                                        label="未成年人价格"
+                                    >
+                                        {getFieldDecorator('childPrice', {
+                                            rules: [{
+                                                required: false, message: '请输入未成年人价格',
                                             }],
                                         })(
                                             <InputNumber
@@ -507,7 +536,7 @@ class Index extends React.Component {
                                     <FormItem
                                     >
                                         {getFieldDecorator('detailPic')(
-                                            <ZZUpload/>
+                                            <Upload/>
                                         )}
                                     </FormItem>
                                 </Col>
@@ -515,6 +544,16 @@ class Index extends React.Component {
                             <Divider>行程详情</Divider>
                             {dayFormItems}
                             <Divider>旅游须知</Divider>
+                            <Row gutter={48}>
+                                <Col span={12}>
+                                    <Divider>费用说明</Divider>
+                                    <Editor editorState={expenseDesc} onEditorStateChange={this.onExpenseDescChange}/>
+                                </Col>
+                                <Col span={12}>
+                                    <Divider>路线说明</Divider>
+                                    <Editor editorState={lineInfo} onEditorStateChange={this.onLineInfoChange}/>
+                                </Col>
+                            </Row>
                             <Row type="flex" justify="center" style={{marginTop: 40}}>
                                 <Button type="primary" size='large' style={{width: 120}} htmlType="submit"
                                         loading={submitLoading}>提交</Button>

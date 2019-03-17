@@ -83,6 +83,21 @@ const Menu = [
             }
         ]
     }, {
+        key: '8',
+        iconType: 'shop',
+        label: '特色民宿管理',
+        children: [
+            {
+                key: '8_1',
+                link: '/frame/hotel/list',
+                label: '特色民宿列表'
+            }, {
+                key: '8_2',
+                link: '/frame/hotel/add',
+                label: '新增特色民宿'
+            }
+        ]
+    },{
         key: '7',
         iconType: 'shop',
         label: '主题旅游管理',

@@ -8,11 +8,11 @@ import {
     Select,
     Breadcrumb,
     Button,
-    Notification,
-    Message,
+    notification,
+    message,
     Icon
 } from 'antd';
-import {ZZDatePicker, ZZUpload} from 'Comps/zui';
+import {DatePicker, Upload} from 'Comps/zui';
 import {formItemLayout, itemGrid} from 'Utils/formItemGrid';
 import restUrl from 'RestUrl';
 import axios from "Utils/axios";
@@ -25,10 +25,14 @@ const Option = Select.Option;
 const {TextArea} = Input;
 
 class Index extends React.Component {
-    state = {
-        fileList: [],
-        submitLoading: false
-    };
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            fileList: [],
+            submitLoading: false
+        };
+    }
 
     componentDidMount = () => {
     }
@@ -93,13 +97,13 @@ class Index extends React.Component {
                                         {getFieldDecorator('imgId', {
                                             rules: [{required: false, message: '图片不能为空!'}],
                                         })(
-                                            <ZZUpload
+                                            <Upload
                                                 listType={'picture'}
                                                 onChange={this.handleChange}
                                             >
                                                 {fileList.length >= 1 ? null :
                                                     <Button><Icon type="upload"/> 上传</Button>}
-                                            </ZZUpload>
+                                            </Upload>
                                         )}
                                     </FormItem>
                                 </Col>

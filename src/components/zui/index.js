@@ -1,7 +1,9 @@
-import ZZDatePicker from './zzDatePicker/index';
-import ZZUpload from './zzUpload/index';
+import DatePicker from './datePicker';
+import Upload from './upload';
+import Editor from './editor';
 
 module.exports = {
-    ZZDatePicker,
-    ZZUpload,
+    DatePicker,
+    Upload,
+    Editor,
 }
