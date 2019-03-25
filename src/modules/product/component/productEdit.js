@@ -58,10 +58,10 @@ class Index extends React.Component {
                         categoryList: categoryList
                     })
                 } else {
-                    Message.error('当前没有产品分类，请先添加产品分类');
+                  message.error('当前没有产品分类，请先添加产品分类');
                 }
             } else {
-                Message.error('查询列表失败');
+              message.error('查询列表失败');
             }
         });
     }
@@ -84,7 +84,7 @@ class Index extends React.Component {
                     data: backData
                 });
             } else {
-                Message.error('产品信息查询失败');
+              message.error('产品信息查询失败');
             }
             this.setState({
                 loading: false
@@ -132,14 +132,14 @@ class Index extends React.Component {
                 });
                 axios.post('product/update', values).then(res => res.data).then(data => {
                     if (data.success) {
-                        Notification.success({
+                        notification.success({
                             message: '提示',
                             description: data.backMsg
                         });
                         // this.queryDetail();
                         // return this.context.router.push('/frame/product/list');
                     } else {
-                        Message.error(data.backMsg);
+                        message.error(data.backMsg);
                     }
 
                     this.setState({

@@ -13,7 +13,7 @@ import {
     Divider,
     Icon
 } from 'antd';
-import {ZZUpload} from 'Comps/zui';
+import {Upload} from 'Comps/zui';
 import {formItemLayout, itemGrid} from 'Utils/formItemGrid';
 import axios from "Utils/axios";
 import '../index.less';
@@ -100,12 +100,12 @@ class Index extends React.Component {
                                         {getFieldDecorator('shopPic', {
                                             rules: [{required: false, message: '店铺描述图片不能为空!'}],
                                         })(
-                                            <ZZUpload
+                                            <Upload
                                                 onPreview={this.handlePreview}
                                                 onChange={this.handleChange}
                                             >
                                                 {fileList.length >= 5 ? null : <div><Icon type="plus" /> 添加</div>}
-                                            </ZZUpload>
+                                            </Upload>
                                         )}
                                     </FormItem>
                                 </Col>
@@ -267,7 +267,7 @@ class Index extends React.Component {
                                     <FormItem
                                     >
                                         {getFieldDecorator('shopCertificate')(
-                                            <ZZUpload/>
+                                            <Upload/>
                                         )}
                                     </FormItem>
                                 </Col>
@@ -284,10 +284,10 @@ class Index extends React.Component {
     }
 }
 
-const productAdd = Form.create()(Index);
 
 Index.contextTypes = {
     router: PropTypes.object
 }
+const productAdd = Form.create()(Index);
 
 export default productAdd;
