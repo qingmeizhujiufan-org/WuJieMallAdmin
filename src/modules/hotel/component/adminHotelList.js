@@ -22,7 +22,7 @@ import {ZZCard, ZZTable} from 'Comps/zz-antD';
 
 const Search = Input.Search;
 
-class HotelList extends React.Component {
+class adminHotelList extends React.Component {
   constructor(props) {
     super(props);
 
@@ -35,14 +35,6 @@ class HotelList extends React.Component {
         key: 'hotelName',
         render: (text, record, index) => (
           <Link to={this.onEdit(record.id)}>{text}</Link>
-        )
-      }, {
-        title: '民宿房间',
-        width: 120,
-        align: 'center',
-        key: 'room',
-        render: (text, record, index) => (
-          <Button type="primary" onClick={() =>this.toRoomList(record.id)}>管理</Button>
         )
       }, {
         title: '手机电话',
@@ -60,8 +52,8 @@ class HotelList extends React.Component {
         title: '民宿类型',
         width: 100,
         align: 'center',
-        dataIndex: 'hotelTypeText',
-        key: 'hotelTypeText',
+        dataIndex: 'hotelType',
+        key: 'hotelType',
       }, {
         title: '民宿地址',
         width: 180,
@@ -69,14 +61,14 @@ class HotelList extends React.Component {
         dataIndex: 'hotelAddress',
         key: 'hotelAddress',
         render: (text, record, index) => (
-          <span><Link to={this.onAddress(record.id)}>{text}</Link></span>
+          <span>{text}<Link to={this.onAddress(record.id)}></Link></span>
         )
       }, {
         title: '民宿状态',
         align: 'center',
         width: 100,
-        dataIndex: 'hotelStatusText',
-        key: 'hotelStatusText'
+        dataIndex: 'hotelStatus',
+        key: 'hotelStatus'
       }, {
         title: '创建时间',
         align: 'right',
@@ -193,10 +185,6 @@ class HotelList extends React.Component {
     });
   }
 
-  toRoomList = id => {
-    return this.context.router.push(`/frame/hotel/room/list/${id}`);
-  }
-
   addHotel = () => {
     return this.context.router.push('/frame/hotel/add');
   }
@@ -294,8 +282,8 @@ class HotelList extends React.Component {
   }
 }
 
-HotelList.contextTypes = {
+adminHotelList.contextTypes = {
   router: PropTypes.object
 }
 
-export default HotelList;
+export default adminHotelList;

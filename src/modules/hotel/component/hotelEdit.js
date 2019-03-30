@@ -30,6 +30,7 @@ class Index extends React.Component {
     detailList: [],
     loading: false,
     fileList: [],
+    canUpdate: false,
     submitLoading: false
   };
 
@@ -105,6 +106,7 @@ class Index extends React.Component {
         values.thumbnail = values.headerPic[0].response.id;
         values.headerPic = values.headerPic && values.headerPic.map(item => item.response.id).join(',');
         values.detailPic = values.detailPic && values.detailPic.map(item => item.response.id).join(',');
+        values.id = this.state.data.id;
 
         this.setState({
           submitLoading: true
@@ -113,7 +115,7 @@ class Index extends React.Component {
           if (data.success) {
             notification.success({
               message: '提示',
-              description: '新增店铺成功！'
+              description: '民宿信息更新成功！'
             });
 
             return this.context.router.push('/frame/hotel/list');
@@ -131,7 +133,7 @@ class Index extends React.Component {
 
   render() {
     const {getFieldDecorator} = this.props.form;
-    const {fileList, loading, submitLoading} = this.state;
+    const {fileList, loading, submitLoading, data} = this.state;
 
     return (
       <div className="zui-content">
@@ -154,7 +156,7 @@ class Index extends React.Component {
                   <FormItem
                   >
                     {getFieldDecorator('headerPic', {
-                      rules: [{required: false, message: '民宿店铺描述图片不能为空!'}],
+                      rules: [{required: true, message: '民宿店铺描述图片不能为空!'}],
                     })(
                       <Upload/>
                     )}
@@ -265,11 +267,9 @@ class Index extends React.Component {
                       initialValue: 0
                     })(
                       <Select placeholder="请选择">
-                        <Option value={0}>未审核</Option>
-                        <Option value={1}>已审核</Option>
-                        <Option value={2}>已上线</Option>
-                        <Option value={3}>已退回</Option>
-                        <Option value={4}>已下线</Option>
+                        <Option value={0}>休息中</Option>
+                        <Option value={1}>营业中</Option>
+                        <Option value={2}>下架中</Option>
                       </Select>
                     )}
                   </FormItem>
@@ -294,7 +294,9 @@ class Index extends React.Component {
                 <Col span={24}>
                   <FormItem
                   >
-                    {getFieldDecorator('detailPic')(
+                    {getFieldDecorator('detailPic', {
+                      rules: [{required: true, message: '民宿详情图片不能为空!'}],
+                    })(
                       <Upload/>
                     )}
                   </FormItem>
@@ -303,6 +305,11 @@ class Index extends React.Component {
               <Row type="flex" justify="center" style={{marginTop: 40}}>
                 <Button type="primary" size='large' style={{width: 120}} htmlType="submit"
                         loading={submitLoading}>保存</Button>
+                {
+                  data.hotelStatus === 2 ?
+                    <Button type="danger" size='large' style={{width: 120, marginLeft: 20}}>删除</Button> :
+                    null
+                }
               </Row>
             </Form>
           </div>

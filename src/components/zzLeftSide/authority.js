@@ -52,6 +52,8 @@ const operator = [{
     children: ['5_1', '5_2']
 }];
 
+const shopOwner = []
+
 module.exports = {
     admin,
     subAdmin,

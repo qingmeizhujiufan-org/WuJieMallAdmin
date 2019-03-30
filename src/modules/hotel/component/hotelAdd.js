@@ -8,7 +8,8 @@ import {
   Select,
   Breadcrumb,
   Button,
-  Notification,
+  notification,
+  message,
   Divider,
   Icon
 } from 'antd';
@@ -49,20 +50,24 @@ class Index extends React.Component {
         values.thumbnail = values.headerPic[0].response.id;
         values.headerPic = values.headerPic && values.headerPic.map(item => item.response.id).join(',');
         values.detailPic = values.detailPic && values.detailPic.map(item => item.response.id).join(',');
+        values.hotelType = values.hotelType.key;
+        values.hotelTypeText = values.hotelType.label;
+        values.hotelStatus = values.hotelStatus.key;
+        values.hotelStatusText = values.hotelStatus.label;
 
         this.setState({
           submitLoading: true
         });
         axios.post('hotel/add', values).then(res => res.data).then(data => {
           if (data.success) {
-            Notification.success({
+            notification.success({
               message: '提示',
               description: '新增店铺成功！'
             });
 
             return this.context.router.push('/frame/hotel/list');
           } else {
-            Message.error(data.backMsg);
+            message.error(data.backMsg);
           }
           this.setState({
             submitLoading: false
@@ -147,7 +152,7 @@ class Index extends React.Component {
                         required: true, message: '请输入民宿持有人',
                       }],
                     })(
-                      <Select placeholder="请选择">
+                      <Select placeholder="请选择" labelInValue={true}>
                         <Option value={0}>经济型</Option>
                         <Option value={1}>舒适型</Option>
                         <Option value={2}>豪华型</Option>
@@ -212,12 +217,10 @@ class Index extends React.Component {
                       }],
                       initialValue: 0
                     })(
-                      <Select placeholder="请选择">
-                        <Option value={0}>未审核</Option>
-                        <Option value={1}>已审核</Option>
-                        <Option value={2}>已上线</Option>
-                        <Option value={3}>已退回</Option>
-                        <Option value={4}>已下线</Option>
+                      <Select placeholder="请选择" labelInValue={true}>
+                        <Option value={0}>营业中</Option>
+                        <Option value={1}>休息中</Option>
+                        <Option value={2}>下架中</Option>
                       </Select>
                     )}
                   </FormItem>
