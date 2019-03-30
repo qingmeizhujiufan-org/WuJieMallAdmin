@@ -9,11 +9,11 @@ import {
     Breadcrumb,
     Button,
     Icon,
-    Notification,
-    Message,
+    notification,
+    message,
     Divider,
 } from 'antd';
-import {ZZUpload} from 'Comps/zui';
+import {Upload} from 'Comps/zui';
 import {formItemLayout, itemGrid} from 'Utils/formItemGrid';
 import axios from "Utils/axios";
 import restUrl from "RestUrl";
@@ -168,11 +168,11 @@ class Index extends React.Component {
                                         {getFieldDecorator('shopPic', {
                                             rules: [{required: false, message: '店铺描述图片不能为空!'}],
                                         })(
-                                            <ZZUpload
+                                            <Upload
                                                 onChange={this.handleShopPicChange}
                                             >
                                                 {fileList.length >= 5 ? null : uploadButton}
-                                            </ZZUpload>
+                                            </Upload>
                                         )}
 
                                     </FormItem>
@@ -334,11 +334,11 @@ class Index extends React.Component {
                                     <FormItem
                                     >
                                         {getFieldDecorator('shopCertificate')(
-                                            <ZZUpload
+                                            <Upload
                                                 onChange={this.handleShopCertificateChange}
                                             >
                                                 {certificateFileList.length >= 1 ? null : uploadButton}
-                                            </ZZUpload>
+                                            </Upload>
                                         )}
                                     </FormItem>
                                 </Col>

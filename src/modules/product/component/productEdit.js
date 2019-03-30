@@ -500,7 +500,7 @@ class Index extends React.Component {
                                                     required: false, message: '请输入产品保质期',
                                                 }],
                                             })(
-                                                <DatePicker/>
+                                                <Input/>
                                             )}
                                         </FormItem>
                                     </Col>

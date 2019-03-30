@@ -8,7 +8,7 @@ import {
     Select,
     Breadcrumb,
     Button,
-    Notification,
+    notification,
     message,
     Divider,
     Icon
