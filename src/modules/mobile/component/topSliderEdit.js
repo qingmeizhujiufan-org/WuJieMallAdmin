@@ -55,7 +55,7 @@ class Index extends React.Component {
                     data: backData
                 });
             } else {
-                Message.error('产品信息查询失败');
+                message.error('产品信息查询失败');
             }
             this.setState({
                 loading: false
@@ -73,8 +73,8 @@ class Index extends React.Component {
                         uid: index,
                         name: item.fileName,
                         status: 'done',
-                        url: restUrl.ADDR + '/public/' + `${item.id + item.fileType}`,
-                        thumbUrl: restUrl.ADDR + '/public/' + `${item.id + item.fileType}`,
+                        url: restUrl.FILE_ASSET + `${item.id + item.fileType}`,
+                        thumbUrl: restUrl.FILE_ASSET + `${item.id + item.fileType}`,
                         response: {
                             id: item.id
                         }
@@ -101,14 +101,14 @@ class Index extends React.Component {
                 });
                 axios.post('app/updateTopSlider', values).then(res => res.data).then(data => {
                     if (data.success) {
-                        Notification.success({
+                        notification.success({
                             message: '提示',
                             description: data.backMsg
                         });
 
                         // return this.context.router.push('/frame/product/list');
                     } else {
-                        Message.error(data.backMsg);
+                        message.error(data.backMsg);
                     }
                     this.setState({
                         submitLoading: false

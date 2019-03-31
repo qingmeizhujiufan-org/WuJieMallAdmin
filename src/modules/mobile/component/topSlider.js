@@ -53,7 +53,7 @@ class Index extends React.Component {
                     const backData = data.backData;
                     backData.map(item => {
                         if (item.File) {
-                            item.imgSrc = restUrl.ADDR + '/public/' + `${item.File.id + item.File.fileType}`;
+                            item.imgSrc = restUrl.FILE_ASSET + `${item.File.id + item.File.fileType}`;
                         }
                     });
 
@@ -66,7 +66,7 @@ class Index extends React.Component {
                     });
                 }
             } else {
-                Message.error('查询列表失败');
+                message.error('查询列表失败');
             }
             this.setState({loading: false});
         });
@@ -98,7 +98,7 @@ class Index extends React.Component {
 
                         this.queryList();
                     } else {
-                        Message.error(data.backMsg);
+                        message.error(data.backMsg);
                     }
                 });
             }
