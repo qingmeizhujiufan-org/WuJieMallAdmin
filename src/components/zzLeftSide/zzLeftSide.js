@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import {Layout, Icon, Menu} from 'antd';
 import {Scrollbars} from 'react-custom-scrollbars';
 import find from 'lodash/find';
-import {admin, hotelkeeperAdmin} from './authority';
+import {admin, hotelkeeperAdmin, travelkeeperAdmin} from './authority';
 import menuTree from './menu';
 import './zzLeftSide.less';
 
@@ -50,6 +50,8 @@ class ZZLeftSide extends React.Component {
             } else if (type === "002") {
             } else if (type === "003") {
                 authority = hotelkeeperAdmin;
+            } else if (type === '004') {
+                authority = travelkeeperAdmin;
             }
             authority_menu = authority.menu;
 

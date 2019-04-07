@@ -163,9 +163,9 @@ class RoomList extends React.Component {
                 key: 'updated_at'
             }, {
                 title: '状态',
-                align: 'center',
+                align: 'left',
                 fixed: 'right',
-                width: 150,
+                width: 110,
                 dataIndex: 'state',
                 key: 'state',
                 render: (text) => {
@@ -177,17 +177,6 @@ class RoomList extends React.Component {
                         return <Badge status="processing" text="待审核"/>;
                     }
                 }
-            }, {
-                title: <a><Icon type="setting" style={{fontSize: 18}}/></a>,
-                key: 'operation',
-                fixed: 'right',
-                width: 120,
-                align: 'center',
-                render: (text, record, index) => (
-                    <span>
-                        <Link to={this.onEdit(record.id)}>管理</Link>
-                    </span>
-                )
             }];
 
         this.state = {
@@ -200,9 +189,6 @@ class RoomList extends React.Component {
             },
             keyWords: ''
         };
-    }
-
-    componentWillMount = () => {
     }
 
     componentDidMount = () => {
@@ -290,14 +276,6 @@ class RoomList extends React.Component {
                                     size="large"
                                     onSearch={this.onSearch}
                                 />
-                            </Col>
-                            <Col span={3}>
-                                <Button
-                                    icon='plus'
-                                    size="large"
-                                    onClick={this.addRoom}
-                                    style={{marginLeft: 25}}
-                                >新增房间</Button>
                             </Col>
                         </Row>
                     </div>

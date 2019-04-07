@@ -40,11 +40,7 @@ class Login extends React.Component {
                         // sessionStorage.setItem('expireDate', backData.outofServicetime);
                         sessionStorage.setItem('userId', backData.id);
                         sessionStorage.setItem('userName', backData.userName);
-                        // if (loginedUser.assessorys && loginedUser.assessorys.length > 0) {
-                        //     sessionStorage.setItem('avatar', restUrl.ADDR + loginedUser.assessorys[0].path + loginedUser.assessorys[0].name);
-                        // } else {
-                        //     sessionStorage.removeItem('avatar');
-                        // }
+                        sessionStorage.setItem('realName', backData.realName);
 
                         let initUrl = null;
                         // 管理员
@@ -55,13 +51,13 @@ class Login extends React.Component {
                         else if (backData.roleId === '001') {
                             initUrl = '/frame/report/list';
                         }
-                        // 二级管理员
+                        // 民宿店家
                         else if (backData.roleId === '003') {
                             initUrl = '/frame/hotelkeeper/roomList';
                         }
-                        // 业务员
+                        // 旅游店家
                         else if (backData.roleId === '004') {
-                            initUrl = '/frame/order/list';
+                            initUrl = '/frame/travelkeeper/travelList';
                         } else {
                             this.setState({loading: false});
                             message.error('角色不存在，请与管理员联系！');

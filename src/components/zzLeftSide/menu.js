@@ -80,10 +80,6 @@ const Menu = [
                 key: '004_2',
                 link: '/frame/user/add',
                 label: '新增人员'
-            }, {
-                key: '004_3',
-                link: '/frame/user/resource',
-                label: '人员资源'
             }
         ]
     }, {
@@ -95,10 +91,6 @@ const Menu = [
                 key: '005_1',
                 link: '/frame/setting/list',
                 label: '个人中心'
-            }, {
-                key: '005_2',
-                link: '/frame/setting/resource',
-                label: '资源信息'
             }
         ]
     }, {
@@ -142,10 +134,6 @@ const Menu = [
                 label: '特色民宿列表'
             }, {
                 key: '008_2',
-                link: '/frame/hotel/add',
-                label: '新增特色民宿'
-            }, {
-                key: '008_3',
                 link: '/frame/hotel/roomList',
                 label: '民宿房间列表'
             }
@@ -173,6 +161,32 @@ const Menu = [
             {
                 key: '301_1',
                 link: '/frame/hotelkeeper/keeper',
+                label: '认证信息'
+            }
+        ]
+    }, {
+        key: '400',
+        iconType: 'shop',
+        label: '特色旅游管理',
+        children: [
+            {
+                key: '400_1',
+                link: '/frame/travelkeeper/travelList',
+                label: '特色旅游列表'
+            }, {
+                key: '400_2',
+                link: '/frame/travelkeeper/addTravel',
+                label: '新增特色旅游'
+            }
+        ]
+    }, {
+        key: '401',
+        iconType: 'shop',
+        label: '认证管理',
+        children: [
+            {
+                key: '401_1',
+                link: '/frame/travelkeeper/keeper',
                 label: '认证信息'
             }
         ]

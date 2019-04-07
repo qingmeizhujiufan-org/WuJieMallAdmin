@@ -1,7 +1,6 @@
 import React from 'react';
 import {Table} from 'antd';
 import assign from "lodash/assign";
-import isEqual from 'lodash/isEqual';
 import './index.less';
 
 class ZZTable extends React.Component {
@@ -20,19 +19,17 @@ class ZZTable extends React.Component {
     }
 
     componentDidMount = () => {
-        this.setData();
+        const {dataSource, pagination} = this.props;
+        this.setData(dataSource, pagination);
     }
 
     componentWillReceiveProps = nextProps => {
-        this.setState({
-            _dataSource: nextProps.dataSource,
-            _pagination: nextProps.pagination
-        });
+        this.setData(nextProps.dataSource, nextProps.pagination);
     }
 
-    setData = () => {
-        const {dataSource, pagination} = this.props;
-        const total = (pagination ? pagination.total : null) || 0;
+    setData = (dataSource, pagination) => {
+
+        const total = (pagination && pagination.total) || 0;
         const _pagination = assign({}, this.state._pagination, {
             total,
             showTotal: total => `共 ${total} 条`

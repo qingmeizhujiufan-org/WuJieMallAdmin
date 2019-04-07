@@ -8,6 +8,7 @@ import OrderRoute from './orderRoute';
 import ProductRoute from './productRoute';
 import ShopRoute from './shopRoute';
 import TravelRoute from './travelRoute';
+import TravelkeeperRoute from './travelkeeperRoute';
 import HotelRoute from './hotelRoute';
 import HotelkeeperRoute from './hotelkeeperRoute';
 import UserRoute from './userRoute';
@@ -37,10 +38,6 @@ const APPSlider = Loadable({
 /* 个人设置 */
 const SettingList = Loadable({
     loader: () => import("../modules/setting/component/userCenter"),
-    loading: Loading
-});
-const ResourceList = Loadable({
-    loader: () => import("../modules/setting/component/resourceInfo"),
     loading: Loading
 });
 
@@ -88,11 +85,12 @@ class PageRouter extends React.Component {
                         {HotelkeeperRoute}
                         {/* 主题旅游管理 */}
                         {TravelRoute}
+                        {/* 旅游店家管理 */}
+                        {TravelkeeperRoute}
                         {/* 个人设置 */}
                         <Route path="setting" component={App}>
                             <IndexRoute component={SettingList}/>
                             <Route path="list" component={SettingList}/>
-                            <Route path="resource" component={ResourceList}/>
                         </Route>
                     </Route>
                 </Route>

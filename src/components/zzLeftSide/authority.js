@@ -16,10 +16,10 @@ const admin = {
             children: ['003_1', '003_2', '003_3', '003_4']
         }, {
             key: '004',
-            children: ['004_1', '004_2', '004_3']
+            children: ['004_1', '004_2']
         }, {
             key: '005',
-            children: ['005_1', '005_2']
+            children: ['005_1']
         }, {
             key: '006',
             children: ['006_1', '006_2']
@@ -28,7 +28,7 @@ const admin = {
             children: ['007_1', '007_2']
         }, {
             key: '008',
-            children: ['008_1', '008_2', '008_3']
+            children: ['008_1', '008_2']
         }
     ]
 };
@@ -47,7 +47,22 @@ const hotelkeeperAdmin = {
     ]
 };
 
+const travelkeeperAdmin = {
+    defaultOpenKeys: ['400', '401'],
+    defaultSelectedKeys: ['400_1'],
+    menu: [
+        {
+            key: '400',
+            children: ['400_1', '400_2']
+        }, {
+            key: '401',
+            children: ['401_1']
+        }
+    ]
+};
+
 module.exports = {
     admin,
-    hotelkeeperAdmin
+    hotelkeeperAdmin,
+    travelkeeperAdmin,
 }
