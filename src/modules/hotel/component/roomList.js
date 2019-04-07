@@ -13,7 +13,7 @@ import {
     notification,
     message,
     Modal,
-    Button
+    Button, Badge
 } from 'antd';
 import assign from 'lodash/assign';
 import axios from "Utils/axios";
@@ -126,8 +126,7 @@ class RoomList extends React.Component {
                 key: 'canCancel',
                 render: (text, record, index) => (
                     <span>
-            <Tag color={text === 1 ? 'green' : 'red'}>{text === 1 ? '是' : '否'}</Tag>
-          </span>
+                    <Tag color={text === 1 ? 'green' : 'red'}>{text === 1 ? '是' : '否'}</Tag></span>
                 )
             }, {
                 title: '可否加床',
@@ -137,8 +136,7 @@ class RoomList extends React.Component {
                 key: 'canAddbed',
                 render: (text, record, index) => (
                     <span>
-            <Tag color={text === 1 ? 'green' : 'red'}>{text === 1 ? '是' : '否'}</Tag>
-          </span>
+                    <Tag color={text === 1 ? 'green' : 'red'}>{text === 1 ? '是' : '否'}</Tag></span>
                 )
             }, {
                 title: '内宾',
@@ -164,6 +162,22 @@ class RoomList extends React.Component {
                 dataIndex: 'updated_at',
                 key: 'updated_at'
             }, {
+                title: '状态',
+                align: 'center',
+                fixed: 'right',
+                width: 150,
+                dataIndex: 'state',
+                key: 'state',
+                render: (text) => {
+                    if (text === 1) {
+                        return <Badge status="error" text="审核不通过"/>;
+                    } else if (text === 2) {
+                        return <Badge status="success" text="审核通过"/>;
+                    } else {
+                        return <Badge status="processing" text="待审核"/>;
+                    }
+                }
+            }, {
                 title: <a><Icon type="setting" style={{fontSize: 18}}/></a>,
                 key: 'operation',
                 fixed: 'right',
@@ -171,8 +185,8 @@ class RoomList extends React.Component {
                 align: 'center',
                 render: (text, record, index) => (
                     <span>
-            <Link to={this.onEdit(record.id)}>管理</Link>
-          </span>
+                        <Link to={this.onEdit(record.id)}>管理</Link>
+                    </span>
                 )
             }];
 
@@ -202,7 +216,7 @@ class RoomList extends React.Component {
             hotelId
         }, params, {keyWords});
         this.setState({loading: true});
-        axios.get('room/queryList', {
+        axios.get('room/queryAdminList', {
             params: param
         }).then(res => res.data).then(data => {
             if (data.success) {
@@ -250,13 +264,8 @@ class RoomList extends React.Component {
         });
     }
 
-    addRoom = () => {
-        const id = this.props.params.id;
-        return this.context.router.push(`/frame/hotel/room/add/${id}`);
-    }
-
     onEdit = id => {
-        return `/frame/hotel/room/edit/${id}`
+        return `/frame/hotel/roomList/edit/${id}`;
     }
 
     render() {

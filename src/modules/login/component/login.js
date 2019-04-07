@@ -35,7 +35,7 @@ class Login extends React.Component {
                     return res.data;
                 }).then(data => {
                     if (data.success) {
-                        let backData = data.backData;
+                        const backData = data.backData;
                         // sessionStorage.setItem('token', backData.token);
                         // sessionStorage.setItem('expireDate', backData.outofServicetime);
                         sessionStorage.setItem('userId', backData.id);
@@ -46,42 +46,35 @@ class Login extends React.Component {
                         //     sessionStorage.removeItem('avatar');
                         // }
 
-                        let type = null;
                         let initUrl = null;
-                        type = 1;
-                        initUrl = '/frame/user/list'
-                        // // 超级管理员
-                        // if (loginedUser.role_id === '001') {
-                        //     type = 1;
-                        //     initUrl = '/frame/report/list'
-                        // }
-                        // // 管理员
-                        // else if (loginedUser.role_id === '002') {
-                        //     type = 1;
-                        //     initUrl = '/frame/report/list'
-                        // }
-                        // // 二级管理员
-                        // else if (loginedUser.role_id === '003') {
-                        //     type = 2;
-                        //     initUrl = '/frame/order/list'
-                        // }
-                        // // 业务员
-                        // else if (loginedUser.role_id === '004') {
-                        //     type = 3;
-                        //     initUrl = '/frame/order/list'
-                        // } else {
-                        //     this.setState({loading: false});
-                        //     Message.error('角色不存在，请与管理员联系！');
-                        //     return;
-                        // }
-                        sessionStorage.setItem('type', '1');
+                        // 管理员
+                        if (backData.roleId === '000') {
+                            initUrl = '/frame/product/list';
+                        }
+                        // 管理员
+                        else if (backData.roleId === '001') {
+                            initUrl = '/frame/report/list';
+                        }
+                        // 二级管理员
+                        else if (backData.roleId === '003') {
+                            initUrl = '/frame/hotelkeeper/roomList';
+                        }
+                        // 业务员
+                        else if (backData.roleId === '004') {
+                            initUrl = '/frame/order/list';
+                        } else {
+                            this.setState({loading: false});
+                            message.error('角色不存在，请与管理员联系！');
+                            return;
+                        }
+                        sessionStorage.setItem('type', backData.roleId);
                         const back_url = window.location.href.split('back_url=')[1];
                         initUrl = back_url && back_url.split('#')[1] || initUrl;
 
                         return this.context.router.push(initUrl);
                     } else {
                         this.setState({loading: false});
-                        Message.error(data.backMsg);
+                        message.error(data.backMsg);
                     }
                 });
             }

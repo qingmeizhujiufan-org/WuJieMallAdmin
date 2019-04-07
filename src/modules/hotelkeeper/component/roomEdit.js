@@ -26,7 +26,6 @@ const {TextArea} = Input;
 
 class Index extends React.Component {
     state = {
-        data: {},
         fileList: [],
         submitLoading: false,
         categoryList: [],
@@ -88,34 +87,46 @@ class Index extends React.Component {
         this.props.form.setFieldsValue(values);
     }
 
-    submit = val => {
-        const data = this.state.data;
-        data.state = val;
-        const values = {
-            id: data.id,
-            state: val
-        };
+    handleChange = fileList => {
+        this.setState({fileList});
+    }
 
-        axios.post('room/update', values).then(res => res.data).then(data => {
-            if (data.success) {
-                notification.success({
-                    message: '提示',
-                    description: '审核房间信息成功！'
+    handleSubmit = (e) => {
+        e.preventDefault();
+        this.props.form.validateFieldsAndScroll((err, values) => {
+            if (!err) {
+                console.log('handleSubmit  param === ', values);
+                values.id = this.state.data.id;
+                values.thumbnail = values.detailPic[0].response.id;
+                values.detailPic = values.detailPic && values.detailPic.map(item => item.response.id).join(',');
+                values.hotelId = this.state.data.hotelId;
+
+                this.setState({
+                    submitLoading: true
                 });
+                axios.post('room/update', values).then(res => res.data).then(data => {
+                    if (data.success) {
+                        notification.success({
+                            message: '提示',
+                            description: '更新房间信息成功！'
+                        });
 
-                return this.context.router.goBack();
-            } else {
-                message.error('审核失败，请重试！');
+                        return this.context.router.goBack();
+                    } else {
+                        message.error(data.backMsg);
+                    }
+                    this.setState({
+                        submitLoading: false
+                    });
+                });
             }
-            this.setState({
-                submitLoading: false
-            });
         });
     }
 
 
     render() {
         const {getFieldDecorator} = this.props.form;
+        const {fileList, submitLoading} = this.state;
 
         return (
             <div className="zui-content">
@@ -124,10 +135,10 @@ class Index extends React.Component {
                         <Breadcrumb>
                             <Breadcrumb.Item>特色民宿管理</Breadcrumb.Item>
                             <Breadcrumb.Item>民宿房间管理</Breadcrumb.Item>
-                            <Breadcrumb.Item>审核民宿房间信息</Breadcrumb.Item>
+                            <Breadcrumb.Item>新增民宿房间</Breadcrumb.Item>
                         </Breadcrumb>
                     </div>
-                    <h1 className='title'>审核民宿房间信息</h1>
+                    <h1 className='title'>新增民宿房间</h1>
                 </div>
                 <div className='pageContent'>
                     <div className='ibox-content'>
@@ -143,10 +154,11 @@ class Index extends React.Component {
                                             }],
                                         })(
                                             <Upload
-                                                disabled
                                                 multiple={false}
-                                                onRemove={() => false}
-                                            />
+                                                onChange={this.handleChange}
+                                            >
+                                                {fileList.length >= 5 ? null : <div><Icon type="plus"/> 添加</div>}
+                                            </Upload>
                                         )}
                                     </FormItem>
                                 </Col>
@@ -161,7 +173,7 @@ class Index extends React.Component {
                                         {getFieldDecorator('roomName', {
                                             rules: [{required: true, message: '请输入房间名称'}],
                                         })(
-                                            <Input disabled/>
+                                            <Input/>
                                         )}
                                     </FormItem>
                                 </Col>
@@ -174,7 +186,7 @@ class Index extends React.Component {
                                             rules: [{required: true, message: '请选择房间状态'}],
                                             initialValue: 0
                                         })(
-                                            <Select placeholder="请选择" disabled>
+                                            <Select placeholder="请选择">
                                                 <Option value={0}>可预订</Option>
                                                 <Option value={1}>已满房</Option>
                                                 <Option value={2}>已下架</Option>
@@ -190,7 +202,7 @@ class Index extends React.Component {
                                         {getFieldDecorator('bedModel', {
                                             rules: [{required: true, message: '请输入房间类型'}],
                                         })(
-                                            <Select placeholder="请选择" disabled>
+                                            <Select placeholder="请选择">
                                                 <Option value='1.5米单人床'>1.5米单人床</Option>
                                                 <Option value='1.8米双人床'>1.8米双人床</Option>
                                                 <Option value='2米圆床'>2米圆床</Option>
@@ -206,7 +218,7 @@ class Index extends React.Component {
                                         {getFieldDecorator('roomPrice', {
                                             rules: [{required: true, message: '请输入房间价格'}],
                                         })(
-                                            <InputNumber min={1} disabled/>
+                                            <InputNumber min={1}/>
                                         )}
                                     </FormItem>
                                 </Col>
@@ -218,7 +230,7 @@ class Index extends React.Component {
                                         {getFieldDecorator('roomSize', {
                                             rules: [{required: true, message: '请输入房间类型'}],
                                         })(
-                                            <InputNumber min={1} disabled/>
+                                            <InputNumber min={1}/>
                                         )}
                                     </FormItem>
                                 </Col>
@@ -230,7 +242,7 @@ class Index extends React.Component {
                                         {getFieldDecorator('stayPersonNum', {
                                             rules: [{required: true, message: '请输入房间类型'}],
                                         })(
-                                            <InputNumber min={1} disabled/>
+                                            <InputNumber min={1}/>
                                         )}
                                     </FormItem>
                                 </Col>
@@ -243,7 +255,7 @@ class Index extends React.Component {
                                             rules: [{required: true, message: '请输入房间类型'}],
                                             initialValue: '免费WIFI'
                                         })(
-                                            <Select placeholder="请选择" disabled>
+                                            <Select placeholder="请选择">
                                                 <Option value='免费WIFI'>免费WIFI</Option>
                                                 <Option value='有线网络'>有线网络</Option>
                                             </Select>
@@ -259,7 +271,7 @@ class Index extends React.Component {
                                             rules: [{required: true, message: '请输入房间类型'}],
                                             initialValue: '无'
                                         })(
-                                            <Input disabled/>
+                                            <Input/>
                                         )}
                                     </FormItem>
                                 </Col>
@@ -272,7 +284,7 @@ class Index extends React.Component {
                                             rules: [{required: true, message: '请输入房间类型'}],
                                             initialValue: '有窗'
                                         })(
-                                            <Select placeholder="请选择" disabled>
+                                            <Select placeholder="请选择">
                                                 <Option value='有窗'>有窗</Option>
                                                 <Option value='无床'>无窗</Option>
                                                 <Option value='部分有窗'>部分有窗</Option>
@@ -290,7 +302,7 @@ class Index extends React.Component {
                                             rules: [{required: true, message: '请输入房间类型'}],
                                             initialValue: '独立卫浴免费洗浴用品'
                                         })(
-                                            <Input disabled/>
+                                            <Input/>
                                         )}
                                     </FormItem>
                                 </Col>
@@ -303,7 +315,7 @@ class Index extends React.Component {
                                             rules: [{required: true, message: '请输入房间类型'}],
                                             initialValue: '含双早'
                                         })(
-                                            <Select placeholder="请选择" disabled>
+                                            <Select placeholder="请选择">
                                                 <Option value='含双早'>含双早</Option>
                                                 <Option value='含单早'>含单早</Option>
                                                 <Option value='不含'>不含</Option>
@@ -320,7 +332,7 @@ class Index extends React.Component {
                                             rules: [{required: true, message: '请输入房间类型'}],
                                             initialValue: '矿泉水两瓶'
                                         })(
-                                            <Input disabled/>
+                                            <Input/>
                                         )}
                                     </FormItem>
                                 </Col>
@@ -333,7 +345,7 @@ class Index extends React.Component {
                                             rules: [{required: true, message: '请输入房间类型'}],
                                             initialValue: '无'
                                         })(
-                                            <Input disabled/>
+                                            <Input/>
                                         )}
                                     </FormItem>
                                 </Col>
@@ -414,8 +426,8 @@ class Index extends React.Component {
                                 </Col>
                             </Row>
                             <Row type="flex" justify="center" style={{marginTop: 40}}>
-                                <Button size='large' style={{width: 120, marginRight: 40}} onClick={() => this.submit(1)}>不通过</Button>
-                                <Button type="primary" size='large' style={{width: 120}} onClick={() => this.submit(2)}>通过</Button>
+                                <Button type="primary" size='large' style={{width: 120}} htmlType="submit"
+                                        loading={submitLoading}>提交</Button>
                             </Row>
                         </Form>
                     </div>

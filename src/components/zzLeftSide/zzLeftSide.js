@@ -4,11 +4,9 @@ import PropTypes from 'prop-types';
 import {Layout, Icon, Menu} from 'antd';
 import {Scrollbars} from 'react-custom-scrollbars';
 import find from 'lodash/find';
-import {admin, subAdmin, operator} from './authority';
+import {admin, hotelkeeperAdmin} from './authority';
 import menuTree from './menu';
 import './zzLeftSide.less';
-
-import Logo from 'Img/logo.png';
 
 const {Sider} = Layout;
 const SubMenu = Menu.SubMenu;
@@ -18,7 +16,9 @@ class ZZLeftSide extends React.Component {
         super(props);
 
         this.state = {
-            defaultSelectedKeys: '',
+            isLoaded: false,
+            defaultOpenKeys: [],
+            defaultSelectedKeys: [],
             authMenu: [],
             subMenuList: null
         };
@@ -44,15 +44,15 @@ class ZZLeftSide extends React.Component {
     setAuthMenu = callback => {
         if (sessionStorage.type !== undefined && sessionStorage.type !== null) {
             const type = sessionStorage.type;
-            let authority_menu = [];
-            if (type === "1")
-                authority_menu = admin;
-            else if (type === "2") {
-                authority_menu = subAdmin;
+            let authority, authority_menu = [];
+            if (type === "000") {
+                authority = admin;
+            } else if (type === "002") {
+            } else if (type === "003") {
+                authority = hotelkeeperAdmin;
             }
-            else if (type === "3") {
-                authority_menu = operator;
-            }
+            authority_menu = authority.menu;
+
             let _menu = [];
             menuTree.map(item => {
                 const _item = {};
@@ -69,8 +69,13 @@ class ZZLeftSide extends React.Component {
                     }
                 }
             });
-
-            this.setState({authMenu: _menu}, () => {
+            console.log('authority == ', authority);
+            this.setState({
+                isLoaded: true,
+                defaultOpenKeys: authority.defaultOpenKeys,
+                defaultSelectedKeys: authority.defaultSelectedKeys,
+                authMenu: _menu
+            }, () => {
                 if (typeof callback === 'function') callback();
             });
         }
@@ -99,7 +104,7 @@ class ZZLeftSide extends React.Component {
     }
 
     setMenuChildren = () => {
-        const {selectedKeys, authMenu} = this.state;
+        const {selectedKeys, defaultOpenKeys, defaultSelectedKeys, authMenu} = this.state;
         const subMenuList = authMenu.map(item => {
             if (item.children) {
                 return (
@@ -135,8 +140,8 @@ class ZZLeftSide extends React.Component {
                 theme="dark"
                 mode="inline"
                 selectedKeys={[selectedKeys]}
-                defaultSelectedKeys={['1_1']}
-                // defaultOpenKeys={['0', '1', '2', '3', '4', '5', '6']}
+                defaultSelectedKeys={defaultSelectedKeys}
+                defaultOpenKeys={defaultOpenKeys}
             >{subMenuList}</Menu>
         );
     }
@@ -152,6 +157,7 @@ class ZZLeftSide extends React.Component {
     }
 
     render() {
+        const {isLoaded} = this.state;
         const {collapsed} = this.props;
 
         return (
@@ -170,7 +176,7 @@ class ZZLeftSide extends React.Component {
                     </Link>
                 </div>
                 <Scrollbars className='zui-menu'>
-                    {this.setMenuChildren()}
+                    {isLoaded ? this.setMenuChildren() : null}
                 </Scrollbars>
             </Sider>
         );

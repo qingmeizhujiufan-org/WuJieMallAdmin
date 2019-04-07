@@ -6,13 +6,15 @@ import {
     Col,
     Input,
     Icon,
+    Tag,
     Menu,
     Breadcrumb,
     Dropdown,
     notification,
     message,
     Modal,
-    Button, Badge
+    Badge,
+    Button
 } from 'antd';
 import assign from 'lodash/assign';
 import axios from "Utils/axios";
@@ -22,53 +24,134 @@ import {ZZCard, ZZTable} from 'Comps/zz-antD';
 
 const Search = Input.Search;
 
-class HotelList extends React.Component {
+class RoomList extends React.Component {
     constructor(props) {
         super(props);
 
         this.columns = [
             {
-                title: '特色民宿名称',
+                title: '房间名称',
                 width: 150,
                 align: 'center',
-                dataIndex: 'hotelName',
-                key: 'hotelName',
+                dataIndex: 'roomName',
+                key: 'roomName',
                 render: (text, record, index) => (
                     <Link to={this.onEdit(record.id)}>{text}</Link>
                 )
             }, {
-                title: '手机电话',
-                dataIndex: 'telephone',
+                title: '房间价格',
                 width: 120,
                 align: 'center',
-                key: 'telephone'
-            }, {
-                title: '固定电话',
-                dataIndex: 'hotelPhone',
-                width: 120,
-                align: 'center',
-                key: 'hotelPhone'
-            }, {
-                title: '民宿类型',
-                width: 100,
-                align: 'center',
-                dataIndex: 'hotelTypeText',
-                key: 'hotelTypeText',
-            }, {
-                title: '民宿地址',
-                width: 180,
-                align: 'right',
-                dataIndex: 'hotelAddress',
-                key: 'hotelAddress',
+                key: 'roomPrice',
+                dataIndex: 'roomPrice',
                 render: (text, record, index) => (
-                    <span><Link to={this.onAddress(record.id)}>{text}</Link></span>
+                    <span>{text + ' 元'}</span>
                 )
             }, {
-                title: '民宿状态',
+                title: '房间大小',
+                width: 120,
+                align: 'center',
+                key: 'roomSize',
+                dataIndex: 'roomSize',
+                render: (text, record, index) => (
+                    <span>{text + ' 平米'}</span>
+                )
+            }, {
+                title: '床型',
+                width: 120,
+                align: 'center',
+                key: 'bedModel',
+                dataIndex: 'bedModel'
+            }, {
+                title: '可住人数',
+                dataIndex: 'stayPersonNum',
+                width: 120,
+                align: 'center',
+                key: 'stayPersonNum',
+                render: (text, record, index) => (
+                    <span>{text + ' 人'}</span>
+                )
+            }, {
+                title: '网络',
+                dataIndex: 'internet',
+                width: 120,
+                align: 'center',
+                key: 'internet'
+            }, {
+                title: '窗景',
+                width: 100,
+                align: 'center',
+                dataIndex: 'windowScenery',
+                key: 'windowScenery',
+            }, {
+                title: '窗户',
+                width: 100,
+                align: 'center',
+                dataIndex: 'window',
+                key: 'window'
+            }, {
+                title: '卫浴',
+                align: 'center',
+                width: 150,
+                dataIndex: 'bathroom',
+                key: 'bathroom'
+            }, {
+                title: '早餐',
                 align: 'center',
                 width: 100,
-                dataIndex: 'hotelStatusText',
-                key: 'hotelStatusText'
+                dataIndex: 'breakfast',
+                key: 'breakfast'
+            }, {
+                title: '饮品',
+                align: 'center',
+                width: 100,
+                dataIndex: 'drink',
+                key: 'drink'
+            }, {
+                title: '设施',
+                align: 'center',
+                width: 120,
+                dataIndex: 'facilities',
+                key: 'facilities'
+            }, {
+                title: '支付方式',
+                align: 'center',
+                width: 120,
+                dataIndex: 'payType',
+                key: 'payType'
+            }, {
+                title: '可否取消',
+                align: 'center',
+                width: 100,
+                dataIndex: 'canCancel',
+                key: 'canCancel',
+                render: (text, record, index) => (
+                    <span>
+                        <Tag color={text === 1 ? 'green' : 'red'}>{text === 1 ? '是' : '否'}</Tag>
+                    </span>
+                )
+            }, {
+                title: '可否加床',
+                align: 'center',
+                width: 100,
+                dataIndex: 'canAddbed',
+                key: 'canAddbed',
+                render: (text, record, index) => (
+                    <span>
+                        <Tag color={text === 1 ? 'green' : 'red'}>{text === 1 ? '是' : '否'}</Tag>
+                    </span>
+                )
+            }, {
+                title: '内宾',
+                align: 'center',
+                width: 150,
+                dataIndex: 'innerNeed',
+                key: 'innerNeed'
+            }, {
+                title: '优惠政策',
+                align: 'center',
+                dataIndex: 'sale',
+                key: 'sale'
             }, {
                 title: '创建时间',
                 align: 'right',
@@ -82,15 +165,10 @@ class HotelList extends React.Component {
                 dataIndex: 'updated_at',
                 key: 'updated_at'
             }, {
-                title: '备注',
-                align: 'center',
-                dataIndex: 'mark',
-                key: 'mark'
-            }, {
                 title: '状态',
-                align: 'center',
+                align: 'left',
                 fixed: 'right',
-                width: 150,
+                width: 110,
                 dataIndex: 'state',
                 key: 'state',
                 render: (text) => {
@@ -109,25 +187,15 @@ class HotelList extends React.Component {
                 width: 120,
                 align: 'center',
                 render: (text, record, index) => (
-                    <Dropdown
-                        placement="bottomCenter"
-                        overlay={
-                            <Menu>
-                                <Menu.Item>
-                                    <Link to={this.onEdit(record.id)}>编辑</Link>
-                                </Menu.Item>
-                                <Menu.Item>
-                                    <a onClick={() => this.onDelete(record.id)}>删除</a>
-                                </Menu.Item>
-                            </Menu>
-                        }
-                    >
-                        <a className="ant-dropdown-link">操作</a>
-                    </Dropdown>
+                    <span>
+                        <Link to={this.onEdit(record.id)}>管理</Link>
+                    </span>
                 )
-            }];
+            }
+        ];
 
-        this.state = {
+        this
+            .state = {
             loading: false,
             dataSource: [],
             pagination: {},
@@ -148,12 +216,12 @@ class HotelList extends React.Component {
 
     queryList = () => {
         const {params, keyWords} = this.state;
-        const createBy = sessionStorage.getItem('userName');
+        const hotelId = sessionStorage.userId;
         const param = assign({
-            createBy
+            hotelId
         }, params, {keyWords});
         this.setState({loading: true});
-        axios.get('hotel/queryList', {
+        axios.get('room/queryList', {
             params: param
         }).then(res => res.data).then(data => {
             if (data.success) {
@@ -179,7 +247,7 @@ class HotelList extends React.Component {
         });
     }
 
-    // 处理分页变化
+// 处理分页变化
     handlePageChange = param => {
         const params = assign({}, this.state.params, param);
         this.setState({params}, () => {
@@ -187,7 +255,7 @@ class HotelList extends React.Component {
         });
     }
 
-    // 搜索
+// 搜索
     onSearch = (value, event) => {
         console.log('onsearch value == ', value);
         this.setState({
@@ -201,50 +269,12 @@ class HotelList extends React.Component {
         });
     }
 
-    addHotel = () => {
-        return this.context.router.push('/frame/hotel/add');
-    }
-
-    onDetail = id => {
-        return `/frame/hotel/detail/${id}`;
+    addRoom = () => {
+        return this.context.router.push(`/frame/hotelkeeper/addRoom`);
     }
 
     onEdit = id => {
-        return `/frame/hotel/list/edit/${id}`;
-    }
-
-    onAddress = id => {
-    }
-
-    onDelete = (key) => {
-        Modal.confirm({
-            title: '提示',
-            content: '确认要删除吗？',
-            okText: '确认',
-            cancelText: '取消',
-            onOk: () => {
-                let param = {};
-                param.id = key;
-                axios.post('hotel/delete', param).then(res => res.data).then(data => {
-                    if (data.success) {
-                        notification.success({
-                            message: '提示',
-                            description: '删除成功！'
-                        });
-
-                        this.setState({
-                            params: {
-                                pageNumber: 1
-                            },
-                        }, () => {
-                            this.queryList();
-                        });
-                    } else {
-                        message.error(data.backMsg);
-                    }
-                });
-            }
-        });
+        return `/frame/hotelkeeper/roomList/edit/${id}`
     }
 
     render() {
@@ -256,15 +286,15 @@ class HotelList extends React.Component {
                     <div className="breadcrumb-block">
                         <Breadcrumb>
                             <Breadcrumb.Item>特色民宿管理</Breadcrumb.Item>
-                            <Breadcrumb.Item>特色民宿列表</Breadcrumb.Item>
+                            <Breadcrumb.Item>民宿房间列表</Breadcrumb.Item>
                         </Breadcrumb>
                     </div>
-                    <h1 className='title'>特色民宿列表</h1>
+                    <h1 className='title'>民宿房间列表</h1>
                     <div className='search-area'>
                         <Row type='flex' justify="center" align="middle">
                             <Col span={8}>
                                 <Search
-                                    placeholder="民宿名称"
+                                    placeholder="房间名称"
                                     enterButton='搜索'
                                     size="large"
                                     onSearch={this.onSearch}
@@ -274,9 +304,9 @@ class HotelList extends React.Component {
                                 <Button
                                     icon='plus'
                                     size="large"
-                                    onClick={this.addHotel}
+                                    onClick={this.addRoom}
                                     style={{marginLeft: 25}}
-                                >新增特色民宿</Button>
+                                >新增房间</Button>
                             </Col>
                         </Row>
                     </div>
@@ -288,7 +318,7 @@ class HotelList extends React.Component {
                             dataSource={dataSource}
                             pagination={pagination}
                             loading={loading}
-                            scroll={{x: 1500}}
+                            scroll={{x: 2700}}
                             handlePageChange={this.handlePageChange}
                         />
                     </ZZCard>
@@ -298,8 +328,8 @@ class HotelList extends React.Component {
     }
 }
 
-HotelList.contextTypes = {
+RoomList.contextTypes = {
     router: PropTypes.object
 }
 
-export default HotelList;
+export default RoomList;

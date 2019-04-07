@@ -2,12 +2,12 @@ import React from 'react';
 import {Link} from 'react-router';
 import PropTypes from 'prop-types';
 import {
-    Notification,
+    notification,
     Icon,
     Divider,
     Breadcrumb,
     Button,
-    Message,
+    message,
     Dropdown,
     Menu,
     Switch,
@@ -52,7 +52,7 @@ class Index extends React.Component {
                 dataIndex: 'phone',
                 key: 'phone',
             }, {
-                title: '用户角色',
+                title: '角色',
                 width: 120,
                 align: 'center',
                 dataIndex: 'roleId',
@@ -196,7 +196,7 @@ class Index extends React.Component {
                     if (typeof callback === 'function') callback();
                 });
             } else {
-                Message.error(data.backMsg);
+                message.error(data.backMsg);
             }
         });
     }
@@ -241,12 +241,12 @@ class Index extends React.Component {
                 param.id = id;
                 axios.post('admin/resetPassword', param).then(res => res.data).then(data => {
                     if (data.success) {
-                        Notification.success({
+                        notification.success({
                             message: '提示',
                             description: data.backMsg
                         });
                     } else {
-                        Message.error(data.backMsg);
+                        message.error(data.backMsg);
                     }
                 })
             }
@@ -270,7 +270,7 @@ class Index extends React.Component {
 
         axios.post('admin/frozen', param).then(res => res.data).then(data => {
             if (data.success) {
-                Notification.success({
+                notification.success({
                     message: '提示',
                     description: data.backMsg
                 });
@@ -278,7 +278,7 @@ class Index extends React.Component {
                 dataSource[index].isFrozen = checked ? 1 : 0;
                 this.setState({dataSource});
             } else {
-                Message.error(data.backMsg);
+                message.error(data.backMsg);
             }
         })
     }
@@ -294,7 +294,7 @@ class Index extends React.Component {
                 param.id = id;
                 axios.post('admin/delete', param).then(res => res.data).then(data => {
                     if (data.success) {
-                        Notification.success({
+                        notification.success({
                             message: '提示',
                             description: '删除成功！'
                         });
@@ -308,7 +308,7 @@ class Index extends React.Component {
                             this.queryList();
                         });
                     } else {
-                        Message.error(data.backMsg);
+                        message.error(data.backMsg);
                     }
                 });
             }
@@ -327,7 +327,7 @@ class Index extends React.Component {
                             <Breadcrumb.Item>用户列表</Breadcrumb.Item>
                         </Breadcrumb>
                     </div>
-                    <h1 className='title'>用户列表</h1>
+                    <h1 className='title'>人员列表</h1>
                     <div className='search-area'>
                         <Row type='flex' justify="center" align="middle">
                             <Col span={8}>
@@ -344,7 +344,7 @@ class Index extends React.Component {
                                     size="large"
                                     onClick={this.addUser}
                                     style={{marginLeft: 25}}
-                                >新增用户</Button>
+                                >新增人员</Button>
                             </Col>
                         </Row>
                     </div>

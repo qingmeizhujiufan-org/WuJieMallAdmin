@@ -11,7 +11,9 @@ import {
     notification,
     message,
     Divider,
-    Icon, InputNumber
+    Icon,
+    InputNumber,
+    Spin
 } from 'antd';
 import {Upload} from 'Comps/zui';
 import {formItemLayout, itemGrid} from 'Utils/formItemGrid';
@@ -39,9 +41,8 @@ class Index extends React.Component {
     }
 
     queryDetail = () => {
-        const id = this.props.params.id;
         const param = {};
-        param.id = id;
+        param.id = sessionStorage.userId;
         this.setState({
             loading: true
         });
@@ -55,9 +56,8 @@ class Index extends React.Component {
                 this.setState({
                     data: backData
                 });
-            } else {
-                message.error('产品信息查询失败');
             }
+
             this.setState({
                 loading: false
             });
@@ -98,28 +98,41 @@ class Index extends React.Component {
         }
     }
 
-    submit = val => {
-        const data = this.state.data;
-        data.state = val;
-        const values = {
-            id: data.id,
-            state: val
-        };
+    handleSubmit = (e) => {
+        e.preventDefault();
+        this.props.form.validateFieldsAndScroll((err, values) => {
+            if (!err) {
+                const data = this.state.data;
+                const typeList = ['经济型', '舒适型', '豪华型', '特色型'];
+                const statusList = ['营业中', '休息中', '下架中'];
+                values.id = sessionStorage.userId;
+                values.thumbnail = values.headerPic[0].response.id;
+                values.headerPic = values.headerPic && values.headerPic.map(item => item.response.id).join(',');
+                values.detailPic = values.detailPic && values.detailPic.map(item => item.response.id).join(',');
+                values.hotelType = values.hotelType;
+                values.hotelTypeText = typeList[values.hotelType];
+                values.hotelStatus = values.hotelStatus;
+                values.hotelStatusText = statusList[values.hotelStatus];
+                values.createBy = sessionStorage.userName;
 
-        axios.post('hotel/update', values).then(res => res.data).then(data => {
-            if (data.success) {
-                notification.success({
-                    message: '提示',
-                    description: '审核房间信息成功！'
+                this.setState({
+                    submitLoading: true
                 });
-
-                return this.context.router.goBack();
-            } else {
-                message.error('审核失败，请重试！');
+                axios.post(data.id ? 'hotel/update' : 'hotel/add', values).then(res => res.data).then(data => {
+                    if (data.success) {
+                        notification.success({
+                            message: '提示',
+                            description: '认证信息更新成功，请等待审核！'
+                        });
+                        this.queryDetail();
+                    } else {
+                        message.error(data.backMsg);
+                    }
+                    this.setState({
+                        submitLoading: false
+                    });
+                });
             }
-            this.setState({
-                submitLoading: false
-            });
         });
     }
 
@@ -133,15 +146,15 @@ class Index extends React.Component {
                 <div className='pageHeader'>
                     <div className="breadcrumb-block">
                         <Breadcrumb>
-                            <Breadcrumb.Item>特色民宿管理</Breadcrumb.Item>
-                            <Breadcrumb.Item>民宿列表</Breadcrumb.Item>
-                            <Breadcrumb.Item>审核民宿信息</Breadcrumb.Item>
+                            <Breadcrumb.Item>认证管理</Breadcrumb.Item>
+                            <Breadcrumb.Item>认证信息</Breadcrumb.Item>
                         </Breadcrumb>
                     </div>
-                    <h1 className='title'>审核民宿信息</h1>
+                    <h1 className='title'>认证信息</h1>
                 </div>
                 <div className='pageContent'>
                     <div className='ibox-content'>
+                        <Spin spinning={loading}>
                         <Form onSubmit={this.handleSubmit}>
                             <Divider>民宿描述图</Divider>
                             <Row>
@@ -151,7 +164,7 @@ class Index extends React.Component {
                                         {getFieldDecorator('headerPic', {
                                             rules: [{required: true, message: '民宿店铺描述图片不能为空!'}],
                                         })(
-                                            <Upload disabled/>
+                                            <Upload/>
                                         )}
                                     </FormItem>
                                 </Col>
@@ -168,7 +181,7 @@ class Index extends React.Component {
                                                 required: true, message: '请输入民宿名称',
                                             }],
                                         })(
-                                            <Input disabled/>
+                                            <Input/>
                                         )}
                                     </FormItem>
                                 </Col>
@@ -180,7 +193,7 @@ class Index extends React.Component {
                                         {getFieldDecorator('hotelAddress', {
                                             rules: [{required: true, message: '请输入民宿地址'}],
                                         })(
-                                            <Input disabled/>
+                                            <Input/>
                                         )}
                                     </FormItem>
                                 </Col>
@@ -194,7 +207,7 @@ class Index extends React.Component {
                                                 required: true, message: '请输入民宿持有人',
                                             }],
                                         })(
-                                            <Select placeholder="请选择" disabled>
+                                            <Select placeholder="请选择">
                                                 <Option value={0}>经济型</Option>
                                                 <Option value={1}>舒适型</Option>
                                                 <Option value={2}>豪华型</Option>
@@ -215,7 +228,7 @@ class Index extends React.Component {
                                                 validator: this.validatePhone,
                                             }],
                                         })(
-                                            <Input disabled/>
+                                            <Input/>
                                         )}
                                     </FormItem>
                                 </Col>
@@ -229,7 +242,7 @@ class Index extends React.Component {
                                                 required: false,
                                             }],
                                         })(
-                                            <Input disabled/>
+                                            <Input/>
                                         )}
                                     </FormItem>
                                 </Col>
@@ -244,27 +257,11 @@ class Index extends React.Component {
                                             }],
                                         })(
                                             <InputNumber
-                                                disabled
                                                 min={0}
                                                 precision={2}
                                                 step={1}
                                                 style={{width: '100%'}}
                                             />
-                                        )}
-                                    </FormItem>
-                                </Col>
-                                <Col {...itemGrid}>
-                                    <FormItem
-                                        {...formItemLayout}
-                                        label="店铺创建人"
-                                    >
-                                        {getFieldDecorator('createBy', {
-                                            rules: [{
-                                                required: false,
-                                            }],
-                                            initialValue: sessionStorage.getItem('userName')
-                                        })(
-                                            <Input disabled/>
                                         )}
                                     </FormItem>
                                 </Col>
@@ -279,7 +276,7 @@ class Index extends React.Component {
                                             }],
                                             initialValue: 0
                                         })(
-                                            <Select placeholder="请选择" disabled>
+                                            <Select placeholder="请选择">
                                                 <Option value={0}>休息中</Option>
                                                 <Option value={1}>营业中</Option>
                                                 <Option value={2}>下架中</Option>
@@ -297,7 +294,7 @@ class Index extends React.Component {
                                                 required: false
                                             }],
                                         })(
-                                            <TextArea disabled/>
+                                            <TextArea/>
                                         )}
                                     </FormItem>
                                 </Col>
@@ -310,16 +307,23 @@ class Index extends React.Component {
                                         {getFieldDecorator('detailPic', {
                                             rules: [{required: true, message: '民宿详情图片不能为空!'}],
                                         })(
-                                            <Upload disabled/>
+                                            <Upload/>
                                         )}
                                     </FormItem>
                                 </Col>
                             </Row>
                             <Row type="flex" justify="center" style={{marginTop: 40}}>
-                                <Button size='large' style={{width: 120, marginRight: 40}} onClick={() => this.submit(1)}>不通过</Button>
-                                <Button type="primary" size='large' style={{width: 120}} onClick={() => this.submit(2)}>通过</Button>
+                                <Button type="primary" size='large' style={{width: 120}} htmlType="submit"
+                                        loading={submitLoading}>保存</Button>
+                                {
+                                    data.hotelStatus === 2 ?
+                                        <Button type="danger" size='large'
+                                                style={{width: 120, marginLeft: 20}}>删除</Button> :
+                                        null
+                                }
                             </Row>
                         </Form>
+                        </Spin>
                     </div>
                 </div>
             </div>

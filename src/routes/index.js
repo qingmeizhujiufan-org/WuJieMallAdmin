@@ -9,6 +9,7 @@ import ProductRoute from './productRoute';
 import ShopRoute from './shopRoute';
 import TravelRoute from './travelRoute';
 import HotelRoute from './hotelRoute';
+import HotelkeeperRoute from './hotelkeeperRoute';
 import UserRoute from './userRoute';
 import MobileRoute from './mobileRoute';
 
@@ -83,6 +84,8 @@ class PageRouter extends React.Component {
                         {OrderRoute}
                         {/* 特色民宿管理 */}
                         {HotelRoute}
+                        {/* 民宿店家管理 */}
+                        {HotelkeeperRoute}
                         {/* 主题旅游管理 */}
                         {TravelRoute}
                         {/* 个人设置 */}
