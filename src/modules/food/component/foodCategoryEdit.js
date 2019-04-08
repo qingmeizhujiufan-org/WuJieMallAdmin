@@ -27,8 +27,10 @@ class Index extends React.Component {
 
     this.state = {
       previewVisible: false,
+      previewImage: '',
       loading: false,
-      previewImage: ''
+      submitLoading: false,
+      fileList: []
     };
   }
 
@@ -43,14 +45,15 @@ class Index extends React.Component {
     this.setState({
       loading: true
     });
-    axios.get('product/categoryDetail', {
+    axios.get('food/categoryDetail', {
       params: param
     }).then(res => res.data).then(data => {
       if (data.success) {
         let backData = data.backData;
         this.setFields(backData);
         this.setState({
-          data: backData
+          data: backData,
+          fileList:backData.productCategoryPic
         });
       } else {
         Message.error('产品信息查询失败');
@@ -94,10 +97,51 @@ class Index extends React.Component {
     });
   }
 
+  handleChange = (fileList) => {
+    this.setState({fileList})
+  }
+
+  handleSubmit = (e) => {
+    e.preventDefault();
+    this.props.form.validateFields((err, values) => {
+      if (!err) {
+        if(values.productCategoryPic) {
+          values.productCategoryPic = values.productCategoryPic.map(item => item.response.id).join(',');
+        }
+        values.id = this.props.params.id;
+
+        this.setState({
+          submitLoading: true
+        });
+        axios.post('food/categoryUpdate', values).then(res => res.data).then(data => {
+          if (data.success) {
+            Notification.success({
+              message: '提示',
+              description: '产品信息保存成功！'
+            });
+
+            return this.context.router.push('/frame/food/category/list');
+          } else {
+            Message.error(data.backMsg);
+          }
+
+          this.setState({
+            submitLoading: false
+          });
+        });
+      }
+    });
+  }
+
   render() {
     const {getFieldDecorator} = this.props.form;
-    const { previewImage, previewVisible} = this.state;
-
+    const {fileList, submitLoading, previewImage, previewVisible} = this.state;
+    const uploadButton = (
+      <div>
+        <Icon type="plus" />
+        <div className="ant-upload-text">上传</div>
+      </div>
+    );
     return (
       <div className="zui-content">
         <div className='pageHeader'>
@@ -123,11 +167,10 @@ class Index extends React.Component {
                       rules: [{required: true, message: '类别图片不能为空!'}],
                     })(
                       <ZZUpload
-                        disabled={true}
                         onPreview={this.handlePreview}
-                        onRemove={() => false}
+                        onChange={this.handleChange}
                       >
-                        {null}
+                        {fileList.length >= 1 ? null : uploadButton}
                       </ZZUpload>
                     )}
                   </FormItem>
@@ -140,7 +183,7 @@ class Index extends React.Component {
                     {getFieldDecorator('productCategoryName', {
                       rules: [{required: true, message: '请输入类别名称'}]
                     })(
-                      <Input disabled/>
+                      <Input/>
                     )}
                   </FormItem>
                 </Col>
@@ -152,7 +195,7 @@ class Index extends React.Component {
                     {getFieldDecorator('productCategoryCode', {
                       rules: [{required: true, message: '请输入产品类别条码'}]
                     })(
-                      <Input disabled/>
+                      <Input/>
                     )}
                   </FormItem>
                 </Col>
@@ -162,8 +205,7 @@ class Index extends React.Component {
                     label="创建人"
                   >
                     {getFieldDecorator('createBy', {
-                      rules: [{required: true, message: '请输入产品名称'}],
-                      initialValue: sessionStorage.getItem('userName')
+                      rules: [{required: false, message: '请输入产品名称'}]
                     })(
                       <Input disabled/>
                     )}
@@ -182,6 +224,10 @@ class Index extends React.Component {
                   </FormItem>
                 </Col>
               </Row>
+              <Row type="flex" justify="center" style={{marginTop: 40}}>
+                <Button type="primary" size='large' style={{width: 120}} htmlType="submit"
+                        loading={submitLoading}>保存</Button>
+              </Row>
             </Form>
           </div>
           <Modal visible={previewVisible} footer={null} onCancel={this.handleCancel}>
@@ -193,10 +239,10 @@ class Index extends React.Component {
   }
 }
 
-const productCategoryDetail = Form.create()(Index);
+const foodCategoryEdit = Form.create()(Index);
 
 Index.contextTypes = {
   router: PropTypes.object
 }
 
-export default productCategoryDetail;
+export default foodCategoryEdit;

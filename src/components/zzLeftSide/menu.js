@@ -51,19 +51,19 @@ const Menu = [
         children: [
             {
                 key: '003_1',
-                link: '/frame/product/list',
+                link: '/frame/food/list',
                 label: '产品列表'
             }, {
                 key: '003_2',
-                link: '/frame/product/add',
+                link: '/frame/food/add',
                 label: '新增产品'
             }, {
                 key: '003_3',
-                link: '/frame/product/category/list',
+                link: '/frame/food/category/list',
                 label: '产品类别'
             }, {
                 key: '003_4',
-                link: '/frame/product/category/add',
+                link: '/frame/food/category/add',
                 label: '新增类别'
             }
         ]
@@ -187,6 +187,32 @@ const Menu = [
             {
                 key: '401_1',
                 link: '/frame/travelkeeper/keeper',
+                label: '认证信息'
+            }
+        ]
+    }, {
+        key: '500',
+        iconType: 'shop',
+        label: '食品管理',
+        children: [
+            {
+                key: '500_1',
+                link: '/frame/foodkeeper/foodList',
+                label: '食品列表'
+            }, {
+                key: '500_2',
+                link: '/frame/foodkeeper/addFood',
+                label: '新增特色食品'
+            }
+        ]
+    }, {
+        key: '501',
+        iconType: 'shop',
+        label: '认证管理',
+        children: [
+            {
+                key: '501_1',
+                link: '/frame/foodkeeper/keeper',
                 label: '认证信息'
             }
         ]

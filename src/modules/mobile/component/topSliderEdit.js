@@ -106,7 +106,7 @@ class Index extends React.Component {
                             description: data.backMsg
                         });
 
-                        // return this.context.router.push('/frame/product/list');
+                        // return this.context.router.push('/frame/food/list');
                     } else {
                         message.error(data.backMsg);
                     }

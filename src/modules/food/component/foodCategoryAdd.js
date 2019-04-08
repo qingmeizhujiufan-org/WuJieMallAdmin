@@ -61,14 +61,14 @@ class Index extends React.Component {
                 this.setState({
                     submitLoading: true
                 });
-                axios.post('product/categoryAdd', values).then(res => res.data).then(data => {
+                axios.post('food/categoryAdd', values).then(res => res.data).then(data => {
                     if (data.success) {
                         Notification.success({
                             message: '提示',
                             description: '产品信息保存成功！'
                         });
 
-                        return this.context.router.push('/frame/product/category/list');
+                        return this.context.router.push('/frame/food/category/list');
                     } else {
                         Message.error(data.backMsg);
                     }
@@ -176,10 +176,10 @@ class Index extends React.Component {
     }
 }
 
-const productCategoryAdd = Form.create()(Index);
+const foodCategoryAdd = Form.create()(Index);
 
 Index.contextTypes = {
     router: PropTypes.object
 }
 
-export default productCategoryAdd;
+export default foodCategoryAdd;

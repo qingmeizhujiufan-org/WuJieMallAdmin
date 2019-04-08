@@ -296,7 +296,7 @@ class Index extends React.Component {
     getList = () => {
         const {params} = this.state;
         this.setState({loading: true});
-        axios.get('product/queryList', {
+        axios.get('food/queryList', {
             params: params
         }).then(res => res.data).then(data => {
             if (data.success) {

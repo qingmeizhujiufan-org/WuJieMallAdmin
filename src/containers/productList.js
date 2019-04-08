@@ -1,6 +1,6 @@
 import {connect} from 'react-redux'
 import * as actions from '../actions/product';
-import ProductList from '../modules/product/component/productList';
+import FoodList from '../modules/food/component/foodList';
 
 //将状态写入属性
 const mapStateToProps = (state) => {
@@ -19,4 +19,4 @@ const mapDispatchToProps = (dispatch) => {
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(ProductList)
+export default connect(mapStateToProps, mapDispatchToProps)(FoodList)

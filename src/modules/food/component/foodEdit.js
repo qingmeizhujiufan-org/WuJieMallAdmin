@@ -48,7 +48,7 @@ class Index extends React.Component {
     queryAllCategoryList = () => {
         const {params, keyWords} = this.state;
         const param = assign({}, params, {keyWords});
-        axios.get('product/queryAllCategoryList', {
+        axios.get('food/queryAllCategoryList', {
             params: param
         }).then(res => res.data).then(data => {
             if (data.success) {
@@ -73,7 +73,7 @@ class Index extends React.Component {
         this.setState({
             loading: true
         });
-        axios.get('product/queryDetail', {
+        axios.get('food/queryDetail', {
             params: param
         }).then(res => res.data).then(data => {
             if (data.success) {
@@ -130,14 +130,14 @@ class Index extends React.Component {
                 this.setState({
                     submitLoading: true
                 });
-                axios.post('product/update', values).then(res => res.data).then(data => {
+                axios.post('food/update', values).then(res => res.data).then(data => {
                     if (data.success) {
                         notification.success({
                             message: '提示',
                             description: data.backMsg
                         });
                         // this.queryDetail();
-                        // return this.context.router.push('/frame/product/list');
+                        // return this.context.router.push('/frame/food/list');
                     } else {
                         message.error(data.backMsg);
                     }
@@ -543,10 +543,10 @@ class Index extends React.Component {
     }
 }
 
-const productEdit = Form.create()(Index);
+const foodEdit = Form.create()(Index);
 
 Index.contextTypes = {
     router: PropTypes.object
 }
 
-export default productEdit;
+export default foodEdit;

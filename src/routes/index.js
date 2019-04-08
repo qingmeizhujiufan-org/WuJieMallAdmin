@@ -5,7 +5,8 @@ import Loading from './loading';
 
 /* 引入模块路由 */
 import OrderRoute from './orderRoute';
-import ProductRoute from './productRoute';
+import FoodRoute from './foodRoute';
+import FoodkeeperRoute from './foodkeeperRoute';
 import ShopRoute from './shopRoute';
 import TravelRoute from './travelRoute';
 import TravelkeeperRoute from './travelkeeperRoute';
@@ -75,8 +76,10 @@ class PageRouter extends React.Component {
                         {UserRoute}
                         {/* 店铺管理 */}
                         {ShopRoute}
-                        {/* 产品管理 */}
-                        {ProductRoute}
+                        {/* 食品管理 */}
+                        {FoodRoute}
+                        {/* 食品店家管理 */}
+                        {FoodkeeperRoute}
                         {/* 订单管理 */}
                         {OrderRoute}
                         {/* 特色民宿管理 */}

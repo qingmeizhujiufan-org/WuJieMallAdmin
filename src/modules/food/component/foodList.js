@@ -22,7 +22,7 @@ import {ZZCard, ZZTable} from 'Comps/zz-antD';
 
 const Search = Input.Search;
 
-class ProductList extends React.Component {
+class FoodList extends React.Component {
     constructor(props) {
         super(props);
 
@@ -155,7 +155,7 @@ class ProductList extends React.Component {
         const {params, keyWords} = this.state;
         const param = assign({}, params, {keyWords});
         this.setState({loading: true});
-        axios.get('product/queryList', {
+        axios.get('food/queryList', {
             params: param
         }).then(res => res.data).then(data => {
             if (data.success) {
@@ -204,7 +204,7 @@ class ProductList extends React.Component {
     }
 
     addProduct = () => {
-        return this.context.router.push('/frame/product/add');
+        return this.context.router.push('/frame/food/add');
     }
 
     onDetail = id => {
@@ -224,7 +224,7 @@ class ProductList extends React.Component {
             onOk: () => {
                 let param = {};
                 param.id = key;
-                axios.post('product/delete', param).then(res => res.data).then(data => {
+                axios.post('food/delete', param).then(res => res.data).then(data => {
                     if (data.success) {
                         Notification.success({
                             message: '提示',
@@ -297,8 +297,8 @@ class ProductList extends React.Component {
     }
 }
 
-ProductList.contextTypes = {
+FoodList.contextTypes = {
     router: PropTypes.object
 }
 
-export default ProductList;
+export default FoodList;

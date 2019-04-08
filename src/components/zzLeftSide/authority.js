@@ -61,8 +61,23 @@ const travelkeeperAdmin = {
     ]
 };
 
+const foodkeeperAdmin = {
+    defaultOpenKeys: ['500', '501'],
+    defaultSelectedKeys: ['500_1'],
+    menu: [
+        {
+            key: '500',
+            children: ['500_1', '500_2']
+        }, {
+            key: '501',
+            children: ['501_1']
+        }
+    ]
+};
+
 module.exports = {
     admin,
     hotelkeeperAdmin,
     travelkeeperAdmin,
+    foodkeeperAdmin,
 }

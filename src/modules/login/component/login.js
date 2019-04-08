@@ -45,7 +45,7 @@ class Login extends React.Component {
                         let initUrl = null;
                         // 管理员
                         if (backData.roleId === '000') {
-                            initUrl = '/frame/product/list';
+                            initUrl = '/frame/food/list';
                         }
                         // 管理员
                         else if (backData.roleId === '001') {
@@ -58,6 +58,8 @@ class Login extends React.Component {
                         // 旅游店家
                         else if (backData.roleId === '004') {
                             initUrl = '/frame/travelkeeper/travelList';
+                        }else if(backData.roleId === '005') {
+                            initUrl = '/frame/foodkeeper/foodList';
                         } else {
                             this.setState({loading: false});
                             message.error('角色不存在，请与管理员联系！');

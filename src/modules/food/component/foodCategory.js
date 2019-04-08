@@ -136,7 +136,7 @@ class ProductList extends React.Component {
   queryList = (callback) => {
     const {params, keyWords} = this.state;
     const param = assign({}, params, {keyWords});
-    axios.get('product/queryCategoryList', {
+    axios.get('food/queryCategoryList', {
       params: param
     }).then(res => res.data).then(data => {
       if (data.success) {
@@ -207,7 +207,7 @@ class ProductList extends React.Component {
   }
 
   addProductCategory = () => {
-    return this.context.router.push('/frame/product/category/add');
+    return this.context.router.push('/frame/food/category/add');
   }
 
   onDetail = id => {
@@ -227,7 +227,7 @@ class ProductList extends React.Component {
       onOk: () => {
         let param = {};
         param.id = key;
-        axios.post('product/categoryDelete', param).then(res => res.data).then(data => {
+        axios.post('food/categoryDelete', param).then(res => res.data).then(data => {
           if (data.success) {
             Notification.success({
               message: '提示',
