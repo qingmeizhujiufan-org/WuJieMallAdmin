@@ -1,0 +1,111 @@
+diff a/src/components/zzLeftSide/authority.js b/src/components/zzLeftSide/authority.js	(rejected hunks)
+@@ -1,61 +0,53 @@
+-const admin = [{
+-    key: '0',
+-    children: ['0_1']
+-}, {
+-    key: '1',
+-    children: ['1_1', '1_2', '1_3']
+-}, {
+-    key: '2',
+-    children: ['2_1', '2_2']
+-}, {
+-    key: '3',
+-    children: ['3_1', '3_2', '3_3', '3_4']
+-}, {
+-    key: '4',
+-    children: ['4_1', '4_2', '4_3']
+-}, {
+-    key: '5',
+-    children: ['5_1', '5_2']
+-}, {
+-    key: '6',
+-    children: ['6_1', '6_2']
+-}, {
+-    key: '7',
+-    children: ['7_1', '7_2']
+-}, {
+-    key: '8',
+-    children: ['8_1', '8_2']
+-}];
++const admin = {
++    defaultOpenKeys: ['000', '001', '002', '003', '004', '005', '006', '007', '008'],
++    defaultSelectedKeys: ['000_1'],
++    menu: [
++        {
++            key: '000',
++            children: ['000_1']
++        }, {
++            key: '001',
++            children: ['001_1', '001_2', '001_3']
++        }, {
++            key: '002',
++            children: ['002_1', '002_2']
++        }, {
++            key: '003',
++            children: ['003_1', '003_2', '003_3', '003_4']
++        }, {
++            key: '004',
++            children: ['004_1', '004_2', '004_3']
++        }, {
++            key: '005',
++            children: ['005_1', '005_2']
++        }, {
++            key: '006',
++            children: ['006_1', '006_2']
++        }, {
++            key: '007',
++            children: ['007_1', '007_2']
++        }, {
++            key: '008',
++            children: ['008_1', '008_2', '008_3']
++        }
++    ]
++};
+ 
+-const subAdmin = [{
+-    key: '1',
+-    children: ['1_1', '1_2', '1_3']
+-}, {
+-    key: '2',
+-    children: ['2_1', '2_2']
+-}, {
+-    key: '3',
+-    children: ['3_1', '3_2']
+-}, {
+-    key: '4',
+-    children: ['4_1', '4_2', '4_3']
+-}, {
+-    key: '5',
+-    children: ['5_1', '5_2']
+-}];
+-
+-const operator = [{
+-    key: '1',
+-    children: ['1_1', '1_2']
+-}, {
+-    key: '5',
+-    children: ['5_1', '5_2']
+-}];
+-
+-const shopOwner = []
++const hotelkeeperAdmin = {
++    defaultOpenKeys: ['300', '301'],
++    defaultSelectedKeys: ['300_1'],
++    menu: [
++        {
++            key: '300',
++            children: ['300_1', '300_2']
++        }, {
++            key: '301',
++            children: ['301_1']
++        }
++    ]
++};
+ 
+ module.exports = {
+     admin,
+-    subAdmin,
+-    operator
++    hotelkeeperAdmin
+ }

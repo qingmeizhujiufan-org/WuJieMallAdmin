@@ -1,446 +1,575 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {
-    Row,
-    Col,
-    Form,
-    Input,
-    InputNumber,
-    Select,
-    Breadcrumb,
-    Button,
-    notification,
-    message,
-    Divider,
-    Icon
+  Row,
+  Col,
+  Form,
+  Input,
+  Select,
+  Breadcrumb,
+  Button,
+  notification,
+  message,
+  InputNumber,
+  Divider,
+  Card,
 } from 'antd';
-import {Upload} from 'Comps/zui';
+import {DatePicker, Upload, Editor} from 'Comps/zui';
 import {formItemLayout, itemGrid} from 'Utils/formItemGrid';
+import restUrl from 'RestUrl';
 import axios from "Utils/axios";
-import restUrl from "RestUrl"
+import moment from 'moment';
+
 import '../index.less';
+import assign from "lodash/assign";
+import {EditorState, convertFromRaw, convertToRaw, ContentState} from 'draft-js';
+import draftToHtml from 'draftjs-to-html';
+import htmlToDraft from 'html-to-draftjs';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
 const {TextArea} = Input;
+const {RangePicker} = DatePicker;
 
 class Index extends React.Component {
-    state = {
-        fileList: [],
-        submitLoading: false,
-        categoryList: [],
-    };
+  state = {
+    submitLoading: false,
+    categoryList: [],
+    travelDays: [],
+    expenseDesc: EditorState.createEmpty(),
+    lineInfo: EditorState.createEmpty(),
+  };
 
-    componentDidMount = () => {
-        this.queryDetail();
-    }
+  componentDidMount = () => {
+    this.queryDetail();
+  }
 
-    queryDetail = () => {
-        const id = this.props.params.id;
-        const param = {};
-        param.id = id;
-        this.setState({
-            loading: true
-        });
-        axios.get('room/queryDetail', {
-            params: param
-        }).then(res => res.data).then(data => {
-            if (data.success) {
-                let backData = data.backData;
+  queryDetail = () => {
+    const id = this.props.params.id;
+    const param = {};
+    param.id = id;
+    this.setState({
+      loading: true
+    });
+    axios.get('travel/queryDetail', {
+      params: param
+    }).then(res => res.data).then(data => {
+      if (data.success) {
+        let backData = data.backData;
+        if(backData.expenseDesc && backData.expenseDesc !== ''){
+          let expenseDesc = backData.expenseDesc;
+          expenseDesc = draftToHtml(JSON.parse(expenseDesc));
+          const contentBlock = htmlToDraft(expenseDesc);
+          const contentState = ContentState.createFromBlockArray(contentBlock.contentBlocks);
+          const editorState = EditorState.createWithContent(contentState);
 
-                this.setFields(backData);
-                this.setState({
-                    data: backData
-                });
-            } else {
-                message.error('产品信息查询失败');
-            }
-            this.setState({
-                loading: false
-            });
-        });
-    }
-
-    setFields = val => {
-        const values = this.props.form.getFieldsValue();
-        for (let key in values) {
-            if (key === 'detailPic') {
-                values[key] = [];
-                val[key].map((item, index) => {
-                    values[key].push({
-                        uid: index,
-                        name: item.fileName,
-                        status: 'done',
-                        url: restUrl.FILE_ASSET + `${item.id + item.fileType}`,
-                        thumbUrl: restUrl.FILE_ASSET + `${item.id + item.fileType}`,
-                        response: {
-                            id: item.id
-                        }
-                    });
-                });
-                this.setState({fileList: values[key]});
-            } else {
-                values[key] = val[key];
-            }
+          this.setState({expenseDesc: editorState});
         }
+        if(backData.lineInfo && backData.lineInfo !== ''){
+          let lineInfo = backData.lineInfo;
+          lineInfo = draftToHtml(JSON.parse(lineInfo));
+          const contentBlock = htmlToDraft(lineInfo);
+          const contentState = ContentState.createFromBlockArray(contentBlock.contentBlocks);
+          const editorState = EditorState.createWithContent(contentState);
 
-        this.props.form.setFieldsValue(values);
-    }
+          this.setState({lineInfo: editorState});
+        }
+        this.setFields(backData);
+        this.setState({travelDays: backData.TravelDays});
+      } else {
+        message.error('旅游信息查询失败');
+      }
+      this.setState({
+        loading: false
+      });
+    });
+  }
 
-    handleChange = fileList => {
-        this.setState({fileList});
-    }
+  setFields = val => {
+    const {getFieldsValue} = this.props.form;
+    const values = getFieldsValue();
 
-    handleSubmit = (e) => {
-        e.preventDefault();
-        this.props.form.validateFieldsAndScroll((err, values) => {
-            if (!err) {
-                console.log('handleSubmit  param === ', values);
-                values.id = this.state.data.id;
-                values.thumbnail = values.detailPic[0].response.id;
-                values.detailPic = values.detailPic && values.detailPic.map(item => item.response.id).join(',');
-                values.hotelId = this.state.data.hotelId;
-
-                this.setState({
-                    submitLoading: true
-                });
-                axios.post('room/update', values).then(res => res.data).then(data => {
-                    if (data.success) {
-                        notification.success({
-                            message: '提示',
-                            description: '更新房间信息成功！'
-                        });
-
-                        return this.context.router.goBack();
-                    } else {
-                        message.error(data.backMsg);
-                    }
-                    this.setState({
-                        submitLoading: false
-                    });
-                });
+    for (let key in values) {
+      if (key === 'headerPic' || key === 'detailPic') {
+        values[key] = [];
+        val[key].map((item, index) => {
+          values[key].push({
+            uid: index,
+            name: item.fileName,
+            status: 'done',
+            url: restUrl.FILE_ASSET + `${item.id + item.fileType}`,
+            thumbUrl: restUrl.FILE_ASSET + `${item.id + item.fileType}`,
+            response: {
+              id: item.id
             }
+          });
         });
+      } else if (key === 'travelRegionTime') {
+        values[key] = [new moment(val['travelBeginTime']), new moment(val['travelEndTime'])];
+      } else {
+        values[key] = val[key];
+      }
+    }
+    console.log('values == ', values);
+    this.props.form.setFieldsValue(values);
+  }
+
+  disabledDate = current => {
+    return current && current < moment().endOf('day');
+  }
+
+  onRangeChange = date => {
+    const diffDays = date[1].diff(date[0], 'day');
+    console.log('date === ', date);
+    console.log('diffDays === ', diffDays);
+    this.props.form.setFieldsValue({
+      travelRegionTime: date,
+      travelLastTime: `${diffDays + 1}天${diffDays}晚`
+    });
+    console.log('values === ', this.props.form.getFieldsValue());
+    const travelDays = [];
+    for (let i = 0; i <= diffDays; i++) {
+      let beginDate = new moment(date[0]);
+      travelDays.push({
+        dayTime: beginDate.add(i, 'days').format('YYYY-MM-DD')
+      });
     }
 
+    this.setState({travelDays});
+  }
 
-    render() {
-        const {getFieldDecorator} = this.props.form;
-        const {fileList, submitLoading} = this.state;
+  onExpenseDescChange = value => {
+    this.setState({expenseDesc: value});
+  }
 
-        return (
-            <div className="zui-content">
-                <div className='pageHeader'>
-                    <div className="breadcrumb-block">
-                        <Breadcrumb>
-                            <Breadcrumb.Item>特色民宿管理</Breadcrumb.Item>
-                            <Breadcrumb.Item>民宿房间管理</Breadcrumb.Item>
-                            <Breadcrumb.Item>新增民宿房间</Breadcrumb.Item>
-                        </Breadcrumb>
-                    </div>
-                    <h1 className='title'>新增民宿房间</h1>
-                </div>
-                <div className='pageContent'>
-                    <div className='ibox-content'>
-                        <Form onSubmit={this.handleSubmit}>
-                            <Divider>房间描述图</Divider>
-                            <Row>
-                                <Col span={24}>
-                                    <FormItem
-                                    >
-                                        {getFieldDecorator('detailPic', {
-                                            rules: [{
-                                                required: true, message: '民宿房间描述图片不能为空!'
-                                            }],
-                                        })(
-                                            <Upload
-                                                multiple={false}
-                                                onChange={this.handleChange}
-                                            >
-                                                {fileList.length >= 5 ? null : <div><Icon type="plus"/> 添加</div>}
-                                            </Upload>
-                                        )}
-                                    </FormItem>
-                                </Col>
-                            </Row>
-                            <Divider>基本信息</Divider>
-                            <Row>
-                                <Col {...itemGrid}>
-                                    <FormItem
-                                        {...formItemLayout}
-                                        label="房间名称"
-                                    >
-                                        {getFieldDecorator('roomName', {
-                                            rules: [{required: true, message: '请输入房间名称'}],
-                                        })(
-                                            <Input/>
-                                        )}
-                                    </FormItem>
-                                </Col>
-                                <Col {...itemGrid}>
-                                    <FormItem
-                                        {...formItemLayout}
-                                        label="房间状态"
-                                    >
-                                        {getFieldDecorator('roomStatus', {
-                                            rules: [{required: true, message: '请选择房间状态'}],
-                                            initialValue: 0
-                                        })(
-                                            <Select placeholder="请选择">
-                                                <Option value={0}>可预订</Option>
-                                                <Option value={1}>已满房</Option>
-                                                <Option value={2}>已下架</Option>
-                                            </Select>
-                                        )}
-                                    </FormItem>
-                                </Col>
-                                <Col {...itemGrid}>
-                                    <FormItem
-                                        {...formItemLayout}
-                                        label="床型"
-                                    >
-                                        {getFieldDecorator('bedModel', {
-                                            rules: [{required: true, message: '请输入房间类型'}],
-                                        })(
-                                            <Select placeholder="请选择">
-                                                <Option value='1.5米单人床'>1.5米单人床</Option>
-                                                <Option value='1.8米双人床'>1.8米双人床</Option>
-                                                <Option value='2米圆床'>2米圆床</Option>
-                                            </Select>
-                                        )}
-                                    </FormItem>
-                                </Col>
-                                <Col {...itemGrid}>
-                                    <FormItem
-                                        {...formItemLayout}
-                                        label="房间价格"
-                                    >
-                                        {getFieldDecorator('roomPrice', {
-                                            rules: [{required: true, message: '请输入房间价格'}],
-                                        })(
-                                            <InputNumber min={1}/>
-                                        )}
-                                    </FormItem>
-                                </Col>
-                                <Col {...itemGrid}>
-                                    <FormItem
-                                        {...formItemLayout}
-                                        label="房间大小"
-                                    >
-                                        {getFieldDecorator('roomSize', {
-                                            rules: [{required: true, message: '请输入房间类型'}],
-                                        })(
-                                            <InputNumber min={1}/>
-                                        )}
-                                    </FormItem>
-                                </Col>
-                                <Col {...itemGrid}>
-                                    <FormItem
-                                        {...formItemLayout}
-                                        label="可住人数"
-                                    >
-                                        {getFieldDecorator('stayPersonNum', {
-                                            rules: [{required: true, message: '请输入房间类型'}],
-                                        })(
-                                            <InputNumber min={1}/>
-                                        )}
-                                    </FormItem>
-                                </Col>
-                                <Col {...itemGrid}>
-                                    <FormItem
-                                        {...formItemLayout}
-                                        label="网络"
-                                    >
-                                        {getFieldDecorator('internet', {
-                                            rules: [{required: true, message: '请输入房间类型'}],
-                                            initialValue: '免费WIFI'
-                                        })(
-                                            <Select placeholder="请选择">
-                                                <Option value='免费WIFI'>免费WIFI</Option>
-                                                <Option value='有线网络'>有线网络</Option>
-                                            </Select>
-                                        )}
-                                    </FormItem>
-                                </Col>
-                                <Col {...itemGrid}>
-                                    <FormItem
-                                        {...formItemLayout}
-                                        label="窗景"
-                                    >
-                                        {getFieldDecorator('windowScenery', {
-                                            rules: [{required: true, message: '请输入房间类型'}],
-                                            initialValue: '无'
-                                        })(
-                                            <Input/>
-                                        )}
-                                    </FormItem>
-                                </Col>
-                                <Col {...itemGrid}>
-                                    <FormItem
-                                        {...formItemLayout}
-                                        label="窗户"
-                                    >
-                                        {getFieldDecorator('window', {
-                                            rules: [{required: true, message: '请输入房间类型'}],
-                                            initialValue: '有窗'
-                                        })(
-                                            <Select placeholder="请选择">
-                                                <Option value='有窗'>有窗</Option>
-                                                <Option value='无床'>无窗</Option>
-                                                <Option value='部分有窗'>部分有窗</Option>
-                                                <Option value='内窗'>内窗</Option>
-                                            </Select>
-                                        )}
-                                    </FormItem>
-                                </Col>
-                                <Col {...itemGrid}>
-                                    <FormItem
-                                        {...formItemLayout}
-                                        label="卫浴"
-                                    >
-                                        {getFieldDecorator('bathroom', {
-                                            rules: [{required: true, message: '请输入房间类型'}],
-                                            initialValue: '独立卫浴免费洗浴用品'
-                                        })(
-                                            <Input/>
-                                        )}
-                                    </FormItem>
-                                </Col>
-                                <Col {...itemGrid}>
-                                    <FormItem
-                                        {...formItemLayout}
-                                        label="早餐"
-                                    >
-                                        {getFieldDecorator('breakfast', {
-                                            rules: [{required: true, message: '请输入房间类型'}],
-                                            initialValue: '含双早'
-                                        })(
-                                            <Select placeholder="请选择">
-                                                <Option value='含双早'>含双早</Option>
-                                                <Option value='含单早'>含单早</Option>
-                                                <Option value='不含'>不含</Option>
-                                            </Select>
-                                        )}
-                                    </FormItem>
-                                </Col>
-                                <Col {...itemGrid}>
-                                    <FormItem
-                                        {...formItemLayout}
-                                        label="饮品"
-                                    >
-                                        {getFieldDecorator('drink', {
-                                            rules: [{required: true, message: '请输入房间类型'}],
-                                            initialValue: '矿泉水两瓶'
-                                        })(
-                                            <Input/>
-                                        )}
-                                    </FormItem>
-                                </Col>
-                                <Col {...itemGrid}>
-                                    <FormItem
-                                        {...formItemLayout}
-                                        label="其他设施"
-                                    >
-                                        {getFieldDecorator('facilities', {
-                                            rules: [{required: true, message: '请输入房间类型'}],
-                                            initialValue: '无'
-                                        })(
-                                            <Input/>
-                                        )}
-                                    </FormItem>
-                                </Col>
-                                <Col {...itemGrid}>
-                                    <FormItem
-                                        {...formItemLayout}
-                                        label="支付方式"
-                                    >
-                                        {getFieldDecorator('payType', {
-                                            initialValue: '到店支付'
-                                        })(
-                                            <Select placeholder="请选择" disabled>
-                                                <Option value='在线支付'>在线支付</Option>
-                                                <Option value='到店支付'>到店支付</Option>
-                                            </Select>
-                                        )}
-                                    </FormItem>
-                                </Col>
-                                <Col {...itemGrid}>
-                                    <FormItem
-                                        {...formItemLayout}
-                                        label="可否取消"
-                                    >
-                                        {getFieldDecorator('canCancel', {
-                                            initialValue: '您在下单后变更或取消收取全额的定金。'
-                                        })(
-                                            <Select placeholder="请选择" disabled>
-                                                <Option value='支持取消'>支持取消</Option>
-                                                <Option value='您在下单后变更或取消收取全额的定金。'>您在下单后变更或取消收取全额的定金。</Option>
-                                            </Select>
-                                        )}
-                                    </FormItem>
-                                </Col>
-                                <Col {...itemGrid}>
-                                    <FormItem
-                                        {...formItemLayout}
-                                        label="可否加床"
-                                    >
-                                        {getFieldDecorator('canAddbed', {
-                                            initialValue: '不可加床'
-                                        })(
-                                            <Select placeholder="请选择" disabled>
-                                                <Option value='不可加床'>不可加床</Option>
-                                                <Option value='可以加床'>可以加床</Option>
-                                            </Select>
-                                        )}
-                                    </FormItem>
-                                </Col>
-                                <Col {...itemGrid}>
-                                    <FormItem
-                                        {...formItemLayout}
-                                        label="内宾"
-                                    >
-                                        {getFieldDecorator('innerNeed', {
-                                            rules: [{
-                                                required: true, message: '请输入手机号码',
-                                            }],
-                                            initialValue: '须大陆身份证入住'
-                                        })(
-                                            <Input disabled/>
-                                        )}
-                                    </FormItem>
-                                </Col>
-                                <Col {...itemGrid}>
-                                    <FormItem
-                                        {...formItemLayout}
-                                        label="优惠政策"
-                                    >
-                                        {getFieldDecorator('sale', {
-                                            rules: [{
-                                                required: false,
-                                            }],
-                                            initialValue: 'VIP可享受全额房价9折优惠'
-                                        })(
-                                            <TextArea disabled/>
-                                        )}
-                                    </FormItem>
-                                </Col>
-                            </Row>
-                            <Row type="flex" justify="center" style={{marginTop: 40}}>
-                                <Button type="primary" size='large' style={{width: 120}} htmlType="submit"
-                                        loading={submitLoading}>提交</Button>
-                            </Row>
-                        </Form>
-                    </div>
-                </div>
-            </div>
-        );
-    }
+  onLineInfoChange = value => {
+    this.setState({lineInfo: value});
+  }
+
+  handleSubmit = (e) => {
+    e.preventDefault();
+    this.props.form.validateFieldsAndScroll((err, values) => {
+      if (!err) {
+        const {expenseDesc, lineInfo} = this.state;
+        values.id = this.props.params.id;
+        values.thumbnail = values.headerPic[0].response.id;
+        values.headerPic = values.headerPic && values.headerPic.map(item => item.response.id).join(',');
+        values.detailPic = values.detailPic && values.detailPic.map(item => item.response.id).join(',');
+        values.expenseDesc = JSON.stringify(convertToRaw(expenseDesc.getCurrentContent()));
+        values.lineInfo = JSON.stringify(convertToRaw(lineInfo.getCurrentContent()));
+        console.log('handleSubmit  param === ', values);
+        this.setState({
+          submitLoading: true
+        });
+        axios.post('travel/update', values).then(res => res.data).then(data => {
+          if (data.success) {
+            notification.success({
+              message: '提示',
+              description: '更新主题旅游信息成功！'
+            });
+
+            // return this.context.router.push('/frame/travel/list');
+          } else {
+            message.error(data.backMsg);
+          }
+          this.setState({
+            submitLoading: false
+          });
+        });
+      }
+    });
+  }
+
+
+  render() {
+    const {getFieldDecorator, getFieldValue} = this.props.form;
+    const {submitLoading, travelDays, expenseDesc, lineInfo} = this.state;
+    const dayFormItems = (travelDays || []).map((item, index) => (
+      <div key={index}>
+        <Card title={item.dayTime}>
+          <Row>
+            <Col {...itemGrid} className='zui-hidden'>
+              <FormItem
+                {...formItemLayout}
+                label="id"
+              >
+                {getFieldDecorator(`travelDay[${index}].id`, {
+                  initialValue: item.id
+                })(
+                  <Input disabled className='zui-hidden'/>
+                )}
+              </FormItem>
+            </Col>
+            <Col {...itemGrid} className='zui-hidden'>
+              <FormItem
+                {...formItemLayout}
+                label="travelId"
+              >
+                {getFieldDecorator(`travelDay[${index}].travelId`, {
+                  initialValue: item.travelId
+                })(
+                  <Input disabled className='zui-hidden'/>
+                )}
+              </FormItem>
+            </Col>
+            <Col {...itemGrid}>
+              <FormItem
+                {...formItemLayout}
+                label="起点"
+              >
+                {getFieldDecorator(`travelDay[${index}].dayFrom`, {
+                  rules: [{
+                    required: true, message: '请输入起点',
+                  }],
+                  initialValue: item.dayFrom
+                })(
+                  <Input/>
+                )}
+              </FormItem>
+            </Col>
+            <Col {...itemGrid}>
+              <FormItem
+                {...formItemLayout}
+                label="目的地"
+              >
+                {getFieldDecorator(`travelDay[${index}].dayTo`, {
+                  rules: [{
+                    required: true, message: '请输入目的地',
+                  }],
+                  initialValue: item.dayTo
+                })(
+                  <Input/>
+                )}
+              </FormItem>
+            </Col>
+            <Col {...itemGrid}>
+              <FormItem
+                {...formItemLayout}
+                label="当日车程"
+              >
+                {getFieldDecorator(`travelDay[${index}].dayDrive`, {
+                  rules: [{
+                    required: true, message: '请输入当日车程',
+                  }],
+                  initialValue: item.dayDrive
+                })(
+                  <Input/>
+                )}
+              </FormItem>
+            </Col>
+            <Col {...itemGrid}>
+              <FormItem
+                {...formItemLayout}
+                label="住宿"
+              >
+                {getFieldDecorator(`travelDay[${index}].dayStay`, {
+                  rules: [{
+                    required: true, message: '请输入住宿',
+                  }],
+                  initialValue: item.dayStay
+                })(
+                  <Input/>
+                )}
+              </FormItem>
+            </Col>
+            <Col {...itemGrid}>
+              <FormItem
+                {...formItemLayout}
+                label="包含用餐"
+              >
+                {getFieldDecorator(`travelDay[${index}].dayDinner`, {
+                  rules: [{
+                    required: true, message: '请输入包含用餐',
+                  }],
+                  initialValue: item.dayDinner
+                })(
+                  <Input/>
+                )}
+              </FormItem>
+            </Col>
+            <Col {...itemGrid}>
+              <FormItem
+                {...formItemLayout}
+                label="游玩内容"
+              >
+                {getFieldDecorator(`travelDay[${index}].dayPlay`, {
+                  rules: [{
+                    required: true, message: '请输入游玩内容',
+                  }],
+                  initialValue: item.dayPlay
+                })(
+                  <Input/>
+                )}
+              </FormItem>
+            </Col>
+          </Row>
+        </Card>
+        <br/>
+      </div>
+    ));
+
+    return (
+
+      <div className="zui-content">
+        <div className='pageHeader'>
+          <div className="breadcrumb-block">
+            <Breadcrumb>
+              <Breadcrumb.Item>主题旅游管理</Breadcrumb.Item>
+              <Breadcrumb.Item>更新旅游</Breadcrumb.Item>
+            </Breadcrumb>
+          </div>
+          <h1 className='title'>更新旅游信息</h1>
+        </div>
+        <div className='pageContent'>
+          <div className='ibox-content'>
+            <Form onSubmit={this.handleSubmit}>
+              <Divider>旅游示意图</Divider>
+              <Row>
+                <Col span={24}>
+                  <FormItem
+                  >
+                    {getFieldDecorator('headerPic', {
+                      rules: [{required: true, message: '示意图不能为空!'}],
+                    })(
+                      <Upload/>
+                    )}
+                  </FormItem>
+                </Col>
+              </Row>
+              <Divider>基本信息</Divider>
+              <Row>
+                <Col {...itemGrid}>
+                  <FormItem
+                    {...formItemLayout}
+                    label="旅游主题名称"
+                  >
+                    {getFieldDecorator('travelTheme', {
+                      rules: [{
+                        required: true, message: '请输入主题名称',
+                      }],
+                    })(
+                      <Input/>
+                    )}
+                  </FormItem>
+                </Col>
+                <Col {...itemGrid}>
+                  <FormItem
+                    {...formItemLayout}
+                    label="咨询电话"
+                  >
+                    {getFieldDecorator('telephone', {
+                      rules: [{
+                        required: true, message: '请输入咨询电话',
+                      }],
+                    })(
+                      <Input/>
+                    )}
+                  </FormItem>
+                </Col>
+                <Col {...itemGrid}>
+                  <FormItem
+                    {...formItemLayout}
+                    label="限制人数"
+                  >
+                    {getFieldDecorator('travelLimiteNumber', {
+                      rules: [{
+                        required: true, message: '请输入限制人数',
+                      }],
+                    })(
+                      <InputNumber
+                        min={1}
+                        precision={0}
+                        step={1}
+                        style={{width: '100%'}}
+                      />
+                    )}
+                  </FormItem>
+                </Col>
+                <Col {...itemGrid}>
+                  <FormItem
+                    {...formItemLayout}
+                    label="时间区间"
+                  >
+                    {getFieldDecorator('travelRegionTime', {
+                      rules: [{
+                        required: true, message: '请输入时间区间',
+                      }],
+                    })(
+                      <RangePicker
+                        disabled
+                        disabledDate={this.disabledDate}
+                        format="YYYY-MM-DD"
+                        onChange={this.onRangeChange}
+                      />
+                    )}
+                  </FormItem>
+                </Col>
+                <Col {...itemGrid}>
+                  <FormItem
+                    {...formItemLayout}
+                    label="旅游时间"
+                  >
+                    {getFieldDecorator('travelLastTime', {
+                      rules: [{
+                        required: false, message: '请输入产品简介',
+                      }],
+                    })(
+                      <Input disabled/>
+                    )}
+                  </FormItem>
+                </Col>
+                <Col {...itemGrid}>
+                  <FormItem
+                    {...formItemLayout}
+                    label="成年人价格"
+                  >
+                    {getFieldDecorator('manPrice', {
+                      rules: [{
+                        required: false, message: '请输入成年人价格',
+                      }],
+                    })(
+                      <InputNumber
+                        min={0}
+                        precision={2}
+                        step={1}
+                        style={{width: '100%'}}
+                      />
+                    )}
+                  </FormItem>
+                </Col>
+                <Col {...itemGrid}>
+                  <FormItem
+                    {...formItemLayout}
+                    label="未成年人价格"
+                  >
+                    {getFieldDecorator('childPrice', {
+                      rules: [{
+                        required: false, message: '请输入未成年人价格',
+                      }],
+                    })(
+                      <InputNumber
+                        min={0}
+                        precision={2}
+                        step={1}
+                        style={{width: '100%'}}
+                      />
+                    )}
+                  </FormItem>
+                </Col>
+              </Row>
+              <Divider>行程介绍</Divider>
+              <Row>
+                <Col {...itemGrid}>
+                  <FormItem
+                    {...formItemLayout}
+                    label="出发地"
+                  >
+                    {getFieldDecorator('travelFrom', {
+                      rules: [{
+                        required: false, message: '请输入出发地',
+                      }]
+                    })(
+                      <Input/>
+                    )}
+                  </FormItem>
+                </Col>
+                <Col {...itemGrid}>
+                  <FormItem
+                    {...formItemLayout}
+                    label="目的地"
+                  >
+                    {getFieldDecorator('travelTo', {
+                      rules: [{
+                        required: false, message: '请输入目的地',
+                      }],
+                    })(
+                      <Input/>
+                    )}
+                  </FormItem>
+                </Col>
+                <Col {...itemGrid}>
+                  <FormItem
+                    {...formItemLayout}
+                    label="旅游用车"
+                  >
+                    {getFieldDecorator('travelUsecar', {
+                      rules: [{
+                        required: false
+                      }],
+                    })(
+                      <Input/>
+                    )}
+                  </FormItem>
+                </Col>
+                <Col {...itemGrid}>
+                  <FormItem
+                    {...formItemLayout}
+                    label="包含元素"
+                  >
+                    {getFieldDecorator('travelHas', {
+                      rules: [{
+                        required: false, message: '请输入包含元素',
+                      }],
+                    })(
+                      <Input/>
+                    )}
+                  </FormItem>
+                </Col>
+                <Col {...itemGrid}>
+                  <FormItem
+                    {...formItemLayout}
+                    label="旅游详情介绍"
+                  >
+                    {getFieldDecorator('travelDesc', {
+                      rules: [{
+                        required: false
+                      }],
+                    })(
+                      <TextArea/>
+                    )}
+                  </FormItem>
+                </Col>
+              </Row>
+              <Divider>图文介绍</Divider>
+              <Row>
+                <Col span={24}>
+                  <FormItem
+                  >
+                    {getFieldDecorator('detailPic')(
+                      <Upload/>
+                    )}
+                  </FormItem>
+                </Col>
+              </Row>
+              <Divider>行程详情</Divider>
+              {dayFormItems}
+              <Divider>旅游须知</Divider>
+              <Row gutter={48}>
+                <Col span={12}>
+                  <Divider>费用说明</Divider>
+                  <Editor editorState={expenseDesc} onEditorStateChange={this.onExpenseDescChange}/>
+                </Col>
+                <Col span={12}>
+                  <Divider>路线说明</Divider>
+                  <Editor editorState={lineInfo} onEditorStateChange={this.onLineInfoChange}/>
+                </Col>
+              </Row>
+              <Row type="flex" justify="center" style={{marginTop: 40}}>
+                <Button type="primary" size='large' style={{width: 120}} htmlType="submit"
+                        loading={submitLoading}>提交</Button>
+              </Row>
+            </Form>
+          </div>
+        </div>
+      </div>
+    );
+  }
 }
+
+const TravelEdit = Form.create()(Index);
 
 Index.contextTypes = {
-    router: PropTypes.object
+  router: PropTypes.object
 }
 
-const roomEdit = Form.create({name: 'roomEdit'})(Index);
-
-export default roomEdit;
+export default TravelEdit;

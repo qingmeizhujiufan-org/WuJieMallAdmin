@@ -10,12 +10,18 @@ const TravelList = Loadable({
     loader: () => import("../modules/travel/component/travelList"),
     loading: Loading
 });
-const TravelAdd = Loadable({
-    loader: () => import("../modules/travel/component/travelAdd"),
+
+const TravelEdit = Loadable({
+  loader: () => import("../modules/travel/component/travelEdit"),
+  loading: Loading
+});
+
+const TravelShopList = Loadable({
+    loader: () => import("../modules/travel/component/travelShopList"),
     loading: Loading
 });
-const TravelEdit = Loadable({
-    loader: () => import("../modules/travel/component/travelEdit"),
+const TravelShopEdit = Loadable({
+    loader: () => import("../modules/travel/component/travelShopEdit"),
     loading: Loading
 });
 
@@ -23,7 +29,8 @@ module.exports = (
     <Route path="travel" component={App}>
         <IndexRoute component={TravelList}/>
         <Route path="list" component={TravelList}/>
-        <Route path="add" component={TravelAdd}/>
+        <Route path="shopList" component={TravelShopList}/>
         <Route path="list/edit/:id" component={TravelEdit}/>
+        <Route path="shopList/edit/:id" component={TravelShopEdit}/>
     </Route>
 );

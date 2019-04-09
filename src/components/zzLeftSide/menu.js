@@ -115,12 +115,12 @@ const Menu = [
         children: [
             {
                 key: '007_1',
-                link: '/frame/travel/list',
-                label: '主题旅游列表'
+                link: '/frame/travel/shopList',
+                label: '旅游商家列表'
             }, {
                 key: '007_2',
-                link: '/frame/travel/add',
-                label: '新增主题旅游'
+                link: '/frame/travel/list',
+                label: '主题旅游列表'
             }
         ]
     }, {

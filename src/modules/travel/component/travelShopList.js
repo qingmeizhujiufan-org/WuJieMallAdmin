@@ -12,11 +12,10 @@ import {
   notification,
   message,
   Modal,
-  Button
+  Badge
 } from 'antd';
 import assign from 'lodash/assign';
 import axios from "Utils/axios";
-import Util from 'Utils/util';
 import '../index.less';
 import {ZZCard, ZZTable} from 'Comps/zz-antD';
 
@@ -28,108 +27,83 @@ class TravelList extends React.Component {
 
     this.columns = [
       {
-        title: '旅游主题名称',
-        width: 200,
+        title: '旅游商家名称',
+        width: 150,
         align: 'center',
-        dataIndex: 'travelTheme',
-        key: 'travelTheme',
+        dataIndex: 'travelKeeperName',
+        key: 'travelKeeperName',
         render: (text, record, index) => (
           <Link to={this.onEdit(record.id)}>{text}</Link>
         )
       }, {
-        title: '游玩时间',
-        dataIndex: 'travelLastTime',
-        width: 150,
-        align: 'center',
-        key: 'travelLastTime'
-      }, {
-        title: '包含元素',
-        dataIndex: 'travelHas',
-        width: 150,
-        align: 'center',
-        key: 'travelHas'
-      }, {
-        title: '限行人数',
-        width: 100,
-        align: 'right',
-        dataIndex: 'travelLimiteNumber',
-        key: 'travelLimiteNumber',
-        render: (text, record, index) => (
-          <span>{Util.shiftThousands(text)}</span>
-        )
-      }, {
-        title: '开始时间',
-        width: 100,
-        align: 'center',
-        dataIndex: 'travelBeginTime',
-        key: 'travelBeginTime',
-      }, {
-        title: '结束时间',
-        align: 'center',
-        width: 100,
-        dataIndex: 'travelEndTime',
-        key: 'travelEndTime'
-      }, {
-        title: '旅游费用',
-        align: 'right',
-        width: 100,
-        dataIndex: 'travelPrice',
-        key: 'travelPrice',
-        render: (text, record, index) => (
-          <span>{Util.shiftThousands(text)}</span>
-        )
-      }, {
-        title: '出发地',
-        align: 'center',
-        width: 100,
-        dataIndex: 'travelFrom',
-        key: 'travelFrom'
-      }, {
-        title: '目的地',
-        align: 'center',
-        width: 100,
-        dataIndex: 'travelTo',
-        key: 'travelTo'
-      }, {
-        title: '备注',
+        title: '手机电话',
+        dataIndex: 'telephone',
         width: 120,
-        dataIndex: 'memo',
-        key: 'memo'
-      }, {
-        title: '更新时间',
-        width: 200,
         align: 'center',
-        dataIndex: 'updated_at',
-        key: 'updated_at'
+        key: 'telephone'
+      }, {
+        title: '固定电话',
+        dataIndex: 'phone',
+        width: 120,
+        align: 'center',
+        key: 'phone'
+      }, {
+        title: '商家地址',
+        width: 180,
+        align: 'right',
+        dataIndex: 'travelKeeperAddress',
+        key: 'travelKeeperAddress',
+        render: (text, record, index) => (
+          <span><Link to={this.onAddress(record.id)}>{text}</Link></span>
+        )
+      }, {
+        title: '营业状态',
+        align: 'center',
+        width: 100,
+        dataIndex: 'businessStatus',
+        key: 'businessStatus',
+        render: (text) => {
+          if (text === 0) {
+            return <Badge status="error" text="休息中"/>;
+          } else if (text === 1) {
+            return <Badge status="success" text="营业中"/>;
+          } else {
+            return <Badge status="processing" text="下架中"/>;
+          }
+        }
       }, {
         title: '创建时间',
-        width: 200,
-        align: 'center',
+        align: 'right',
+        width: 150,
         dataIndex: 'created_at',
         key: 'created_at'
       }, {
-        title: <a><Icon type="setting" style={{fontSize: 18}}/></a>,
-        key: 'operation',
-        fixed: 'right',
-        width: 120,
+        title: '修改时间',
         align: 'center',
-        render: (text, record, index) => (
-          <Dropdown
-            placement="bottomCenter"
-            overlay={
-              <Menu>
-                <Menu.Item>
-                  <Link to={this.onEdit(record.id)}>编辑</Link>
-                </Menu.Item>
-                <Menu.Item>
-                  <a onClick={() => this.onDelete(record.id)}>删除</a>
-                </Menu.Item>
-              </Menu>
-            }
-          >
-            <a className="ant-dropdown-link">操作</a>
-          </Dropdown>
-        )
+        width: 150,
+        dataIndex: 'updated_at',
+        key: 'updated_at'
+      }, {
+        title: '备注',
+        align: 'center',
+        dataIndex: 'mark',
+        key: 'mark'
+      }, {
+        title: '状态',
+        align: 'left',
+        fixed: 'right',
+        width: 110,
+        dataIndex: 'state',
+        key: 'state',
+        render: (text) => {
+          if (text === 1) {
+            return <Badge status="error" text="审核不通过"/>;
+          } else if (text === 2) {
+            return <Badge status="success" text="审核通过"/>;
+          } else {
+            return <Badge status="processing" text="待审核"/>;
+          }
+        }
       }];
 
     this.state = {
@@ -153,9 +127,10 @@ class TravelList extends React.Component {
 
   queryList = () => {
     const {params, keyWords} = this.state;
+    // const createBy = sessionStorage.getItem('userName');
     const param = assign({}, params, {keyWords});
     this.setState({loading: true});
-    axios.get('travel/queryList', {
+    axios.get('travelKeeper/queryList', {
       params: param
     }).then(res => res.data).then(data => {
       if (data.success) {
@@ -175,7 +150,7 @@ class TravelList extends React.Component {
           });
         }
       } else {
-        Message.error('查询列表失败');
+        message.error('查询列表失败');
       }
       this.setState({loading: false});
     });
@@ -203,16 +178,11 @@ class TravelList extends React.Component {
     });
   }
 
-  addTravel = () => {
-    return this.context.router.push('/frame/travel/add');
-  }
-
-  onDetail = id => {
-    return `/frame/travel/list/detail/${id}`
-  }
-
   onEdit = id => {
-    return `/frame/travel/list/edit/${id}`
+    return `/frame/travel/shopList/edit/${id}`;
+  }
+
+  onAddress = id => {
   }
 
   onDelete = (key) => {
@@ -254,28 +224,20 @@ class TravelList extends React.Component {
         <div className='pageHeader'>
           <div className="breadcrumb-block">
             <Breadcrumb>
-              <Breadcrumb.Item>主题旅游管理</Breadcrumb.Item>
-              <Breadcrumb.Item>主题旅游列表</Breadcrumb.Item>
+              <Breadcrumb.Item>特色民宿管理</Breadcrumb.Item>
+              <Breadcrumb.Item>特色民宿列表</Breadcrumb.Item>
             </Breadcrumb>
           </div>
-          <h1 className='title'>主题旅游列表</h1>
+          <h1 className='title'>特色民宿列表</h1>
           <div className='search-area'>
             <Row type='flex' justify="center" align="middle">
               <Col span={8}>
                 <Search
-                  placeholder="主题名称"
+                  placeholder="民宿名称"
                   enterButton='搜索'
                   size="large"
                   onSearch={this.onSearch}
                 />
-              </Col>
-              <Col span={3}>
-                <Button
-                  icon='plus'
-                  size="large"
-                  onClick={this.addTravel}
-                  style={{marginLeft: 25}}
-                >新增主题旅游</Button>
               </Col>
             </Row>
           </div>
@@ -287,7 +249,7 @@ class TravelList extends React.Component {
               dataSource={dataSource}
               pagination={pagination}
               loading={loading}
-              scroll={{x: 2500}}
+              scroll={{x: 1500}}
               handlePageChange={this.handlePageChange}
             />
           </ZZCard>

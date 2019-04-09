@@ -56,9 +56,7 @@ class Index extends React.Component {
             if (!err) {
                 console.log('handleSubmit  param === ', values);
                 values.thumbnail = values.detailPic[0].response.id;
-                values.detailPic = values.detailPic && values.detailPic.map(item => item.response.id).join(',');
-                values.roomName = values.roomType.label;
-                values.roomType = values.roomType.key;
+                values.detailPic = values.detailPic && values.detailPic.map(item => item.response.id).join(',')
                 values.hotelId = this.state.hotelId;
 
                 this.setState({
@@ -129,18 +127,12 @@ class Index extends React.Component {
                                 <Col {...itemGrid}>
                                     <FormItem
                                         {...formItemLayout}
-                                        label="房间类型"
+                                        label="房间名称"
                                     >
-                                        {getFieldDecorator('roomType', {
+                                        {getFieldDecorator('roomName', {
                                             rules: [{required: true, message: '请输入房间类型'}],
                                         })(
-                                            <Select placeholder="请选择" labelInValue={true}>
-                                                <Option value={0}>标准大床房</Option>
-                                                <Option value={1}>商务大床房</Option>
-                                                <Option value={2}>标准双人间</Option>
-                                                <Option value={3}>商务双人间</Option>
-                                                <Option value={4}>豪华套房</Option>
-                                            </Select>
+                                          <Input/>
                                         )}
                                     </FormItem>
                                 </Col>

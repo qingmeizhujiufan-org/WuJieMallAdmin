@@ -124,10 +124,8 @@ class HotelList extends React.Component {
 
     queryList = () => {
         const {params, keyWords} = this.state;
-        const createBy = sessionStorage.getItem('userName');
-        const param = assign({
-            createBy
-        }, params, {keyWords});
+        // const createBy = sessionStorage.getItem('userName');
+        const param = assign({}, params, {keyWords});
         this.setState({loading: true});
         axios.get('hotel/queryList', {
             params: param

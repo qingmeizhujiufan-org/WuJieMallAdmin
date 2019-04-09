@@ -46,7 +46,7 @@ class Index extends React.Component {
         this.setState({
             loading: true
         });
-        axios.get('hotel/queryDetail', {
+        axios.get('travelKeeper/queryDetail', {
             params: param
         }).then(res => res.data).then(data => {
             if (data.success) {
@@ -103,30 +103,27 @@ class Index extends React.Component {
         this.props.form.validateFieldsAndScroll((err, values) => {
             if (!err) {
                 const data = this.state.data;
-                const typeList = ['经济型', '舒适型', '豪华型', '特色型'];
                 const statusList = ['营业中', '休息中', '下架中'];
+                const checkList = ['未审核', '审核通过', '审核不通过'];
                 values.id = sessionStorage.userId;
                 values.thumbnail = values.headerPic[0].response.id;
                 values.headerPic = values.headerPic && values.headerPic.map(item => item.response.id).join(',');
                 values.detailPic = values.detailPic && values.detailPic.map(item => item.response.id).join(',');
-                values.hotelType = values.hotelType;
-                values.hotelTypeText = typeList[values.hotelType];
-                values.hotelStatus = values.hotelStatus;
-                values.hotelStatusText = statusList[values.hotelStatus];
+                values.businessStatusText = checkList[values.businessStatus];
                 values.createBy = sessionStorage.userName;
 
                 this.setState({
                     submitLoading: true
                 });
-                axios.post(data.id ? 'hotel/update' : 'hotel/add', values).then(res => res.data).then(data => {
+                axios.post('travelKeeper/update').then(res => res.data).then(data => {
                     if (data.success) {
                         notification.success({
                             message: '提示',
-                            description: '认证信息更新成功，请等待审核！'
+                            description: '认证信息审核完成！'
                         });
                         this.queryDetail();
                     } else {
-                        message.error(data.backMsg);
+                        message.error('认证信息审核失败!');
                     }
                     this.setState({
                         submitLoading: false
@@ -156,13 +153,13 @@ class Index extends React.Component {
                     <div className='ibox-content'>
                         <Spin spinning={loading}>
                         <Form onSubmit={this.handleSubmit}>
-                            <Divider>民宿描述图</Divider>
+                            <Divider>旅游商家描述图</Divider>
                             <Row>
                                 <Col span={24}>
                                     <FormItem
                                     >
                                         {getFieldDecorator('headerPic', {
-                                            rules: [{required: true, message: '民宿店铺描述图片不能为空!'}],
+                                            rules: [{required: true, message: '旅游商家描述图片不能为空!'}],
                                         })(
                                             <Upload/>
                                         )}
@@ -174,11 +171,11 @@ class Index extends React.Component {
                                 <Col {...itemGrid}>
                                     <FormItem
                                         {...formItemLayout}
-                                        label="民宿名称"
+                                        label="旅游商家名称"
                                     >
-                                        {getFieldDecorator('hotelName', {
+                                        {getFieldDecorator('travelKeeperName', {
                                             rules: [{
-                                                required: true, message: '请输入民宿名称',
+                                                required: true, message: '请输入商家名称',
                                             }],
                                         })(
                                             <Input/>
@@ -188,31 +185,12 @@ class Index extends React.Component {
                                 <Col {...itemGrid}>
                                     <FormItem
                                         {...formItemLayout}
-                                        label="民宿地址"
+                                        label="商家地址"
                                     >
-                                        {getFieldDecorator('hotelAddress', {
-                                            rules: [{required: true, message: '请输入民宿地址'}],
+                                        {getFieldDecorator('travelKeeperAddress', {
+                                            rules: [{required: true, message: '请输入商家地址'}],
                                         })(
                                             <Input/>
-                                        )}
-                                    </FormItem>
-                                </Col>
-                                <Col {...itemGrid}>
-                                    <FormItem
-                                        {...formItemLayout}
-                                        label="民宿类型"
-                                    >
-                                        {getFieldDecorator('hotelType', {
-                                            rules: [{
-                                                required: true, message: '请输入民宿持有人',
-                                            }],
-                                        })(
-                                            <Select placeholder="请选择">
-                                                <Option value={0}>经济型</Option>
-                                                <Option value={1}>舒适型</Option>
-                                                <Option value={2}>豪华型</Option>
-                                                <Option value={3}>特色型</Option>
-                                            </Select>
                                         )}
                                     </FormItem>
                                 </Col>
@@ -237,7 +215,7 @@ class Index extends React.Component {
                                         {...formItemLayout}
                                         label="固定号码"
                                     >
-                                        {getFieldDecorator('hotelPhone', {
+                                        {getFieldDecorator('phone', {
                                             rules: [{
                                                 required: false,
                                             }],
@@ -249,32 +227,12 @@ class Index extends React.Component {
                                 <Col {...itemGrid}>
                                     <FormItem
                                         {...formItemLayout}
-                                        label="起步价"
+                                        label="营业状态"
                                     >
-                                        {getFieldDecorator('initialCharge', {
+                                        {getFieldDecorator('businessStatus', {
                                             rules: [{
-                                                required: true, message: '请输入起步价',
-                                            }],
-                                        })(
-                                            <InputNumber
-                                                min={0}
-                                                precision={2}
-                                                step={1}
-                                                style={{width: '100%'}}
-                                            />
-                                        )}
-                                    </FormItem>
-                                </Col>
-                                <Col {...itemGrid}>
-                                    <FormItem
-                                        {...formItemLayout}
-                                        label="民宿状态"
-                                    >
-                                        {getFieldDecorator('hotelStatus', {
-                                            rules: [{
-                                                required: false, message: '请输入产品状态',
-                                            }],
-                                            initialValue: 0
+                                                required: false, message: '请输入营业状态',
+                                            }]
                                         })(
                                             <Select placeholder="请选择">
                                                 <Option value={0}>休息中</Option>
@@ -284,6 +242,25 @@ class Index extends React.Component {
                                         )}
                                     </FormItem>
                                 </Col>
+                              <Col {...itemGrid}>
+                                <FormItem
+                                  {...formItemLayout}
+                                  label="审核状态"
+
+                                >
+                                  {getFieldDecorator('businessStatus', {
+                                    rules: [{
+                                      required: false, message: '请输入营业状态',
+                                    }]
+                                  })(
+                                    <Select disabled>
+                                      <Option value={0}>未审核</Option>
+                                      <Option value={1}>审核通过</Option>
+                                      <Option value={2}>审核不通过</Option>
+                                    </Select>
+                                  )}
+                                </FormItem>
+                              </Col>
                                 <Col {...itemGrid}>
                                     <FormItem
                                         {...formItemLayout}
@@ -299,13 +276,13 @@ class Index extends React.Component {
                                     </FormItem>
                                 </Col>
                             </Row>
-                            <Divider>民宿详情图</Divider>
+                            <Divider>旅游商家详情图</Divider>
                             <Row>
                                 <Col span={24}>
                                     <FormItem
                                     >
                                         {getFieldDecorator('detailPic', {
-                                            rules: [{required: true, message: '民宿详情图片不能为空!'}],
+                                            rules: [{required: true, message: '旅游商家详情图片不能为空!'}],
                                         })(
                                             <Upload/>
                                         )}
@@ -315,12 +292,6 @@ class Index extends React.Component {
                             <Row type="flex" justify="center" style={{marginTop: 40}}>
                                 <Button type="primary" size='large' style={{width: 120}} htmlType="submit"
                                         loading={submitLoading}>保存</Button>
-                                {
-                                    data.hotelStatus === 2 ?
-                                        <Button type="danger" size='large'
-                                                style={{width: 120, marginLeft: 20}}>删除</Button> :
-                                        null
-                                }
                             </Row>
                         </Form>
                         </Spin>
@@ -335,6 +306,6 @@ Index.contextTypes = {
     router: PropTypes.object
 }
 
-const hotelAdd = Form.create({name: 'hotelAdd'})(Index);
+const travelKeeper = Form.create({name: 'travelKeeper'})(Index);
 
-export default hotelAdd;
+export default travelKeeper;
