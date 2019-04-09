@@ -53,7 +53,7 @@ class Index extends React.Component {
         this.setFields(backData);
         this.setState({
           data: backData,
-          fileList:backData.productCategoryPic
+          fileList:backData.foodCategoryPic
         });
       } else {
         Message.error('产品信息查询失败');
@@ -67,7 +67,7 @@ class Index extends React.Component {
   setFields = val => {
     const values = this.props.form.getFieldsValue();
     for (let key in values) {
-      if (key === 'productCategoryPic') {
+      if (key === 'foodCategoryPic') {
         values[key] = [];
         val[key].map((item, index) => {
           values[key].push({
@@ -105,8 +105,8 @@ class Index extends React.Component {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
       if (!err) {
-        if(values.productCategoryPic) {
-          values.productCategoryPic = values.productCategoryPic.map(item => item.response.id).join(',');
+        if(values.foodCategoryPic) {
+          values.foodCategoryPic = values.foodCategoryPic.map(item => item.response.id).join(',');
         }
         values.id = this.props.params.id;
 
@@ -163,7 +163,7 @@ class Index extends React.Component {
                     label="头像"
                     {...formItemLayout}
                   >
-                    {getFieldDecorator('productCategoryPic', {
+                    {getFieldDecorator('foodCategoryPic', {
                       rules: [{required: true, message: '类别图片不能为空!'}],
                     })(
                       <ZZUpload
@@ -180,7 +180,7 @@ class Index extends React.Component {
                     {...formItemLayout}
                     label="类别名称"
                   >
-                    {getFieldDecorator('productCategoryName', {
+                    {getFieldDecorator('foodCategoryName', {
                       rules: [{required: true, message: '请输入类别名称'}]
                     })(
                       <Input/>
@@ -192,7 +192,7 @@ class Index extends React.Component {
                     {...formItemLayout}
                     label="类别编码"
                   >
-                    {getFieldDecorator('productCategoryCode', {
+                    {getFieldDecorator('foodCategoryCode', {
                       rules: [{required: true, message: '请输入产品类别条码'}]
                     })(
                       <Input/>

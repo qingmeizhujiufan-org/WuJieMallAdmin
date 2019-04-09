@@ -22,7 +22,7 @@ import {ZZCard, ZZTable} from 'Comps/zz-antD';
 
 const Search = Input.Search;
 
-class ProductList extends React.Component {
+class FoodList extends React.Component {
   constructor(props) {
     super(props);
 
@@ -183,7 +183,7 @@ class ProductList extends React.Component {
     });
   }
 
-  addProduct = () => {
+  addFood = () => {
     return this.context.router.push('/frame/shop/add');
   }
 
@@ -253,7 +253,7 @@ class ProductList extends React.Component {
                 <Button
                   icon='plus'
                   size="large"
-                  onClick={this.addProduct}
+                  onClick={this.addFood}
                   style={{marginLeft: 25}}
                 >新增店铺</Button>
               </Col>
@@ -277,8 +277,8 @@ class ProductList extends React.Component {
   }
 }
 
-ProductList.contextTypes = {
+FoodList.contextTypes = {
   router: PropTypes.object
 }
 
-export default ProductList;
+export default FoodList;

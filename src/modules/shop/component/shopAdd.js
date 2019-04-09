@@ -288,6 +288,6 @@ class Index extends React.Component {
 Index.contextTypes = {
     router: PropTypes.object
 }
-const productAdd = Form.create()(Index);
+const foodAdd = Form.create()(Index);
 
-export default productAdd;
+export default foodAdd;

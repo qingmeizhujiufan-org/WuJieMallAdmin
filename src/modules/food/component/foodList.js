@@ -31,8 +31,8 @@ class FoodList extends React.Component {
                 title: '产品名称',
                 width: 200,
                 align: 'center',
-                dataIndex: 'productName',
-                key: 'productName',
+                dataIndex: 'foodName',
+                key: 'foodName',
                 render: (text, record, index) => (
                     <Link to={this.onEdit(record.id)}>{text}</Link>
                 )
@@ -44,16 +44,16 @@ class FoodList extends React.Component {
                 key: 'shopName'
             }, {
                 title: '产品分类',
-                dataIndex: 'productCategoryName',
+                dataIndex: 'foodCategoryName',
                 width: 150,
                 align: 'center',
-                key: 'productCategoryName'
+                key: 'foodCategoryName'
             }, {
                 title: '售价',
                 width: 100,
                 align: 'right',
-                dataIndex: 'productSellingprice',
-                key: 'productSellingprice',
+                dataIndex: 'foodSellingprice',
+                key: 'foodSellingprice',
                 render: (text, record, index) => (
                     <span>{Util.shiftThousands(text)}</span>
                 )
@@ -61,8 +61,8 @@ class FoodList extends React.Component {
                 title: '成本价格',
                 width: 100,
                 align: 'right',
-                dataIndex: 'productCostprice',
-                key: 'productCostprice',
+                dataIndex: 'foodCostprice',
+                key: 'foodCostprice',
                 render: (text, record, index) => (
                     <span>{Util.shiftThousands(text)}</span>
                 )
@@ -70,26 +70,26 @@ class FoodList extends React.Component {
                 title: '产品编码',
                 align: 'center',
                 width: 100,
-                dataIndex: 'productCode',
-                key: 'productCode'
+                dataIndex: 'foodCode',
+                key: 'foodCode'
             }, {
                 title: '产品规格',
                 align: 'center',
                 width: 100,
-                dataIndex: 'productSpec',
-                key: 'productSpec'
+                dataIndex: 'foodSpec',
+                key: 'foodSpec'
             }, {
                 title: '产品品牌',
                 align: 'center',
                 width: 100,
-                dataIndex: 'productBrand',
-                key: 'productBrand'
+                dataIndex: 'foodBrand',
+                key: 'foodBrand'
             }, {
                 title: '产品产地',
                 align: 'center',
                 width: 100,
-                dataIndex: 'productOrigin',
-                key: 'productOrigin'
+                dataIndex: 'foodOrigin',
+                key: 'foodOrigin'
             }, {
                 title: '备注',
                 width: 120,
@@ -203,16 +203,16 @@ class FoodList extends React.Component {
         });
     }
 
-    addProduct = () => {
+    addFood = () => {
         return this.context.router.push('/frame/food/add');
     }
 
     onDetail = id => {
-        return `/frame/product/list/detail/${id}`
+        return `/frame/food/list/detail/${id}`
     }
 
     onEdit = id => {
-        return `/frame/product/list/edit/${id}`
+        return `/frame/food/list/edit/${id}`
     }
 
     onDelete = (key) => {
@@ -273,7 +273,7 @@ class FoodList extends React.Component {
                                 <Button
                                     icon='plus'
                                     size="large"
-                                    onClick={this.addProduct}
+                                    onClick={this.addFood}
                                     style={{marginLeft: 25}}
                                 >新增产品</Button>
                             </Col>

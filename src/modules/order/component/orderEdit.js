@@ -45,9 +45,9 @@ class Index extends React.Component {
 
     this.state = {
       data: {},
-      allProduct: [],
-      orderProduct: [],
-      selectedProduct: [],
+      allFood: [],
+      orderFood: [],
+      selectedFood: [],
       selectedRowKeys: [],
       tempSelectedRowKeys: [],
       tempSelectedRow: [],
@@ -67,7 +67,7 @@ class Index extends React.Component {
       submitLoading: false
     };
 
-    this.productColumns = [
+    this.foodColumns = [
       {
         title: '产品名称',
         dataIndex: 'name',
@@ -187,7 +187,7 @@ class Index extends React.Component {
 
         this.setState({
           data: backData,
-          orderProduct: backData.childrenDetail,
+          orderFood: backData.childrenDetail,
           isInEdit: backData.orderState === 0
         }, () => {
           this.showTips();
@@ -230,48 +230,48 @@ class Index extends React.Component {
   }
 
   setSelectData = () => {
-    let data = this.state.orderProduct;
-    let rowKeys = data.map(item => item.productId);
+    let data = this.state.orderFood;
+    let rowKeys = data.map(item => item.foodId);
     let rows = data.map(item => {
       return {
         _id: item.id,
-        id: item.productId,
-        name: item.productName,
+        id: item.foodId,
+        name: item.foodName,
         pnumber: item.pnumber,
-        unit: item.productUnit,
-        barCode: item.productBarCode,
+        unit: item.foodUnit,
+        barCode: item.foodBarCode,
         orderId: item.orderId,
-        wareHouse: item.productWarehouse,
+        wareHouse: item.foodWarehouse,
         voState: item.voState
       }
     });
     console.log('rowKeys ===', rowKeys);
     this.setState({
       selectedRowKeys: rowKeys,
-      selectedProduct: rows
+      selectedFood: rows
     });
   }
 
   onDelete = record => {
-    let {selectedProduct, selectedRowKeys} = this.state;
+    let {selectedFood, selectedRowKeys} = this.state;
     if (record.orderId) {
-      selectedProduct.map(item => {
+      selectedFood.map(item => {
         if (record.id === item.id) {
           item.voState = 3;
         }
       });
     } else {
-      selectedProduct = selectedProduct.filter(item => item.id !== record.id);
+      selectedFood = selectedFood.filter(item => item.id !== record.id);
     }
     selectedRowKeys = selectedRowKeys.filter(item => item !== record.id);
     this.setState({
-      selectedProduct: selectedProduct,
+      selectedFood: selectedFood,
       selectedRowKeys: selectedRowKeys
     });
   }
 
   showModal = () => {
-    const {selectedRowKeys, selectedProduct} = this.state;
+    const {selectedRowKeys, selectedFood} = this.state;
     this.setState({
       showModal: true,
       params: {
@@ -279,25 +279,25 @@ class Index extends React.Component {
         pageSize: 10,
       },
       tempSelectedRowKeys: selectedRowKeys,
-      tempSelectedRow: selectedProduct
+      tempSelectedRow: selectedFood
     }, () => {
       this.getList();
     })
   }
 
   handleCancel = () => {
-    const {selectedRowKeys, selectedProduct} = this.state
+    const {selectedRowKeys, selectedFood} = this.state
     this.setState({
       tempSelectedRowKeys: selectedRowKeys,
-      tempSelectedRow: selectedProduct,
+      tempSelectedRow: selectedFood,
       showModal: false
     });
   }
 
   handleOk = () => {
-    let {tempSelectedRowKeys, tempSelectedRow, selectedProduct} = this.state;
+    let {tempSelectedRowKeys, tempSelectedRow, selectedFood} = this.state;
     /* 判断临时选中的行是否有已经删除的接口返回的产品数据，有则把voState重置为2，更新态 */
-    selectedProduct.map(item => {
+    selectedFood.map(item => {
       if (item.orderId) {
         if (indexOf(tempSelectedRowKeys, item.id) > -1) {
           item.voState = 2;
@@ -306,15 +306,15 @@ class Index extends React.Component {
         item.voState = 1;
       }
     });
-    tempSelectedRow = uniqBy(tempSelectedRow.concat(selectedProduct), 'id');
-    tempSelectedRow = tempSelectedRow.filter(item => includes(tempSelectedRowKeys.concat(selectedProduct.map(item => item.id)), item.id));
+    tempSelectedRow = uniqBy(tempSelectedRow.concat(selectedFood), 'id');
+    tempSelectedRow = tempSelectedRow.filter(item => includes(tempSelectedRowKeys.concat(selectedFood.map(item => item.id)), item.id));
 
     console.log('tempSelectedRow ', tempSelectedRow);
     console.log('tempSelectedRowKeys ', tempSelectedRowKeys);
 
     this.setState({
       selectedRowKeys: tempSelectedRowKeys,
-      selectedProduct: tempSelectedRow,
+      selectedFood: tempSelectedRow,
       showModal: false
     });
   }
@@ -342,18 +342,18 @@ class Index extends React.Component {
   }
 
   setEachProNumber = (val, record, index) => {
-    let data = this.state.selectedProduct;
+    let data = this.state.selectedFood;
     record.pnumber = val ? val : 1;
     data[index] = record;
     this.setState({
-      selectedProduct: data
+      selectedFood: data
     })
   }
 
   isSameHouse = (val)=> {
-    let selectedProduct = this.state.selectedProduct;
+    let selectedFood = this.state.selectedFood;
     let houseName = val === 0 ? '武汉' : '北京'
-    let res = selectedProduct.find(item => item.productWarehouse !== val);
+    let res = selectedFood.find(item => item.foodWarehouse !== val);
     if (res) {
       Message.warning(`当前订单仓库为${houseName},与选中产品仓库不匹配！`);
       return;
@@ -383,7 +383,7 @@ class Index extends React.Component {
         });
 
         this.setState({
-          allProduct: data,
+          allFood: data,
           loading: false,
           pagination: {total}
         });
@@ -427,13 +427,13 @@ class Index extends React.Component {
     this.props.form.validateFields((err, values) => {
       if (!err) {
 
-        const {data, selectedProduct} = this.state;
-        if (selectedProduct.length === 0) {
+        const {data, selectedFood} = this.state;
+        if (selectedFood.length === 0) {
           Message.warning('请添加相关产品！');
           return;
         }
 
-        // let res = selectedProduct.find(item => item.wareHouse != values.warehouse);
+        // let res = selectedFood.find(item => item.wareHouse != values.warehouse);
         // console.log('res ===', res)
         // if (res) {
         //   Message.warning('产品和仓库不匹配！');
@@ -445,17 +445,17 @@ class Index extends React.Component {
         values.deliverDate = values.deliverDate.format("YYYY-MM-DD");
         values.incomlineTime = values.incomlineTime.format("YYYY-MM-DD");
         values.costRatio = this.state.data.costRatio;
-        values.childrenDetail = selectedProduct.map(item => {
+        values.childrenDetail = selectedFood.map(item => {
           return {
             id: item._id,
-            productId: item.id,
-            productName: item.name,
+            foodId: item.id,
+            foodName: item.name,
             pnumber: item.pnumber || 1,
-            productUnit: item.unit,
-            productBarCode: item.barCode,
+            foodUnit: item.unit,
+            foodBarCode: item.barCode,
             orderId: item.orderId || data.id,
-            productCostPrice: item.costPrice,
-            productWarehouse: item.wareHouse,
+            foodCostPrice: item.costPrice,
+            foodWarehouse: item.wareHouse,
             voState: item.voState || 1
           }
         });
@@ -484,7 +484,7 @@ class Index extends React.Component {
 
   render() {
     const {getFieldDecorator} = this.props.form;
-    const {data, selectedProduct, canEdit, isInEdit, showTips, tempSelectedRowKeys, isOperator, pagination, allProduct, loading, submitLoading, showModal} = this.state;
+    const {data, selectedFood, canEdit, isInEdit, showTips, tempSelectedRowKeys, isOperator, pagination, allFood, loading, submitLoading, showModal} = this.state;
     const rowSelection = {
       selectedRowKeys: tempSelectedRowKeys,
       onChange: this.onSelectChange,
@@ -525,7 +525,7 @@ class Index extends React.Component {
                 </div>
                 <ZZTable
                   size='small'
-                  dataSource={selectedProduct.filter(item => item.voState !== 3)}
+                  dataSource={selectedFood.filter(item => item.voState !== 3)}
                   columns={this.orderColumns}
                 />
               </div>
@@ -554,9 +554,9 @@ class Index extends React.Component {
                   {tempSelectedRowKeys.length ? `已选择 ${tempSelectedRowKeys.length} 个产品` : '未选择产品'}
                 </h3>
                 <ZZTable
-                  columns={this.productColumns}
+                  columns={this.foodColumns}
                   rowSelection={rowSelection}
-                  dataSource={allProduct}
+                  dataSource={allFood}
                   pagination={pagination}
                   loading={loading}
                   handlePageChange={this.handlePageChange.bind(this)}

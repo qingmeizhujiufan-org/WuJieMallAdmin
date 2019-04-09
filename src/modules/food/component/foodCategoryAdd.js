@@ -54,8 +54,8 @@ class Index extends React.Component {
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
             if (!err) {
-                if (values.productCategoryPic) {
-                    values.productCategoryPic = values.productCategoryPic.map(item => item.response.id).join(',');
+                if (values.foodCategoryPic) {
+                    values.foodCategoryPic = values.foodCategoryPic.map(item => item.response.id).join(',');
                 }
                 console.log('handleSubmit  param === ', values);
                 this.setState({
@@ -111,7 +111,7 @@ class Index extends React.Component {
                                         label="头像"
                                         {...formItemLayout}
                                     >
-                                        {getFieldDecorator('productCategoryPic', {
+                                        {getFieldDecorator('foodCategoryPic', {
                                             rules: [{required: true, message: '类别图片不能为空!'}],
                                         })(
                                             <ZZUpload
@@ -128,7 +128,7 @@ class Index extends React.Component {
                                         {...formItemLayout}
                                         label="类别名称"
                                     >
-                                        {getFieldDecorator('productCategoryName', {
+                                        {getFieldDecorator('foodCategoryName', {
                                             rules: [{required: true, message: '请输入类别名称'}]
                                         })(
                                             <Input/>
@@ -140,7 +140,7 @@ class Index extends React.Component {
                                         {...formItemLayout}
                                         label="类别编码"
                                     >
-                                        {getFieldDecorator('productCategoryCode', {
+                                        {getFieldDecorator('foodCategoryCode', {
                                             rules: [{required: true, message: '请输入产品类别条码'}]
                                         })(
                                             <Input/>

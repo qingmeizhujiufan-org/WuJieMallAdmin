@@ -3,11 +3,11 @@ import assign from 'lodash/assign';
 export const SHOW_PRODUCT_LIST = 'SHOW_PRODUCT_LIST';
 
 //获取产品列表
-export const getProductList = (url, params) => {
+export const getFoodList = (url, params) => {
 	return dispatch => {
 		return (
             ajax.getJSON(url, null, (data) => {
-            	if(data.success){	
+            	if(data.success){
 		            data =  eval('(' + data.backData + ')');
 		            data.map(function(item, index){
 		            	item.key = index;

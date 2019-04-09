@@ -45,13 +45,13 @@ class Index extends React.Component {
             region: sessionStorage.region,
             isOperator: false,
             submitLoading: false,
-            selectedProduct: [],
+            selectedFood: [],
             selectedRowKeys: [],
             tempSelectedRowKeys: [],
             tempSelectedRow: [],
             showModal: false,
             loading: false,
-            allProduct: [],
+            allFood: [],
             pagination: {},
             params: {
                 pageNumber: 1,
@@ -60,7 +60,7 @@ class Index extends React.Component {
             senderData: {}
         };
 
-        this.productColumns = [
+        this.foodColumns = [
             {
                 title: '产品名称',
                 dataIndex: 'name',
@@ -164,11 +164,11 @@ class Index extends React.Component {
     }
 
     onDelete = id => {
-        let {selectedProduct, selectedRowKeys} = this.state;
-        selectedProduct = selectedProduct.filter(item => item.id !== id);
+        let {selectedFood, selectedRowKeys} = this.state;
+        selectedFood = selectedFood.filter(item => item.id !== id);
         this.setState({
             selectedRowKeys: selectedRowKeys.filter(item => item !== id),
-            selectedProduct: selectedProduct
+            selectedFood: selectedFood
         });
     }
 
@@ -189,7 +189,7 @@ class Index extends React.Component {
     }
 
     showModal = () => {
-        const {selectedRowKeys, selectedProduct} = this.state
+        const {selectedRowKeys, selectedFood} = this.state
         this.setState({
             showModal: true,
             params: {
@@ -197,17 +197,17 @@ class Index extends React.Component {
                 pageSize: 10,
             },
             tempSelectedRowKeys: selectedRowKeys,
-            tempSelectedRow: selectedProduct
+            tempSelectedRow: selectedFood
         }, () => {
             this.getList();
         })
     }
 
     handleCancel = () => {
-        const {selectedRowKeys, selectedProduct} = this.state
+        const {selectedRowKeys, selectedFood} = this.state
         this.setState({
             tempSelectedRowKeys: selectedRowKeys,
-            tempSelectedRow: selectedProduct,
+            tempSelectedRow: selectedFood,
             showModal: false
         });
     }
@@ -222,7 +222,7 @@ class Index extends React.Component {
         }
         this.setState({
             selectedRowKeys: tempSelectedRowKeys,
-            selectedProduct: tempSelectedRow,
+            selectedFood: tempSelectedRow,
             showModal: false
         });
     }
@@ -248,11 +248,11 @@ class Index extends React.Component {
     }
 
     setEachProNumber = (val, record, index) => {
-        let data = this.state.selectedProduct;
+        let data = this.state.selectedFood;
         record.number = val ? val : 1;
         data[index] = record;
         this.setState({
-            selectedProduct: data
+            selectedFood: data
         })
     }
 
@@ -308,7 +308,7 @@ class Index extends React.Component {
                 });
 
                 this.setState({
-                    allProduct: data,
+                    allFood: data,
                     loading: false,
                     pagination: {total}
                 });
@@ -322,8 +322,8 @@ class Index extends React.Component {
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
             if (!err) {
-                const {selectedProduct} = this.state;
-                if (selectedProduct.length === 0) {
+                const {selectedFood} = this.state;
+                if (selectedFood.length === 0) {
                     Message.warning('请添加相关产品！');
                     return;
                 }
@@ -331,15 +331,15 @@ class Index extends React.Component {
                 values.orderDate = values.orderDate.format("YYYY-MM-DD");
                 values.deliverDate = values.deliverDate.format("YYYY-MM-DD");
                 values.incomlineTime = values.incomlineTime.format("YYYY-MM-DD HH:mm:ss");
-                values.childrenDetail = selectedProduct.map(item => {
+                values.childrenDetail = selectedFood.map(item => {
                     return {
-                        productId: item.id,
-                        productName: item.name,
+                        foodId: item.id,
+                        foodName: item.name,
                         pnumber: item.number,
-                        productUnit: item.unit,
-                        productBarCode: item.barCode,
+                        foodUnit: item.unit,
+                        foodBarCode: item.barCode,
                         orderId: null,
-                        productCostPrice: item.costPrice,
+                        foodCostPrice: item.costPrice,
                         voState: 1
                     }
                 });
@@ -369,7 +369,7 @@ class Index extends React.Component {
 
     render() {
         const {getFieldDecorator} = this.props.form;
-        const {userId, region, isOperator, senderData, selectedProduct, submitLoading, showModal, pagination, loading, allProduct, tempSelectedRowKeys} = this.state;
+        const {userId, region, isOperator, senderData, selectedFood, submitLoading, showModal, pagination, loading, allFood, tempSelectedRowKeys} = this.state;
         const rowSelection = {
             selectedRowKeys: tempSelectedRowKeys,
             onChange: this.onSelectChange,
@@ -404,7 +404,7 @@ class Index extends React.Component {
                                 >选择产品</Button>
                             </div>
                             <ZZTable
-                                dataSource={selectedProduct}
+                                dataSource={selectedFood}
                                 columns={this.orderColumns}
                             />
                         </div>
@@ -433,9 +433,9 @@ class Index extends React.Component {
                                 {tempSelectedRowKeys.length ? `已选择 ${tempSelectedRowKeys.length} 个产品` : '未选择产品'}
                             </h3>
                             <ZZTable
-                                columns={this.productColumns}
+                                columns={this.foodColumns}
                                 rowSelection={rowSelection}
-                                dataSource={allProduct}
+                                dataSource={allFood}
                                 pagination={pagination}
                                 loading={loading}
                                 handlePageChange={this.handlePageChange.bind(this)}

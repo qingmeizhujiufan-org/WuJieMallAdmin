@@ -25,7 +25,7 @@ import restUrl from "RestUrl";
 const Search = Input.Search;
 const ButtonGroup = Button.Group;
 
-class ProductList extends React.Component {
+class FoodList extends React.Component {
   constructor(props) {
     super(props);
 
@@ -145,7 +145,7 @@ class ProductList extends React.Component {
           const dataSource = backData.content;
           dataSource.map(item => {
             item.key = item.id;
-            item.url = restUrl.ADDR + '/public/' + `${item.productCategoryPic[0].id + item.productCategoryPic[0].fileType}`
+            item.url = restUrl.ADDR + '/public/' + `${item.foodCategoryPic[0].id + item.foodCategoryPic[0].fileType}`
           });
 
           callback(dataSource)
@@ -206,16 +206,16 @@ class ProductList extends React.Component {
     });
   }
 
-  addProductCategory = () => {
+  addFoodCategory = () => {
     return this.context.router.push('/frame/food/category/add');
   }
 
   onDetail = id => {
-    return this.context.router.push(`/frame/product/category/detail/${id}`);
+    return this.context.router.push(`/frame/food/category/detail/${id}`);
   }
 
   onEdit = id => {
-    return this.context.router.push(`/frame/product/category/edit/${id}`);
+    return this.context.router.push(`/frame/food/category/edit/${id}`);
   }
 
   onDelete = (key) => {
@@ -261,7 +261,7 @@ class ProductList extends React.Component {
     const CardItem = ({data}) => (
       <div className='card-box'>
         <div className='card-title'>
-          <span>{data.productCategoryName}</span>
+          <span>{data.foodCategoryName}</span>
         </div>
         <div className='img-box'>
           <img src={data.url} alt=""/>
@@ -284,7 +284,7 @@ class ProductList extends React.Component {
     ) : null;
 
     return (
-      <div className="zui-content" id="product">
+      <div className="zui-content" id="food">
         <div className='pageHeader'>
           <div className="breadcrumb-block">
             <Breadcrumb>
@@ -307,7 +307,7 @@ class ProductList extends React.Component {
                 <Button
                   icon='plus'
                   size="large"
-                  onClick={this.addProductCategory}
+                  onClick={this.addFoodCategory}
                   style={{marginLeft: 25}}
                 >新增产品类别</Button>
               </Col>
@@ -336,8 +336,8 @@ class ProductList extends React.Component {
   }
 }
 
-ProductList.contextTypes = {
+FoodList.contextTypes = {
   router: PropTypes.object
 }
 
-export default ProductList;
+export default FoodList;

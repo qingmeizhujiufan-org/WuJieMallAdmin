@@ -112,9 +112,9 @@ class Index extends React.Component {
                                         {...formItemLayout}
                                         label="产品链接"
                                     >
-                                        {getFieldDecorator('productLink', {
+                                        {getFieldDecorator('foodLink', {
                                             rules: [{
-                                                required: true, message: '请选择商品',
+                                                required: true, message: '请选择食品',
                                             }],
                                         })(
                                             <Input/>

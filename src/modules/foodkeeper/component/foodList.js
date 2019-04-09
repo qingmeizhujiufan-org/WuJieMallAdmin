@@ -6,14 +6,12 @@ import {
     Col,
     Input,
     Icon,
-    Tag,
     Menu,
     Breadcrumb,
     Dropdown,
     notification,
     message,
     Modal,
-    Badge,
     Button
 } from 'antd';
 import assign from 'lodash/assign';
@@ -24,162 +22,91 @@ import {ZZCard, ZZTable} from 'Comps/zz-antD';
 
 const Search = Input.Search;
 
-class RoomList extends React.Component {
+class FoodList extends React.Component {
     constructor(props) {
         super(props);
 
         this.columns = [
             {
-                title: '房间名称',
-                width: 150,
+                title: '食品名称',
+                width: 200,
                 align: 'center',
-                dataIndex: 'roomName',
-                key: 'roomName',
+                dataIndex: 'foodName',
+                key: 'foodName',
                 render: (text, record, index) => (
                     <Link to={this.onEdit(record.id)}>{text}</Link>
                 )
             }, {
-                title: '房间价格',
-                width: 120,
-                align: 'center',
-                key: 'roomPrice',
-                dataIndex: 'roomPrice',
-                render: (text, record, index) => (
-                    <span>{text + ' 元'}</span>
-                )
-            }, {
-                title: '房间大小',
-                width: 120,
-                align: 'center',
-                key: 'roomSize',
-                dataIndex: 'roomSize',
-                render: (text, record, index) => (
-                    <span>{text + ' 平米'}</span>
-                )
-            }, {
-                title: '床型',
-                width: 120,
-                align: 'center',
-                key: 'bedModel',
-                dataIndex: 'bedModel'
-            }, {
-                title: '可住人数',
-                dataIndex: 'stayPersonNum',
-                width: 120,
-                align: 'center',
-                key: 'stayPersonNum',
-                render: (text, record, index) => (
-                    <span>{text + ' 人'}</span>
-                )
-            }, {
-                title: '网络',
-                dataIndex: 'internet',
-                width: 120,
-                align: 'center',
-                key: 'internet'
-            }, {
-                title: '窗景',
-                width: 100,
-                align: 'center',
-                dataIndex: 'windowScenery',
-                key: 'windowScenery',
-            }, {
-                title: '窗户',
-                width: 100,
-                align: 'center',
-                dataIndex: 'window',
-                key: 'window'
-            }, {
-                title: '卫浴',
-                align: 'center',
+                title: '店家名称',
+                dataIndex: 'shopName',
                 width: 150,
-                dataIndex: 'bathroom',
-                key: 'bathroom'
-            }, {
-                title: '早餐',
                 align: 'center',
-                width: 100,
-                dataIndex: 'breakfast',
-                key: 'breakfast'
+                key: 'shopName'
             }, {
-                title: '饮品',
-                align: 'center',
-                width: 100,
-                dataIndex: 'drink',
-                key: 'drink'
-            }, {
-                title: '设施',
-                align: 'center',
-                width: 120,
-                dataIndex: 'facilities',
-                key: 'facilities'
-            }, {
-                title: '支付方式',
-                align: 'center',
-                width: 120,
-                dataIndex: 'payType',
-                key: 'payType'
-            }, {
-                title: '可否取消',
-                align: 'center',
-                width: 100,
-                dataIndex: 'canCancel',
-                key: 'canCancel',
-                render: (text, record, index) => (
-                    <span>
-                        <Tag color={text === 1 ? 'green' : 'red'}>{text === 1 ? '是' : '否'}</Tag>
-                    </span>
-                )
-            }, {
-                title: '可否加床',
-                align: 'center',
-                width: 100,
-                dataIndex: 'canAddbed',
-                key: 'canAddbed',
-                render: (text, record, index) => (
-                    <span>
-                        <Tag color={text === 1 ? 'green' : 'red'}>{text === 1 ? '是' : '否'}</Tag>
-                    </span>
-                )
-            }, {
-                title: '内宾',
-                align: 'center',
+                title: '食品分类',
+                dataIndex: 'foodCategoryName',
                 width: 150,
-                dataIndex: 'innerNeed',
-                key: 'innerNeed'
-            }, {
-                title: '优惠政策',
                 align: 'center',
-                dataIndex: 'sale',
-                key: 'sale'
+                key: 'foodCategoryName'
             }, {
-                title: '创建时间',
+                title: '售价',
+                width: 100,
                 align: 'right',
-                width: 150,
-                dataIndex: 'created_at',
-                key: 'created_at'
+                dataIndex: 'foodSellingprice',
+                key: 'foodSellingprice',
+                render: (text, record, index) => (
+                    <span>{Util.shiftThousands(text)}</span>
+                )
             }, {
-                title: '修改时间',
+                title: '成本价格',
+                width: 100,
+                align: 'right',
+                dataIndex: 'foodCostprice',
+                key: 'foodCostprice',
+                render: (text, record, index) => (
+                    <span>{Util.shiftThousands(text)}</span>
+                )
+            }, {
+                title: '食品编码',
                 align: 'center',
-                width: 150,
+                width: 100,
+                dataIndex: 'foodCode',
+                key: 'foodCode'
+            }, {
+                title: '食品规格',
+                align: 'center',
+                width: 100,
+                dataIndex: 'foodSpec',
+                key: 'foodSpec'
+            }, {
+                title: '品牌',
+                align: 'center',
+                width: 100,
+                dataIndex: 'foodBrand',
+                key: 'foodBrand'
+            }, {
+                title: '食品产地',
+                align: 'center',
+                width: 100,
+                dataIndex: 'foodOrigin',
+                key: 'foodOrigin'
+            }, {
+                title: '备注',
+                width: 120,
+                dataIndex: 'memo',
+                key: 'memo'
+            }, {
+                title: '更新时间',
+                width: 200,
+                align: 'center',
                 dataIndex: 'updated_at',
                 key: 'updated_at'
             }, {
-                title: '状态',
-                align: 'left',
-                fixed: 'right',
-                width: 110,
-                dataIndex: 'state',
-                key: 'state',
-                render: (text) => {
-                    if (text === 1) {
-                        return <Badge status="error" text="审核不通过"/>;
-                    } else if (text === 2) {
-                        return <Badge status="success" text="审核通过"/>;
-                    } else {
-                        return <Badge status="processing" text="待审核"/>;
-                    }
-                }
+                title: '创建时间',
+                width: 200,
+                align: 'center',
+                dataIndex: 'created_at',
+                key: 'created_at'
             }, {
                 title: <a><Icon type="setting" style={{fontSize: 18}}/></a>,
                 key: 'operation',
@@ -187,15 +114,25 @@ class RoomList extends React.Component {
                 width: 120,
                 align: 'center',
                 render: (text, record, index) => (
-                    <span>
-                        <Link to={this.onEdit(record.id)}>管理</Link>
-                    </span>
+                    <Dropdown
+                        placement="bottomCenter"
+                        overlay={
+                            <Menu>
+                                <Menu.Item>
+                                    <Link to={this.onEdit(record.id)}>编辑</Link>
+                                </Menu.Item>
+                                <Menu.Item>
+                                    <a onClick={() => this.onDelete(record.id)}>删除</a>
+                                </Menu.Item>
+                            </Menu>
+                        }
+                    >
+                        <a className="ant-dropdown-link">操作</a>
+                    </Dropdown>
                 )
-            }
-        ];
+            }];
 
-        this
-            .state = {
+        this.state = {
             loading: false,
             dataSource: [],
             pagination: {},
@@ -216,12 +153,9 @@ class RoomList extends React.Component {
 
     queryList = () => {
         const {params, keyWords} = this.state;
-        const hotelId = sessionStorage.userId;
-        const param = assign({
-            hotelId
-        }, params, {keyWords});
+        const param = assign({}, params, {keyWords});
         this.setState({loading: true});
-        axios.get('room/queryList', {
+        axios.get('food/queryList', {
             params: param
         }).then(res => res.data).then(data => {
             if (data.success) {
@@ -247,7 +181,7 @@ class RoomList extends React.Component {
         });
     }
 
-// 处理分页变化
+    // 处理分页变化
     handlePageChange = param => {
         const params = assign({}, this.state.params, param);
         this.setState({params}, () => {
@@ -255,7 +189,7 @@ class RoomList extends React.Component {
         });
     }
 
-// 搜索
+    // 搜索
     onSearch = (value, event) => {
         console.log('onsearch value == ', value);
         this.setState({
@@ -269,12 +203,47 @@ class RoomList extends React.Component {
         });
     }
 
-    addRoom = () => {
-        return this.context.router.push(`/frame/hotelkeeper/addRoom`);
+    addFood = () => {
+        return this.context.router.push('/frame/food/add');
+    }
+
+    onDetail = id => {
+        return `/frame/food/list/detail/${id}`
     }
 
     onEdit = id => {
-        return `/frame/hotelkeeper/roomList/edit/${id}`
+        return `/frame/food/list/edit/${id}`
+    }
+
+    onDelete = (key) => {
+        Modal.confirm({
+            title: '提示',
+            content: '确认要删除吗？',
+            okText: '确认',
+            cancelText: '取消',
+            onOk: () => {
+                let param = {};
+                param.id = key;
+                axios.post('food/delete', param).then(res => res.data).then(data => {
+                    if (data.success) {
+                        notification.success({
+                            message: '提示',
+                            description: '删除成功！'
+                        });
+
+                        this.setState({
+                            params: {
+                                pageNumber: 1
+                            },
+                        }, () => {
+                            this.queryList();
+                        });
+                    } else {
+                        message.error(data.backMsg);
+                    }
+                });
+            }
+        });
     }
 
     render() {
@@ -285,16 +254,16 @@ class RoomList extends React.Component {
                 <div className='pageHeader'>
                     <div className="breadcrumb-block">
                         <Breadcrumb>
-                            <Breadcrumb.Item>特色民宿管理</Breadcrumb.Item>
-                            <Breadcrumb.Item>民宿房间列表</Breadcrumb.Item>
+                            <Breadcrumb.Item>产品管理</Breadcrumb.Item>
+                            <Breadcrumb.Item>产品列表</Breadcrumb.Item>
                         </Breadcrumb>
                     </div>
-                    <h1 className='title'>民宿房间列表</h1>
+                    <h1 className='title'>产品列表</h1>
                     <div className='search-area'>
                         <Row type='flex' justify="center" align="middle">
                             <Col span={8}>
                                 <Search
-                                    placeholder="房间名称"
+                                    placeholder="产品名称/品牌/产地"
                                     enterButton='搜索'
                                     size="large"
                                     onSearch={this.onSearch}
@@ -304,9 +273,9 @@ class RoomList extends React.Component {
                                 <Button
                                     icon='plus'
                                     size="large"
-                                    onClick={this.addRoom}
+                                    onClick={this.addFood}
                                     style={{marginLeft: 25}}
-                                >新增房间</Button>
+                                >新增产品</Button>
                             </Col>
                         </Row>
                     </div>
@@ -318,7 +287,7 @@ class RoomList extends React.Component {
                             dataSource={dataSource}
                             pagination={pagination}
                             loading={loading}
-                            scroll={{x: 2700}}
+                            scroll={{x: 2500}}
                             handlePageChange={this.handlePageChange}
                         />
                     </ZZCard>
@@ -328,8 +297,8 @@ class RoomList extends React.Component {
     }
 }
 
-RoomList.contextTypes = {
+FoodList.contextTypes = {
     router: PropTypes.object
 }
 
-export default RoomList;
+export default FoodList;

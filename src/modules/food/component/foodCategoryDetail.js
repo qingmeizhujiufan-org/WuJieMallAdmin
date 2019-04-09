@@ -64,7 +64,7 @@ class Index extends React.Component {
   setFields = val => {
     const values = this.props.form.getFieldsValue();
     for (let key in values) {
-      if (key === 'productCategoryPic') {
+      if (key === 'foodCategoryPic') {
         values[key] = [];
         val[key].map((item, index) => {
           values[key].push({
@@ -119,7 +119,7 @@ class Index extends React.Component {
                     label="头像"
                     {...formItemLayout}
                   >
-                    {getFieldDecorator('productCategoryPic', {
+                    {getFieldDecorator('foodCategoryPic', {
                       rules: [{required: true, message: '类别图片不能为空!'}],
                     })(
                       <ZZUpload
@@ -137,7 +137,7 @@ class Index extends React.Component {
                     {...formItemLayout}
                     label="类别名称"
                   >
-                    {getFieldDecorator('productCategoryName', {
+                    {getFieldDecorator('foodCategoryName', {
                       rules: [{required: true, message: '请输入类别名称'}]
                     })(
                       <Input disabled/>
@@ -149,7 +149,7 @@ class Index extends React.Component {
                     {...formItemLayout}
                     label="类别编码"
                   >
-                    {getFieldDecorator('productCategoryCode', {
+                    {getFieldDecorator('foodCategoryCode', {
                       rules: [{required: true, message: '请输入产品类别条码'}]
                     })(
                       <Input disabled/>

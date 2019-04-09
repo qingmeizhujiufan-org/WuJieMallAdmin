@@ -66,8 +66,8 @@ class ZZHeader extends React.Component {
             });
 
             //接收审核新增的产品消息
-            socket.on('review_product', msg => {
-                console.log('#review_product,', msg);
+            socket.on('review_food', msg => {
+                console.log('#review_food,', msg);
                 notification.open({
                     icon: <Icon type="notification" />,
                     message: '消息',

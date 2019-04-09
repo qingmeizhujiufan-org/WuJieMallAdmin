@@ -137,7 +137,7 @@ class Index extends React.Component {
                     {...formItemLayout}
                     label="产品分类"
                   >
-                    {getFieldDecorator('productCategoryId', {
+                    {getFieldDecorator('foodCategoryId', {
                       rules: [{
                         required: true, message: '请选择分类',
                       }],
@@ -146,7 +146,7 @@ class Index extends React.Component {
                         {
                           categoryList.map(item => {
                             return (<Option key={item.id}
-                                            value={item.id}>{item.productCategoryName}</Option>)
+                                            value={item.id}>{item.foodCategoryName}</Option>)
                           })
                         }
                       </Select>
@@ -158,7 +158,7 @@ class Index extends React.Component {
                     {...formItemLayout}
                     label="产品编码"
                   >
-                    {getFieldDecorator('productCode', {
+                    {getFieldDecorator('foodCode', {
                       rules: [{required: false, message: '请输入产品编码'}],
                     })(
                       <Input/>
@@ -170,7 +170,7 @@ class Index extends React.Component {
                     {...formItemLayout}
                     label="产品名称"
                   >
-                    {getFieldDecorator('productName', {
+                    {getFieldDecorator('foodName', {
                       rules: [{
                         required: true, message: '请输入产品名称',
                       }],
@@ -184,7 +184,7 @@ class Index extends React.Component {
                     {...formItemLayout}
                     label="产品简介"
                   >
-                    {getFieldDecorator('productSummary', {
+                    {getFieldDecorator('foodSummary', {
                       rules: [{
                         required: false, message: '请输入产品简介',
                       }],
@@ -198,7 +198,7 @@ class Index extends React.Component {
                     {...formItemLayout}
                     label="售价"
                   >
-                    {getFieldDecorator('productSellingprice', {
+                    {getFieldDecorator('foodSellingprice', {
                       rules: [{
                         required: false, message: '请输入售价',
                       }],
@@ -217,7 +217,7 @@ class Index extends React.Component {
                     {...formItemLayout}
                     label="成本价格"
                   >
-                    {getFieldDecorator('productCostprice', {
+                    {getFieldDecorator('foodCostprice', {
                       rules: [{
                         required: true, message: '请输入成本价格',
                       }],
@@ -236,7 +236,7 @@ class Index extends React.Component {
                     {...formItemLayout}
                     label="产品单位"
                   >
-                    {getFieldDecorator('product_unit', {
+                    {getFieldDecorator('food_unit', {
                       rules: [{
                         required: false, message: '请输入产品单位',
                       }],
@@ -250,7 +250,7 @@ class Index extends React.Component {
                     {...formItemLayout}
                     label="产品规格"
                   >
-                    {getFieldDecorator('product_spec', {
+                    {getFieldDecorator('food_spec', {
                       rules: [{
                         required: false, message: '请输入产品规格',
                       }],
@@ -264,7 +264,7 @@ class Index extends React.Component {
                     {...formItemLayout}
                     label="产品型号"
                   >
-                    {getFieldDecorator('product_model', {
+                    {getFieldDecorator('food_model', {
                       rules: [{
                         required: false, message: '请输入产品型号',
                       }],
@@ -278,7 +278,7 @@ class Index extends React.Component {
                     {...formItemLayout}
                     label="产品状态"
                   >
-                    {getFieldDecorator('product_state', {
+                    {getFieldDecorator('food_state', {
                       rules: [{
                         required: false, message: '请输入产品状态',
                       }],
@@ -328,7 +328,7 @@ class Index extends React.Component {
                     {...formItemLayout}
                     label="产地"
                   >
-                    {getFieldDecorator('productOrigin', {
+                    {getFieldDecorator('foodOrigin', {
                       rules: [{
                         required: false, message: '请输入产品产地',
                       }],
@@ -342,7 +342,7 @@ class Index extends React.Component {
                     {...formItemLayout}
                     label="食用办法"
                   >
-                    {getFieldDecorator('productUsage', {
+                    {getFieldDecorator('foodUsage', {
                       rules: [{
                         required: false, message: '请输入产品食用办法',
                       }],
@@ -356,7 +356,7 @@ class Index extends React.Component {
                     {...formItemLayout}
                     label="贮藏办法"
                   >
-                    {getFieldDecorator('productStorage', {
+                    {getFieldDecorator('foodStorage', {
                       rules: [{
                         required: false, message: '请输入产品贮藏办法',
                       }],
@@ -370,7 +370,7 @@ class Index extends React.Component {
                     {...formItemLayout}
                     label="口味"
                   >
-                    {getFieldDecorator('productTaste', {
+                    {getFieldDecorator('foodTaste', {
                       rules: [{
                         required: false, message: '请输入产品口味',
                       }],
@@ -384,7 +384,7 @@ class Index extends React.Component {
                     {...formItemLayout}
                     label="品牌"
                   >
-                    {getFieldDecorator('productBrand', {
+                    {getFieldDecorator('foodBrand', {
                       rules: [{
                         required: false, message: '请输入产品品牌',
                       }],
@@ -398,7 +398,7 @@ class Index extends React.Component {
                     {...formItemLayout}
                     label="配料"
                   >
-                    {getFieldDecorator('productBatching', {
+                    {getFieldDecorator('foodBatching', {
                       rules: [{
                         required: false, message: '请输入产品配料',
                       }],
@@ -412,7 +412,7 @@ class Index extends React.Component {
                     {...formItemLayout}
                     label="保质期"
                   >
-                    {getFieldDecorator('productDate', {
+                    {getFieldDecorator('foodDate', {
                       rules: [{
                         required: false, message: '请输入产品保质期',
                       }],
@@ -426,7 +426,7 @@ class Index extends React.Component {
                     {...formItemLayout}
                     label="净含量"
                   >
-                    {getFieldDecorator('productNetWeight', {
+                    {getFieldDecorator('foodNetWeight', {
                       rules: [{
                         required: false, message: '请输入产品净含量',
                       }],

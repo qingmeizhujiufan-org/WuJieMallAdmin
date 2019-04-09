@@ -5,7 +5,7 @@ import Loading from './loading';
 
 import App from '../modules/App';
 
-/* 商品管理 */
+/* 食品管理 */
 const FoodList = Loadable({
     loader: () => import("../modules/food/component/foodList"),
     loading: Loading
