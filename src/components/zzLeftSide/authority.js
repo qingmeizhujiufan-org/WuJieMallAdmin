@@ -67,7 +67,7 @@ const foodkeeperAdmin = {
     menu: [
         {
             key: '500',
-            children: ['500_1', '500_2']
+            children: ['500_1', '500_2', '500_3', '500_4']
         }, {
             key: '501',
             children: ['501_1']

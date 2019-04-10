@@ -28,7 +28,7 @@ class FoodList extends React.Component {
 
         this.columns = [
             {
-                title: '产品名称',
+                title: '食品名称',
                 width: 200,
                 align: 'center',
                 dataIndex: 'foodName',
@@ -43,7 +43,7 @@ class FoodList extends React.Component {
                 align: 'center',
                 key: 'shopName'
             }, {
-                title: '产品分类',
+                title: '食品分类',
                 dataIndex: 'foodCategoryName',
                 width: 150,
                 align: 'center',
@@ -67,25 +67,25 @@ class FoodList extends React.Component {
                     <span>{Util.shiftThousands(text)}</span>
                 )
             }, {
-                title: '产品编码',
+                title: '食品编码',
                 align: 'center',
                 width: 100,
                 dataIndex: 'foodCode',
                 key: 'foodCode'
             }, {
-                title: '产品规格',
+                title: '食品规格',
                 align: 'center',
                 width: 100,
                 dataIndex: 'foodSpec',
                 key: 'foodSpec'
             }, {
-                title: '产品品牌',
+                title: '食品品牌',
                 align: 'center',
                 width: 100,
                 dataIndex: 'foodBrand',
                 key: 'foodBrand'
             }, {
-                title: '产品产地',
+                title: '食品产地',
                 align: 'center',
                 width: 100,
                 dataIndex: 'foodOrigin',
@@ -254,16 +254,16 @@ class FoodList extends React.Component {
                 <div className='pageHeader'>
                     <div className="breadcrumb-block">
                         <Breadcrumb>
-                            <Breadcrumb.Item>产品管理</Breadcrumb.Item>
-                            <Breadcrumb.Item>产品列表</Breadcrumb.Item>
+                            <Breadcrumb.Item>食品管理</Breadcrumb.Item>
+                            <Breadcrumb.Item>食品列表</Breadcrumb.Item>
                         </Breadcrumb>
                     </div>
-                    <h1 className='title'>产品列表</h1>
+                    <h1 className='title'>食品列表</h1>
                     <div className='search-area'>
                         <Row type='flex' justify="center" align="middle">
                             <Col span={8}>
                                 <Search
-                                    placeholder="产品名称/品牌/产地"
+                                    placeholder="食品名称/品牌/产地"
                                     enterButton='搜索'
                                     size="large"
                                     onSearch={this.onSearch}
@@ -275,7 +275,7 @@ class FoodList extends React.Component {
                                     size="large"
                                     onClick={this.addFood}
                                     style={{marginLeft: 25}}
-                                >新增产品</Button>
+                                >新增食品</Button>
                             </Col>
                         </Row>
                     </div>

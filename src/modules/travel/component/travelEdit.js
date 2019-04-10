@@ -411,7 +411,7 @@ class Index extends React.Component {
                                     >
                                         {getFieldDecorator('travelLastTime', {
                                             rules: [{
-                                                required: false, message: '请输入产品简介',
+                                                required: false, message: '请输入食品简介',
                                             }],
                                         })(
                                             <Input disabled/>

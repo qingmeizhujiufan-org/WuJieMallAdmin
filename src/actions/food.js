@@ -2,7 +2,7 @@ import assign from 'lodash/assign';
 
 export const SHOW_PRODUCT_LIST = 'SHOW_PRODUCT_LIST';
 
-//获取产品列表
+//获取食品列表
 export const getFoodList = (url, params) => {
 	return dispatch => {
 		return (

@@ -47,20 +47,20 @@ const Menu = [
     }, {
         key: '003',
         iconType: 'file-search',
-        label: '产品管理',
+        label: '食品管理',
         children: [
             {
                 key: '003_1',
                 link: '/frame/food/list',
-                label: '产品列表'
+                label: '食品列表'
             }, {
                 key: '003_2',
                 link: '/frame/food/add',
-                label: '新增产品'
+                label: '新增食品'
             }, {
                 key: '003_3',
                 link: '/frame/food/category/list',
-                label: '产品类别'
+                label: '食品类别'
             }, {
                 key: '003_4',
                 link: '/frame/food/category/add',
@@ -203,6 +203,14 @@ const Menu = [
                 key: '500_2',
                 link: '/frame/foodkeeper/addFood',
                 label: '新增特色食品'
+            }, {
+                key: '500_3',
+                link: '/frame/foodkeeper/categoryList',
+                label: '食品分类列表'
+            }, {
+                key: '500_4',
+                link: '/frame/foodkeeper/category/add',
+                label: '新增食品分类'
             }
         ]
     }, {

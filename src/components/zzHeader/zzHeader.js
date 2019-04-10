@@ -65,7 +65,7 @@ class ZZHeader extends React.Component {
                 });
             });
 
-            //接收审核新增的产品消息
+            //接收审核新增的食品消息
             socket.on('review_food', msg => {
                 console.log('#review_food,', msg);
                 notification.open({

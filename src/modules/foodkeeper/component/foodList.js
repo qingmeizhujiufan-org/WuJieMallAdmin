@@ -254,16 +254,16 @@ class FoodList extends React.Component {
                 <div className='pageHeader'>
                     <div className="breadcrumb-block">
                         <Breadcrumb>
-                            <Breadcrumb.Item>产品管理</Breadcrumb.Item>
-                            <Breadcrumb.Item>产品列表</Breadcrumb.Item>
+                            <Breadcrumb.Item>食品管理</Breadcrumb.Item>
+                            <Breadcrumb.Item>食品列表</Breadcrumb.Item>
                         </Breadcrumb>
                     </div>
-                    <h1 className='title'>产品列表</h1>
+                    <h1 className='title'>食品列表</h1>
                     <div className='search-area'>
                         <Row type='flex' justify="center" align="middle">
                             <Col span={8}>
                                 <Search
-                                    placeholder="产品名称/品牌/产地"
+                                    placeholder="食品名称/品牌/产地"
                                     enterButton='搜索'
                                     size="large"
                                     onSearch={this.onSearch}
@@ -275,7 +275,7 @@ class FoodList extends React.Component {
                                     size="large"
                                     onClick={this.addFood}
                                     style={{marginLeft: 25}}
-                                >新增产品</Button>
+                                >新增食品</Button>
                             </Col>
                         </Row>
                     </div>

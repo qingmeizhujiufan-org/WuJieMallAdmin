@@ -22,23 +22,6 @@ const FoodAdd = Loadable({
     loader: () => import("../modules/food/component/foodAdd"),
     loading: Loading
 });
-/*  分类管理*/
-const FoodCategoryList = Loadable({
-    loader: () => import("../modules/food/component/foodCategory"),
-    loading: Loading
-});
-const FoodCategoryAdd = Loadable({
-    loader: () => import("../modules/food/component/foodCategoryAdd"),
-    loading: Loading
-});
-const FoodCategoryDetail = Loadable({
-    loader: () => import("../modules/food/component/foodCategoryDetail"),
-    loading: Loading
-});
-const FoodCategoryEdit = Loadable({
-    loader: () => import("../modules/food/component/foodCategoryEdit"),
-    loading: Loading
-});
 
 module.exports = (
     <Route path="food" component={App}>
@@ -47,9 +30,5 @@ module.exports = (
         <Route path="add" component={FoodAdd}/>
         <Route path="list/detail/:id" component={FoodDetail}/>
         <Route path="list/edit/:id" component={FoodEdit}/>
-        <Route path="category/list" component={FoodCategoryList}/>
-        <Route path="category/add" component={FoodCategoryAdd}/>
-        <Route path="category/detail/:id" component={FoodCategoryDetail}/>
-        <Route path="category/edit/:id" component={FoodCategoryEdit}/>
     </Route>
 );

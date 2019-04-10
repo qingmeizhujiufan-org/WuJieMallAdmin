@@ -54,7 +54,7 @@ class Index extends React.Component {
                     data: backData
                 });
             } else {
-                Message.error('产品信息查询失败');
+                Message.error('食品信息查询失败');
             }
             this.setState({
                 loading: false
@@ -299,7 +299,7 @@ class Index extends React.Component {
                                     >
                                         {getFieldDecorator('shopStatus', {
                                             rules: [{
-                                                required: false, message: '请输入产品状态',
+                                                required: false, message: '请输入食品状态',
                                             }],
                                             initialValue: 0
                                         })(

@@ -232,7 +232,7 @@ class Index extends React.Component {
                                     >
                                         {getFieldDecorator('shopStatus', {
                                             rules: [{
-                                                required: false, message: '请输入产品状态',
+                                                required: false, message: '请输入食品状态',
                                             }],
                                             initialValue: 0
                                         })(

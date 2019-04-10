@@ -58,7 +58,7 @@ class Index extends React.Component {
                         categoryList: categoryList
                     })
                 } else {
-                  message.error('当前没有产品分类，请先添加产品分类');
+                  message.error('当前没有食品分类，请先添加食品分类');
                 }
             } else {
               message.error('查询列表失败');
@@ -84,7 +84,7 @@ class Index extends React.Component {
                     data: backData
                 });
             } else {
-              message.error('产品信息查询失败');
+              message.error('食品信息查询失败');
             }
             this.setState({
                 loading: false
@@ -159,18 +159,18 @@ class Index extends React.Component {
                 <div className='pageHeader'>
                     <div className="breadcrumb-block">
                         <Breadcrumb>
-                            <Breadcrumb.Item>产品管理</Breadcrumb.Item>
-                            <Breadcrumb.Item>产品列表</Breadcrumb.Item>
-                            <Breadcrumb.Item>更新产品信息</Breadcrumb.Item>
+                            <Breadcrumb.Item>食品管理</Breadcrumb.Item>
+                            <Breadcrumb.Item>食品列表</Breadcrumb.Item>
+                            <Breadcrumb.Item>更新食品信息</Breadcrumb.Item>
                         </Breadcrumb>
                     </div>
-                    <h1 className='title'>更新产品信息</h1>
+                    <h1 className='title'>更新食品信息</h1>
                 </div>
                 <div className='pageContent'>
                     <div className='ibox-content'>
                         <Spin spinning={loading}>
                             <Form onSubmit={this.handleSubmit}>
-                                <Divider>产品示意图</Divider>
+                                <Divider>食品示意图</Divider>
                                 <Row>
                                     <Col span={24}>
                                         <FormItem
@@ -198,7 +198,7 @@ class Index extends React.Component {
                                     <Col {...itemGrid}>
                                         <FormItem
                                             {...formItemLayout}
-                                            label="产品分类"
+                                            label="食品分类"
                                         >
                                             {getFieldDecorator('foodCategoryId', {
                                                 rules: [{
@@ -219,10 +219,10 @@ class Index extends React.Component {
                                     <Col {...itemGrid}>
                                         <FormItem
                                             {...formItemLayout}
-                                            label="产品编码"
+                                            label="食品编码"
                                         >
                                             {getFieldDecorator('foodCode', {
-                                                rules: [{required: false, message: '请输入产品编码'}],
+                                                rules: [{required: false, message: '请输入食品编码'}],
                                             })(
                                                 <Input/>
                                             )}
@@ -231,11 +231,11 @@ class Index extends React.Component {
                                     <Col {...itemGrid}>
                                         <FormItem
                                             {...formItemLayout}
-                                            label="产品名称"
+                                            label="食品名称"
                                         >
                                             {getFieldDecorator('foodName', {
                                                 rules: [{
-                                                    required: true, message: '请输入产品名称',
+                                                    required: true, message: '请输入食品名称',
                                                 }],
                                             })(
                                                 <Input/>
@@ -245,11 +245,11 @@ class Index extends React.Component {
                                     <Col {...itemGrid}>
                                         <FormItem
                                             {...formItemLayout}
-                                            label="产品简介"
+                                            label="食品简介"
                                         >
                                             {getFieldDecorator('foodSummary', {
                                                 rules: [{
-                                                    required: false, message: '请输入产品简介',
+                                                    required: false, message: '请输入食品简介',
                                                 }],
                                             })(
                                                 <Input/>
@@ -297,11 +297,11 @@ class Index extends React.Component {
                                     <Col {...itemGrid}>
                                         <FormItem
                                             {...formItemLayout}
-                                            label="产品单位"
+                                            label="食品单位"
                                         >
                                             {getFieldDecorator('food_unit', {
                                                 rules: [{
-                                                    required: false, message: '请输入产品单位',
+                                                    required: false, message: '请输入食品单位',
                                                 }],
                                             })(
                                                 <Input/>
@@ -311,11 +311,11 @@ class Index extends React.Component {
                                     <Col {...itemGrid}>
                                         <FormItem
                                             {...formItemLayout}
-                                            label="产品规格"
+                                            label="食品规格"
                                         >
                                             {getFieldDecorator('food_spec', {
                                                 rules: [{
-                                                    required: false, message: '请输入产品规格',
+                                                    required: false, message: '请输入食品规格',
                                                 }],
                                             })(
                                                 <Input/>
@@ -325,11 +325,11 @@ class Index extends React.Component {
                                     <Col {...itemGrid}>
                                         <FormItem
                                             {...formItemLayout}
-                                            label="产品型号"
+                                            label="食品型号"
                                         >
                                             {getFieldDecorator('food_model', {
                                                 rules: [{
-                                                    required: false, message: '请输入产品型号',
+                                                    required: false, message: '请输入食品型号',
                                                 }],
                                             })(
                                                 <Input/>
@@ -339,11 +339,11 @@ class Index extends React.Component {
                                     <Col {...itemGrid}>
                                         <FormItem
                                             {...formItemLayout}
-                                            label="产品状态"
+                                            label="食品状态"
                                         >
                                             {getFieldDecorator('food_state', {
                                                 rules: [{
-                                                    required: false, message: '请输入产品状态',
+                                                    required: false, message: '请输入食品状态',
                                                 }],
                                                 initialValue: 0
                                             })(
@@ -404,7 +404,7 @@ class Index extends React.Component {
                                         </FormItem>
                                     </Col>
                                 </Row>
-                                <Divider>产品参数</Divider>
+                                <Divider>食品参数</Divider>
                                 <Row>
                                     <Col {...itemGrid}>
                                         <FormItem
@@ -413,7 +413,7 @@ class Index extends React.Component {
                                         >
                                             {getFieldDecorator('foodOrigin', {
                                                 rules: [{
-                                                    required: false, message: '请输入产品产地',
+                                                    required: false, message: '请输入食品产地',
                                                 }],
                                             })(
                                                 <Input/>
@@ -427,7 +427,7 @@ class Index extends React.Component {
                                         >
                                             {getFieldDecorator('foodUsage', {
                                                 rules: [{
-                                                    required: false, message: '请输入产品食用办法',
+                                                    required: false, message: '请输入食品食用办法',
                                                 }],
                                             })(
                                                 <Input/>
@@ -441,7 +441,7 @@ class Index extends React.Component {
                                         >
                                             {getFieldDecorator('foodStorage', {
                                                 rules: [{
-                                                    required: false, message: '请输入产品贮藏办法',
+                                                    required: false, message: '请输入食品贮藏办法',
                                                 }],
                                             })(
                                                 <Input/>
@@ -455,7 +455,7 @@ class Index extends React.Component {
                                         >
                                             {getFieldDecorator('foodTaste', {
                                                 rules: [{
-                                                    required: false, message: '请输入产品口味',
+                                                    required: false, message: '请输入食品口味',
                                                 }],
                                             })(
                                                 <Input/>
@@ -469,7 +469,7 @@ class Index extends React.Component {
                                         >
                                             {getFieldDecorator('foodBrand', {
                                                 rules: [{
-                                                    required: false, message: '请输入产品品牌',
+                                                    required: false, message: '请输入食品品牌',
                                                 }],
                                             })(
                                                 <Input/>
@@ -483,7 +483,7 @@ class Index extends React.Component {
                                         >
                                             {getFieldDecorator('foodBatching', {
                                                 rules: [{
-                                                    required: false, message: '请输入产品配料',
+                                                    required: false, message: '请输入食品配料',
                                                 }],
                                             })(
                                                 <Input/>
@@ -497,7 +497,7 @@ class Index extends React.Component {
                                         >
                                             {getFieldDecorator('foodDate', {
                                                 rules: [{
-                                                    required: false, message: '请输入产品保质期',
+                                                    required: false, message: '请输入食品保质期',
                                                 }],
                                             })(
                                                 <Input/>
@@ -511,7 +511,7 @@ class Index extends React.Component {
                                         >
                                             {getFieldDecorator('foodNetWeight', {
                                                 rules: [{
-                                                    required: false, message: '请输入产品净含量',
+                                                    required: false, message: '请输入食品净含量',
                                                 }],
                                             })(
                                                 <Input/>
@@ -519,7 +519,7 @@ class Index extends React.Component {
                                         </FormItem>
                                     </Col>
                                 </Row>
-                                <Divider>产品详情图</Divider>
+                                <Divider>食品详情图</Divider>
                                 <Row>
                                     <Col span={24}>
                                         <FormItem

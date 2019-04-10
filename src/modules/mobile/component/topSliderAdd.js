@@ -110,7 +110,7 @@ class Index extends React.Component {
                                 <Col {...itemGrid}>
                                     <FormItem
                                         {...formItemLayout}
-                                        label="产品链接"
+                                        label="食品链接"
                                     >
                                         {getFieldDecorator('foodLink', {
                                             rules: [{

@@ -53,7 +53,7 @@ class Index extends React.Component {
                     data: backData
                 });
             } else {
-                message.error('产品信息查询失败');
+                message.error('食品信息查询失败');
             }
             this.setState({
                 loading: false

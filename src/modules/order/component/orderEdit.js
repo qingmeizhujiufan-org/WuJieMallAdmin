@@ -69,7 +69,7 @@ class Index extends React.Component {
 
     this.foodColumns = [
       {
-        title: '产品名称',
+        title: '食品名称',
         dataIndex: 'name',
         width: 250,
         align: 'center',
@@ -91,7 +91,7 @@ class Index extends React.Component {
         align: 'center',
         width: 100
       }, {
-        title: '产品条码',
+        title: '食品条码',
         dataIndex: 'barCode',
         align: 'center',
         width: 250,
@@ -100,7 +100,7 @@ class Index extends React.Component {
 
     this.orderColumns = [
       {
-        title: '产品名称',
+        title: '食品名称',
         dataIndex: 'name',
         align: 'center',
         width: '25%',
@@ -116,7 +116,7 @@ class Index extends React.Component {
             {record.wareHouse === 1 ? '北京' : '武汉'}
           </div>)
       }, {
-        title: '产品条码',
+        title: '食品条码',
         dataIndex: 'barCode',
         align: 'center',
         width: '25%',
@@ -296,7 +296,7 @@ class Index extends React.Component {
 
   handleOk = () => {
     let {tempSelectedRowKeys, tempSelectedRow, selectedFood} = this.state;
-    /* 判断临时选中的行是否有已经删除的接口返回的产品数据，有则把voState重置为2，更新态 */
+    /* 判断临时选中的行是否有已经删除的接口返回的食品数据，有则把voState重置为2，更新态 */
     selectedFood.map(item => {
       if (item.orderId) {
         if (indexOf(tempSelectedRowKeys, item.id) > -1) {
@@ -327,7 +327,7 @@ class Index extends React.Component {
     let houseName = wareHouse === 0 ? '武汉' : '北京'
     let res = selectedRows.find(item => item.wareHouse != wareHouse);
     if (res) {
-      Message.warning(`当前订单仓库为${houseName},与选中产品仓库不匹配！`);
+      Message.warning(`当前订单仓库为${houseName},与选中食品仓库不匹配！`);
       return;
     }
 
@@ -337,7 +337,7 @@ class Index extends React.Component {
         tempSelectedRow: this.state.tempSelectedRow.concat(selectedRows)
       });
     } else {
-      Message.warning('产品种类最多为四种');
+      Message.warning('食品种类最多为四种');
     }
   }
 
@@ -355,7 +355,7 @@ class Index extends React.Component {
     let houseName = val === 0 ? '武汉' : '北京'
     let res = selectedFood.find(item => item.foodWarehouse !== val);
     if (res) {
-      Message.warning(`当前订单仓库为${houseName},与选中产品仓库不匹配！`);
+      Message.warning(`当前订单仓库为${houseName},与选中食品仓库不匹配！`);
       return;
     }
   }
@@ -388,7 +388,7 @@ class Index extends React.Component {
           pagination: {total}
         });
       } else {
-        message.error('查询产品列表失败');
+        message.error('查询食品列表失败');
       }
     });
   }
@@ -429,14 +429,14 @@ class Index extends React.Component {
 
         const {data, selectedFood} = this.state;
         if (selectedFood.length === 0) {
-          Message.warning('请添加相关产品！');
+          Message.warning('请添加相关食品！');
           return;
         }
 
         // let res = selectedFood.find(item => item.wareHouse != values.warehouse);
         // console.log('res ===', res)
         // if (res) {
-        //   Message.warning('产品和仓库不匹配！');
+        //   Message.warning('食品和仓库不匹配！');
         //   return;
         // }
 
@@ -507,7 +507,7 @@ class Index extends React.Component {
               showTips ? <Alert message="当前日期已过订单发货日期次日上午十点，则之后不允许修改" type="warning" showIcon/> : null
             }
             <Spin spinning={loading}>
-              <Divider>产品信息</Divider>
+              <Divider>食品信息</Divider>
 
               <div style={{
                 paddingBottom: 30,
@@ -521,7 +521,7 @@ class Index extends React.Component {
                     style={{
                       padding: '0 150px'
                     }}
-                  >选择产品</Button>
+                  >选择食品</Button>
                 </div>
                 <ZZTable
                   size='small'
@@ -530,7 +530,7 @@ class Index extends React.Component {
                 />
               </div>
               <Modal
-                title="添加产品"
+                title="添加食品"
                 visible={showModal}
                 destroyOnClose='true'
                 width={800}
@@ -543,7 +543,7 @@ class Index extends React.Component {
                 <Row type='flex' justify="space-around" align="middle">
                   <Col span={8}>
                     <Search
-                      placeholder="搜索产品名称关键字"
+                      placeholder="搜索食品名称关键字"
                       enterButton
                       size="default"
                       onSearch={searchText => this.setState({searchText})}
@@ -551,7 +551,7 @@ class Index extends React.Component {
                   </Col>
                 </Row>
                 <h3 style={{marginBottom: 8}}>
-                  {tempSelectedRowKeys.length ? `已选择 ${tempSelectedRowKeys.length} 个产品` : '未选择产品'}
+                  {tempSelectedRowKeys.length ? `已选择 ${tempSelectedRowKeys.length} 个食品` : '未选择食品'}
                 </h3>
                 <ZZTable
                   columns={this.foodColumns}
