@@ -104,12 +104,11 @@ class Index extends React.Component {
             if (!err) {
                 const data = this.state.data;
                 const statusList = ['营业中', '休息中', '下架中'];
-                const checkList = ['未审核', '审核通过', '审核不通过'];
                 values.id = sessionStorage.userId;
                 values.thumbnail = values.headerPic[0].response.id;
                 values.headerPic = values.headerPic && values.headerPic.map(item => item.response.id).join(',');
                 values.detailPic = values.detailPic && values.detailPic.map(item => item.response.id).join(',');
-                values.businessStatusText = checkList[values.businessStatus];
+                values.businessStatusText = statusList[values.businessStatus];
                 values.createBy = sessionStorage.userName;
 
                 this.setState({
@@ -248,9 +247,9 @@ class Index extends React.Component {
                                   label="审核状态"
 
                                 >
-                                  {getFieldDecorator('businessStatus', {
+                                  {getFieldDecorator('checkStatus', {
                                     rules: [{
-                                      required: false, message: '请输入营业状态',
+                                      required: false, message: '请输入审核状态',
                                     }]
                                   })(
                                     <Select disabled>

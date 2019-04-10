@@ -14,6 +14,7 @@ import {
   Divider,
   Card,
   Empty,
+  Alert
 } from 'antd';
 import {DatePicker, Upload, Editor} from 'Comps/zui';
 import {EditorState, convertToRaw} from 'draft-js';
@@ -24,6 +25,8 @@ import moment from 'moment';
 
 import '../index.less';
 import assign from "lodash/assign";
+import draftToHtml from "draftjs-to-html";
+import htmlToDraft from "html-to-draftjs";
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -37,13 +40,33 @@ class Index extends React.Component {
     travelDays: [],
     expenseDesc: EditorState.createEmpty(),
     lineInfo: EditorState.createEmpty(),
+    checkStatus: 0
   };
 
   componentDidMount = () => {
+    this.queryDetail();
   }
 
   disabledDate = current => {
     return current && current < moment().endOf('day');
+  }
+
+  queryDetail = () => {
+    const param = {};
+    param.id = sessionStorage.userId;
+    this.setState({
+      loading: true
+    });
+    axios.get('travelKeeper/queryDetail', {
+      params: param
+    }).then(res => res.data).then(data => {
+      if (data.success) {
+        let backData = data.backData;
+        this.setState({
+          checkStatus: backData.checkStatus
+        })
+      }
+    });
   }
 
   onRangeChange = date => {
@@ -101,7 +124,7 @@ class Index extends React.Component {
               description: '新增主题旅游成功！'
             });
 
-            return this.context.router.push('/frame/travel/list');
+            return this.context.router.push('/frame/travelkeeper/travelList');
           } else {
             message.error(data.backMsg);
           }
@@ -115,10 +138,21 @@ class Index extends React.Component {
 
   render() {
     const {getFieldDecorator} = this.props.form;
-    const {submitLoading, travelDays} = this.state;
-
+    const {submitLoading, travelDays, checkStatus} = this.state;
+    const message = checkStatus === 1
+      ? '当前商家审核通过,可以添加特色旅游!'
+      : checkStatus === 0
+        ? '当前商家未审核,无法添加特色旅游!'
+        : '当前商家审核不通过,无法添加特色旅游!';
     return (
       <div className="zui-content">
+        {
+          checkStatus !== 1 ? (
+            <Alert type='warning' message={message} banner />
+          ): (
+            <Alert type='success' message={message} banner />
+          )
+        }
         <div className='pageHeader'>
           <div className="breadcrumb-block">
             <Breadcrumb>
@@ -459,7 +493,7 @@ class Index extends React.Component {
               </Row>
               <Row type="flex" justify="center" style={{marginTop: 40}}>
                 <Button type="primary" size='large' style={{width: 120}} htmlType="submit"
-                        loading={submitLoading}>提交</Button>
+                        loading={submitLoading} disabled={checkStatus !== 1}>提交</Button>
               </Row>
             </Form>
           </div>

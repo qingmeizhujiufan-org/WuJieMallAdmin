@@ -104,7 +104,7 @@ class Index extends React.Component {
       checkStatus: val
     };
 
-    axios.post('travelKeeper/update', values).then(res => res.data).then(data => {
+    axios.post('travelKeeper/check', values).then(res => res.data).then(data => {
       if (data.success) {
         notification.success({
           message: '提示',
