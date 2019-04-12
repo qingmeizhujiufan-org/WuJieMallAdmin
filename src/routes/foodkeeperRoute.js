@@ -43,6 +43,11 @@ const Keeper = Loadable({
     loading: Loading
 });
 
+/* 订单管理 */
+const OrderList = Loadable({
+    loader: () => import("../modules/foodkeeper/component/orderList"),
+    loading: Loading
+});
 
 module.exports = (
     <Route path="foodkeeper" component={App}>
@@ -54,5 +59,6 @@ module.exports = (
         <Route path="categoryList" component={FoodCategoryList}/>
         <Route path="category/add" component={FoodCategoryAdd}/>
         <Route path="categoryList/edit/:id" component={FoodCategoryEdit}/>
+        <Route path="orderList" component={OrderList}/>
     </Route>
 );

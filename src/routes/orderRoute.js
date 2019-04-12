@@ -18,10 +18,6 @@ const OrderEdit = Loadable({
     loader: () => import("../modules/order/component/orderEdit"),
     loading: Loading
 });
-const SenderList = Loadable({
-    loader: () => import("../modules/order/component/sender"),
-    loading: Loading
-});
 
 module.exports = (
 <Route path="order" component={App}>
@@ -29,6 +25,5 @@ module.exports = (
     <Route path="list" component={OrderList}/>
     <Route path="add" component={OrderAdd}/>
     <Route path="list/edit/:id" component={OrderEdit}/>
-    <Route path="sender" component={SenderList}/>
 </Route>
 );

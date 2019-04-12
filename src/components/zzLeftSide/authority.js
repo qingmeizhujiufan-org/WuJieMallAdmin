@@ -7,13 +7,10 @@ const admin = {
             children: ['000_1']
         }, {
             key: '001',
-            children: ['001_1', '001_2', '001_3']
-        }, {
-            key: '002',
-            children: ['002_1', '002_2']
+            children: ['001_1', '001_2']
         }, {
             key: '003',
-            children: ['003_1', '003_2', '003_3', '003_4']
+            children: ['003_1']
         }, {
             key: '004',
             children: ['004_1', '004_2']
@@ -71,6 +68,9 @@ const foodkeeperAdmin = {
         }, {
             key: '501',
             children: ['501_1']
+        }, {
+            key: '502',
+            children: ['502_1']
         }
     ]
 };

@@ -23,48 +23,17 @@ const Menu = [
                 key: '001_2',
                 link: '/frame/order/add',
                 label: '新增订单'
-            }, {
-                key: '001_3',
-                link: '/frame/order/sender',
-                label: '寄件信息列表'
-            }
-        ]
-    }, {
-        key: '002',
-        iconType: 'area-chart',
-        label: '报表管理',
-        children: [
-            {
-                key: '002_1',
-                link: '/frame/report/list',
-                label: '报表'
-            }, {
-                key: '002_2',
-                link: '/frame/report/chart',
-                label: '图表'
             }
         ]
     }, {
         key: '003',
         iconType: 'file-search',
-        label: '食品管理',
+        label: '特色食品管理',
         children: [
             {
                 key: '003_1',
                 link: '/frame/food/list',
-                label: '食品列表'
-            }, {
-                key: '003_2',
-                link: '/frame/food/add',
-                label: '新增食品'
-            }, {
-                key: '003_3',
-                link: '/frame/food/category/list',
-                label: '食品类别'
-            }, {
-                key: '003_4',
-                link: '/frame/food/category/add',
-                label: '新增类别'
+                label: '特色食品列表'
             }
         ]
     }, {
@@ -216,10 +185,21 @@ const Menu = [
     }, {
         key: '501',
         iconType: 'shop',
-        label: '认证管理',
+        label: '订单管理',
         children: [
             {
                 key: '501_1',
+                link: '/frame/foodkeeper/orderList',
+                label: '订单列表'
+            }
+        ]
+    }, {
+        key: '502',
+        iconType: 'shop',
+        label: '认证管理',
+        children: [
+            {
+                key: '502_1',
                 link: '/frame/foodkeeper/keeper',
                 label: '认证信息'
             }
