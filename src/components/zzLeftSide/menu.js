@@ -63,21 +63,6 @@ const Menu = [
             }
         ]
     }, {
-        key: '006',
-        iconType: 'shop',
-        label: '商户管理',
-        children: [
-            {
-                key: '006_1',
-                link: '/frame/shop/list',
-                label: '商户列表'
-            }, {
-                key: '006_2',
-                link: '/frame/shop/add',
-                label: '新增商户'
-            }
-        ]
-    }, {
         key: '007',
         iconType: 'shop',
         label: '主题旅游管理',
@@ -125,10 +110,21 @@ const Menu = [
     }, {
         key: '301',
         iconType: 'shop',
-        label: '认证管理',
+        label: '订单管理',
         children: [
             {
                 key: '301_1',
+                link: '/frame/hotelkeeper/orderList',
+                label: '订单列表'
+            }
+        ]
+    }, {
+        key: '302',
+        iconType: 'shop',
+        label: '认证管理',
+        children: [
+            {
+                key: '302_1',
                 link: '/frame/hotelkeeper/keeper',
                 label: '认证信息'
             }
@@ -151,10 +147,21 @@ const Menu = [
     }, {
         key: '401',
         iconType: 'shop',
-        label: '认证管理',
+        label: '订单管理',
         children: [
             {
                 key: '401_1',
+                link: '/frame/travelkeeper/orderList',
+                label: '订单信息'
+            }
+        ]
+    }, {
+        key: '402',
+        iconType: 'shop',
+        label: '认证管理',
+        children: [
+            {
+                key: '402_1',
                 link: '/frame/travelkeeper/keeper',
                 label: '认证信息'
             }
@@ -185,21 +192,10 @@ const Menu = [
     }, {
         key: '501',
         iconType: 'shop',
-        label: '订单管理',
-        children: [
-            {
-                key: '501_1',
-                link: '/frame/foodkeeper/orderList',
-                label: '订单列表'
-            }
-        ]
-    }, {
-        key: '502',
-        iconType: 'shop',
         label: '认证管理',
         children: [
             {
-                key: '502_1',
+                key: '501_1',
                 link: '/frame/foodkeeper/keeper',
                 label: '认证信息'
             }

@@ -18,9 +18,6 @@ const admin = {
             key: '005',
             children: ['005_1']
         }, {
-            key: '006',
-            children: ['006_1', '006_2']
-        }, {
             key: '007',
             children: ['007_1', '007_2']
         }, {
@@ -40,12 +37,15 @@ const hotelkeeperAdmin = {
         }, {
             key: '301',
             children: ['301_1']
+        }, {
+            key: '302',
+            children: ['302_1']
         }
     ]
 };
 
 const travelkeeperAdmin = {
-    defaultOpenKeys: ['400', '401'],
+    defaultOpenKeys: ['400', '401', '402'],
     defaultSelectedKeys: ['400_1'],
     menu: [
         {
@@ -54,6 +54,9 @@ const travelkeeperAdmin = {
         }, {
             key: '401',
             children: ['401_1']
+        }, {
+            key: '402',
+            children: ['402_1']
         }
     ]
 };
@@ -68,9 +71,6 @@ const foodkeeperAdmin = {
         }, {
             key: '501',
             children: ['501_1']
-        }, {
-            key: '502',
-            children: ['502_1']
         }
     ]
 };

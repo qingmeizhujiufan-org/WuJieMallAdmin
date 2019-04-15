@@ -23,6 +23,12 @@ const RoomEdit = Loadable({
     loading: Loading
 });
 
+/* 订单管理 */
+const OrderList = Loadable({
+    loader: () => import("../modules/hotelkeeper/component/orderList"),
+    loading: Loading
+});
+
 /* 认证信息 */
 const Keeper = Loadable({
     loader: () => import("../modules/hotelkeeper/component/keeper"),
@@ -35,9 +41,7 @@ module.exports = (
         <Route path="roomList" component={RoomList}/>
         <Route path="roomList/edit/:id" component={RoomEdit}/>
         <Route path="addRoom" component={RoomAdd}/>
+        <Route path="orderList" component={OrderList}/>
         <Route path="keeper" component={Keeper}/>
-        {/*<Route path="edit/:id" component={HotelEdit}/>*/}
-        {/*<Route path="room/list/:id" component={RoomList}/>*/}
-        {/*<Route path="room/add/:id" component={RoomAdd}/>*/}
     </Route>
 );

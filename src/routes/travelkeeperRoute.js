@@ -23,6 +23,12 @@ const TravelEdit = Loadable({
     loading: Loading
 });
 
+/* 订单管理 */
+const OrderList = Loadable({
+    loader: () => import("../modules/travelkeeper/component/orderList"),
+    loading: Loading
+});
+
 /* 认证信息 */
 const Keeper = Loadable({
     loader: () => import("../modules/travelkeeper/component/keeper"),
@@ -35,6 +41,7 @@ module.exports = (
         <Route path="travelList" component={TravelList}/>
         <Route path="travelList/edit/:id" component={TravelEdit}/>
         <Route path="addTravel" component={TravelAdd}/>
+        <Route path="orderList" component={OrderList}/>
         <Route path="keeper" component={Keeper}/>
     </Route>
 );
