@@ -4,25 +4,22 @@ const admin = {
     menu: [
         {
             key: '000',
-            children: ['000_1']
-        }, {
-            key: '001',
-            children: ['001_1', '001_2']
+            children: ['000_1', '000_2']
         }, {
             key: '003',
             children: ['003_1']
-        }, {
-            key: '004',
-            children: ['004_1', '004_2']
-        }, {
-            key: '005',
-            children: ['005_1']
         }, {
             key: '007',
             children: ['007_1', '007_2']
         }, {
             key: '008',
             children: ['008_1', '008_2']
+        }, {
+            key: '004',
+            children: ['004_1', '004_2']
+        }, {
+            key: '005',
+            children: ['005_1']
         }
     ]
 };

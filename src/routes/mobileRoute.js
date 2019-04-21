@@ -18,6 +18,11 @@ const APPSliderEdit = Loadable({
     loader: () => import('../modules/mobile/component/topSliderEdit'),
     loading: Loading
 });
+/* 首页推荐管理 */
+const Recommend = Loadable({
+    loader: () => import('../modules/mobile/component/recommend'),
+    loading: Loading
+});
 
 module.exports = (
     <Route path="mobile" component={App}>
@@ -25,5 +30,6 @@ module.exports = (
         <Route path="topSlider/list" component={APPSlider}/>
         <Route path="topSlider/add" component={APPSliderAdd}/>
         <Route path="topSlider/list/edit/:id" component={APPSliderEdit}/>
+        <Route path="recommend/list" component={Recommend}/>
     </Route>
 );

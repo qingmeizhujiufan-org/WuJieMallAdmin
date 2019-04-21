@@ -8,21 +8,10 @@ const Menu = [
                 key: '000_1',
                 link: '/frame/mobile/topSlider/list',
                 label: '顶部轮播图'
-            }
-        ]
-    }, {
-        key: '001',
-        iconType: 'file-text',
-        label: '订单管理',
-        children: [
-            {
-                key: '001_1',
-                link: '/frame/order/list',
-                label: '订单列表'
             }, {
-                key: '001_2',
-                link: '/frame/order/add',
-                label: '新增订单'
+                key: '000_2',
+                link: '/frame/mobile/recommend/list',
+                label: '首页推荐管理'
             }
         ]
     }, {
@@ -34,32 +23,6 @@ const Menu = [
                 key: '003_1',
                 link: '/frame/food/list',
                 label: '特色食品列表'
-            }
-        ]
-    }, {
-        key: '004',
-        iconType: 'idcard',
-        label: '人员管理',
-        children: [
-            {
-                key: '004_1',
-                link: '/frame/user/list',
-                label: '人员列表'
-            }, {
-                key: '004_2',
-                link: '/frame/user/add',
-                label: '新增人员'
-            }
-        ]
-    }, {
-        key: '005',
-        iconType: 'setting',
-        label: '个人设置',
-        children: [
-            {
-                key: '005_1',
-                link: '/frame/setting/list',
-                label: '个人中心'
             }
         ]
     }, {
@@ -90,6 +53,32 @@ const Menu = [
                 key: '008_2',
                 link: '/frame/hotel/roomList',
                 label: '民宿房间列表'
+            }
+        ]
+    }, {
+        key: '004',
+        iconType: 'idcard',
+        label: '人员管理',
+        children: [
+            {
+                key: '004_1',
+                link: '/frame/user/list',
+                label: '人员列表'
+            }, {
+                key: '004_2',
+                link: '/frame/user/add',
+                label: '新增人员'
+            }
+        ]
+    }, {
+        key: '005',
+        iconType: 'setting',
+        label: '个人设置',
+        children: [
+            {
+                key: '005_1',
+                link: '/frame/setting/list',
+                label: '个人中心'
             }
         ]
     }, {

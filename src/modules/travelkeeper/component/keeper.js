@@ -31,7 +31,6 @@ class Index extends React.Component {
         headerList: [],
         detailList: [],
         loading: false,
-        fileList: [],
         canUpdate: false,
         submitLoading: false
     };
@@ -81,12 +80,24 @@ class Index extends React.Component {
                         }
                     });
                 });
+
+                if (key === 'headerPic') {
+                    this.setState({headerList: [].concat(values[key])});
+                }
+                if (key === 'detailPic') {
+                    this.setState({detailList: [].concat(values[key])});
+                }
             } else {
                 values[key] = val[key];
             }
         }
 
         this.props.form.setFieldsValue(values);
+    }
+
+    onHeaderChange = fileList => {
+        this.props.form.setFieldsValue({headerPic: fileList});
+        this.setState({headerList: fileList});
     }
 
     validatePhone = (rule, value, callback) => {
@@ -135,7 +146,7 @@ class Index extends React.Component {
 
     render() {
         const {getFieldDecorator} = this.props.form;
-        const {fileList, loading, submitLoading, data} = this.state;
+        const {headerList, detailList, loading, submitLoading, data} = this.state;
 
         return (
             <div className="zui-content">
@@ -151,148 +162,151 @@ class Index extends React.Component {
                 <div className='pageContent'>
                     <div className='ibox-content'>
                         <Spin spinning={loading}>
-                        <Form onSubmit={this.handleSubmit}>
-                            <Divider>旅游商家描述图</Divider>
-                            <Row>
-                                <Col span={24}>
-                                    <FormItem
-                                    >
-                                        {getFieldDecorator('headerPic', {
-                                            rules: [{required: true, message: '旅游商家描述图片不能为空!'}],
-                                        })(
-                                            <Upload/>
-                                        )}
-                                    </FormItem>
-                                </Col>
-                            </Row>
-                            <Divider>基本信息</Divider>
-                            <Row>
-                                <Col {...itemGrid}>
-                                    <FormItem
-                                        {...formItemLayout}
-                                        label="旅游商家名称"
-                                    >
-                                        {getFieldDecorator('travelKeeperName', {
-                                            rules: [{
-                                                required: true, message: '请输入商家名称',
-                                            }],
-                                        })(
-                                            <Input/>
-                                        )}
-                                    </FormItem>
-                                </Col>
-                                <Col {...itemGrid}>
-                                    <FormItem
-                                        {...formItemLayout}
-                                        label="商家地址"
-                                    >
-                                        {getFieldDecorator('travelKeeperAddress', {
-                                            rules: [{required: true, message: '请输入商家地址'}],
-                                        })(
-                                            <Input/>
-                                        )}
-                                    </FormItem>
-                                </Col>
-                                <Col {...itemGrid}>
-                                    <FormItem
-                                        {...formItemLayout}
-                                        label="手机号码"
-                                    >
-                                        {getFieldDecorator('telephone', {
-                                            rules: [{
-                                                required: true, message: '请输入手机号码',
-                                            }, {
-                                                validator: this.validatePhone,
-                                            }],
-                                        })(
-                                            <Input/>
-                                        )}
-                                    </FormItem>
-                                </Col>
-                                <Col {...itemGrid}>
-                                    <FormItem
-                                        {...formItemLayout}
-                                        label="固定号码"
-                                    >
-                                        {getFieldDecorator('phone', {
-                                            rules: [{
-                                                required: false,
-                                            }],
-                                        })(
-                                            <Input/>
-                                        )}
-                                    </FormItem>
-                                </Col>
-                                <Col {...itemGrid}>
-                                    <FormItem
-                                        {...formItemLayout}
-                                        label="营业状态"
-                                    >
-                                        {getFieldDecorator('businessStatus', {
-                                            rules: [{
-                                                required: false, message: '请输入营业状态',
-                                            }]
-                                        })(
-                                            <Select placeholder="请选择">
-                                                <Option value={0}>休息中</Option>
-                                                <Option value={1}>营业中</Option>
-                                                <Option value={2}>下架中</Option>
-                                            </Select>
-                                        )}
-                                    </FormItem>
-                                </Col>
-                              <Col {...itemGrid}>
-                                <FormItem
-                                  {...formItemLayout}
-                                  label="审核状态"
+                            <Form onSubmit={this.handleSubmit}>
+                                <Divider>公司logo</Divider>
+                                <Row>
+                                    <Col span={24}>
+                                        <FormItem
+                                        >
+                                            {getFieldDecorator('headerPic', {
+                                                rules: [{required: true, message: '公司logo不能为空!'}],
+                                            })(
+                                                <Upload
+                                                    multiple={false}
+                                                    onChange={this.onHeaderChange}
+                                                >{headerList.length >= 1 ? null : undefined}</Upload>
+                                            )}
+                                        </FormItem>
+                                    </Col>
+                                </Row>
+                                <Divider>基本信息</Divider>
+                                <Row>
+                                    <Col {...itemGrid}>
+                                        <FormItem
+                                            {...formItemLayout}
+                                            label="公司名称"
+                                        >
+                                            {getFieldDecorator('travelKeeperName', {
+                                                rules: [{
+                                                    required: true, message: '请输入商家名称',
+                                                }],
+                                            })(
+                                                <Input/>
+                                            )}
+                                        </FormItem>
+                                    </Col>
+                                    <Col {...itemGrid}>
+                                        <FormItem
+                                            {...formItemLayout}
+                                            label="商家地址"
+                                        >
+                                            {getFieldDecorator('travelKeeperAddress', {
+                                                rules: [{required: true, message: '请输入商家地址'}],
+                                            })(
+                                                <Input/>
+                                            )}
+                                        </FormItem>
+                                    </Col>
+                                    <Col {...itemGrid}>
+                                        <FormItem
+                                            {...formItemLayout}
+                                            label="手机号码"
+                                        >
+                                            {getFieldDecorator('telephone', {
+                                                rules: [{
+                                                    required: true, message: '请输入手机号码',
+                                                }, {
+                                                    validator: this.validatePhone,
+                                                }],
+                                            })(
+                                                <Input/>
+                                            )}
+                                        </FormItem>
+                                    </Col>
+                                    <Col {...itemGrid}>
+                                        <FormItem
+                                            {...formItemLayout}
+                                            label="固定号码"
+                                        >
+                                            {getFieldDecorator('phone', {
+                                                rules: [{
+                                                    required: false,
+                                                }],
+                                            })(
+                                                <Input/>
+                                            )}
+                                        </FormItem>
+                                    </Col>
+                                    <Col {...itemGrid}>
+                                        <FormItem
+                                            {...formItemLayout}
+                                            label="营业状态"
+                                        >
+                                            {getFieldDecorator('businessStatus', {
+                                                rules: [{
+                                                    required: false, message: '请输入营业状态',
+                                                }]
+                                            })(
+                                                <Select placeholder="请选择">
+                                                    <Option value={0}>休息中</Option>
+                                                    <Option value={1}>营业中</Option>
+                                                    <Option value={2}>下架中</Option>
+                                                </Select>
+                                            )}
+                                        </FormItem>
+                                    </Col>
+                                    <Col {...itemGrid}>
+                                        <FormItem
+                                            {...formItemLayout}
+                                            label="审核状态"
 
-                                >
-                                  {getFieldDecorator('checkStatus', {
-                                    rules: [{
-                                      required: false, message: '请输入审核状态',
-                                    }]
-                                  })(
-                                    <Select disabled>
-                                      <Option value={0}>未审核</Option>
-                                      <Option value={1}>审核通过</Option>
-                                      <Option value={2}>审核不通过</Option>
-                                    </Select>
-                                  )}
-                                </FormItem>
-                              </Col>
-                                <Col {...itemGrid}>
-                                    <FormItem
-                                        {...formItemLayout}
-                                        label="备注"
-                                    >
-                                        {getFieldDecorator('mark', {
-                                            rules: [{
-                                                required: false
-                                            }],
-                                        })(
-                                            <TextArea/>
-                                        )}
-                                    </FormItem>
-                                </Col>
-                            </Row>
-                            <Divider>旅游商家详情图</Divider>
-                            <Row>
-                                <Col span={24}>
-                                    <FormItem
-                                    >
-                                        {getFieldDecorator('detailPic', {
-                                            rules: [{required: true, message: '旅游商家详情图片不能为空!'}],
-                                        })(
-                                            <Upload/>
-                                        )}
-                                    </FormItem>
-                                </Col>
-                            </Row>
-                            <Row type="flex" justify="center" style={{marginTop: 40}}>
-                                <Button type="primary" size='large' style={{width: 120}} htmlType="submit"
-                                        loading={submitLoading}>保存</Button>
-                            </Row>
-                        </Form>
+                                        >
+                                            {getFieldDecorator('checkStatus', {
+                                                rules: [{
+                                                    required: false, message: '请输入审核状态',
+                                                }]
+                                            })(
+                                                <Select disabled>
+                                                    <Option value={0}>未审核</Option>
+                                                    <Option value={1}>审核通过</Option>
+                                                    <Option value={2}>审核不通过</Option>
+                                                </Select>
+                                            )}
+                                        </FormItem>
+                                    </Col>
+                                    <Col {...itemGrid}>
+                                        <FormItem
+                                            {...formItemLayout}
+                                            label="备注"
+                                        >
+                                            {getFieldDecorator('mark', {
+                                                rules: [{
+                                                    required: false
+                                                }],
+                                            })(
+                                                <TextArea/>
+                                            )}
+                                        </FormItem>
+                                    </Col>
+                                </Row>
+                                <Divider>营业执照等相关信息</Divider>
+                                <Row>
+                                    <Col span={24}>
+                                        <FormItem
+                                        >
+                                            {getFieldDecorator('detailPic', {
+                                                rules: [{required: true, message: '不能为空!'}],
+                                            })(
+                                                <Upload/>
+                                            )}
+                                        </FormItem>
+                                    </Col>
+                                </Row>
+                                <Row type="flex" justify="center" style={{marginTop: 40}}>
+                                    <Button type="primary" size='large' style={{width: 120}} htmlType="submit"
+                                            loading={submitLoading}>保存</Button>
+                                </Row>
+                            </Form>
                         </Spin>
                     </div>
                 </div>
