@@ -36,6 +36,18 @@ class TravelList extends React.Component {
           <Link to={this.onEdit(record.id)}>{text}</Link>
         )
       }, {
+        title: '负责人姓名',
+        dataIndex: 'keeperName',
+        width: 120,
+        align: 'center',
+        key: 'keeperName'
+      }, {
+        title: '身份证号码',
+        dataIndex: 'IDNumber',
+        width: 120,
+        align: 'center',
+        key: 'IDNumber'
+      }, {
         title: '手机电话',
         dataIndex: 'telephone',
         width: 120,

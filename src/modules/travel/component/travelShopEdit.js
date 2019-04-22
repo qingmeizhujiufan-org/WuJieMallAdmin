@@ -173,6 +173,26 @@ class Index extends React.Component {
                   <Col {...itemGrid}>
                     <FormItem
                       {...formItemLayout}
+                      label="负责人姓名"
+                    >
+                      {getFieldDecorator('keeperName')(
+                        <Input disabled/>
+                      )}
+                    </FormItem>
+                  </Col>
+                  <Col {...itemGrid}>
+                    <FormItem
+                      {...formItemLayout}
+                      label="身份证号"
+                    >
+                      {getFieldDecorator('IDNumber')(
+                        <Input disabled/>
+                      )}
+                    </FormItem>
+                  </Col>
+                  <Col {...itemGrid}>
+                    <FormItem
+                      {...formItemLayout}
                       label="手机号码"
                     >
                       {getFieldDecorator('telephone')(

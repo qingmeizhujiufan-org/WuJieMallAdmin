@@ -167,6 +167,7 @@ class Index extends React.Component {
               message: '提示',
               description: '更新主题旅游信息成功！'
             });
+            return this.context.router.push('/frame/travelkeeper/travelList');
 
             // return this.context.router.push('/frame/travel/list');
           } else {
