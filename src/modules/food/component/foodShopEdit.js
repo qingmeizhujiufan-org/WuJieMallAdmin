@@ -42,7 +42,7 @@ class Index extends React.Component {
 
   queryDetail = () => {
     const param = {};
-    param.id = sessionStorage.userId;
+    param.id = this.props.params.id;
     this.setState({
       loading: true
     });
@@ -89,15 +89,6 @@ class Index extends React.Component {
     this.props.form.setFieldsValue(values);
   }
 
-  validateID = (rule, value, callback) => {
-    const reg = /^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}([0-9]|X)$/;
-    if (value && value !== '' && !reg.test(value)) {
-      callback(new Error('身份证格式不正确'));
-    } else {
-      callback();
-    }
-  }
-
   validatePhone = (rule, value, callback) => {
     const reg = /^[1][3,4,5,7,8][0-9]{9}$/;
     if (value && value !== '' && !reg.test(value)) {
@@ -107,45 +98,29 @@ class Index extends React.Component {
     }
   }
 
-  handleSubmit = (e) => {
-    e.preventDefault();
-    this.props.form.validateFieldsAndScroll((err, values) => {
-      if (!err) {
-        const data = this.state.data;
-        const statusList = ['营业中', '休息中', '下架中'];
-        const checkList = ['未审核', '审核通过', '审核不通过'];
-        values.thumbnail = values.headerPic[0].response.id;
-        values.headerPic = values.headerPic && values.headerPic.map(item => item.response.id).join(',');
-        values.detailPic = values.detailPic && values.detailPic.map(item => item.response.id).join(',');
-        values.businessStatusText = checkList[values.businessStatus];
-        values.createBy = sessionStorage.userName;
-        values.id = sessionStorage.userId;
+  submit = val => {
+    const values = {
+      id: this.state.data.id,
+      checkStatus: val
+    };
 
-        this.setState({
-          submitLoading: true
+    axios.post('foodKeeper/check', values).then(res => res.data).then(data => {
+      if (data.success) {
+        notification.success({
+          message: '提示',
+          description: '审核旅游商家成功！'
         });
-        axios.post(data.id ? 'foodKeeper/update' : 'foodKeeper/add', values).then(res => res.data).then(data => {
-          if (data.success) {
-            notification.success({
-              message: '提示',
-              description: '认证信息添加成功！'
-            });
-            this.queryDetail();
-          } else {
-            message.error('认证信息添加失败!');
-          }
-          this.setState({
-            submitLoading: false
-          });
-        });
+
+        return this.context.router.goBack();
+      } else {
+        message.error('审核失败，请重试！');
       }
     });
   }
 
-
   render() {
     const {getFieldDecorator} = this.props.form;
-    const {fileList, loading, submitLoading, data} = this.state;
+    const {loading} = this.state;
 
     return (
       <div className="zui-content">
@@ -162,15 +137,13 @@ class Index extends React.Component {
           <div className='ibox-content'>
             <Spin spinning={loading}>
               <Form onSubmit={this.handleSubmit}>
-                <Divider>商家描述图</Divider>
+                <Divider>旅游商家描述图</Divider>
                 <Row>
                   <Col span={24}>
                     <FormItem
                     >
-                      {getFieldDecorator('headerPic', {
-                        rules: [{required: true, message: '旅游商家描述图片不能为空!'}],
-                      })(
-                        <Upload/>
+                      {getFieldDecorator('headerPic')(
+                        <Upload disabled/>
                       )}
                     </FormItem>
                   </Col>
@@ -180,14 +153,10 @@ class Index extends React.Component {
                   <Col {...itemGrid}>
                     <FormItem
                       {...formItemLayout}
-                      label="商家名称"
+                      label="旅游商家名称"
                     >
-                      {getFieldDecorator('foodKeeperName', {
-                        rules: [{
-                          required: true, message: '请输入商家名称',
-                        }],
-                      })(
-                        <Input/>
+                      {getFieldDecorator('foodKeeperName')(
+                        <Input disabled/>
                       )}
                     </FormItem>
                   </Col>
@@ -196,22 +165,18 @@ class Index extends React.Component {
                       {...formItemLayout}
                       label="商家地址"
                     >
-                      {getFieldDecorator('foodKeeperAddress', {
-                        rules: [{required: true, message: '请输入商家地址'}],
-                      })(
-                        <Input/>
+                      {getFieldDecorator('foodKeeperAddress')(
+                        <Input disabled/>
                       )}
                     </FormItem>
                   </Col>
                   <Col {...itemGrid}>
                     <FormItem
                       {...formItemLayout}
-                      label="店主姓名"
+                      label="负责人姓名"
                     >
-                      {getFieldDecorator('keeperName', {
-                        rules: [{required: true, message: '请输入店主姓名'}],
-                      })(
-                        <Input/>
+                      {getFieldDecorator('keeperName')(
+                        <Input disabled/>
                       )}
                     </FormItem>
                   </Col>
@@ -220,14 +185,8 @@ class Index extends React.Component {
                       {...formItemLayout}
                       label="身份证号"
                     >
-                      {getFieldDecorator('IDNumber', {
-                        rules: [{
-                          required: true, message: '请输入身份证号',
-                        }, {
-                          validator: this.validateID,
-                        }],
-                      })(
-                        <Input/>
+                      {getFieldDecorator('IDNumber')(
+                        <Input disabled/>
                       )}
                     </FormItem>
                   </Col>
@@ -236,14 +195,8 @@ class Index extends React.Component {
                       {...formItemLayout}
                       label="手机号码"
                     >
-                      {getFieldDecorator('telephone', {
-                        rules: [{
-                          required: true, message: '请输入手机号码',
-                        }, {
-                          validator: this.validatePhone,
-                        }],
-                      })(
-                        <Input/>
+                      {getFieldDecorator('telephone')(
+                        <Input disabled/>
                       )}
                     </FormItem>
                   </Col>
@@ -257,7 +210,7 @@ class Index extends React.Component {
                           required: false,
                         }],
                       })(
-                        <Input/>
+                        <Input disabled/>
                       )}
                     </FormItem>
                   </Col>
@@ -266,12 +219,8 @@ class Index extends React.Component {
                       {...formItemLayout}
                       label="营业状态"
                     >
-                      {getFieldDecorator('businessStatus', {
-                        rules: [{
-                          required: false, message: '请输入营业状态',
-                        }]
-                      })(
-                        <Select placeholder="请选择">
+                      {getFieldDecorator('businessStatus')(
+                        <Select disabled>
                           <Option value={0}>休息中</Option>
                           <Option value={1}>营业中</Option>
                           <Option value={2}>下架中</Option>
@@ -285,11 +234,7 @@ class Index extends React.Component {
                       label="审核状态"
 
                     >
-                      {getFieldDecorator('businessStatus', {
-                        rules: [{
-                          required: false, message: '请输入营业状态',
-                        }]
-                      })(
+                      {getFieldDecorator('checkStatus')(
                         <Select disabled>
                           <Option value={0}>未审核</Option>
                           <Option value={1}>审核通过</Option>
@@ -303,32 +248,26 @@ class Index extends React.Component {
                       {...formItemLayout}
                       label="备注"
                     >
-                      {getFieldDecorator('mark', {
-                        rules: [{
-                          required: false
-                        }],
-                      })(
-                        <TextArea/>
+                      {getFieldDecorator('mark')(
+                        <TextArea disabled/>
                       )}
                     </FormItem>
                   </Col>
                 </Row>
-                <Divider>商家详情图</Divider>
+                <Divider>旅游商家详情图</Divider>
                 <Row>
                   <Col span={24}>
                     <FormItem
                     >
-                      {getFieldDecorator('detailPic', {
-                        rules: [{required: true, message: '旅游商家详情图片不能为空!'}],
-                      })(
-                        <Upload/>
+                      {getFieldDecorator('detailPic')(
+                        <Upload disabled/>
                       )}
                     </FormItem>
                   </Col>
                 </Row>
                 <Row type="flex" justify="center" style={{marginTop: 40}}>
-                  <Button type="primary" size='large' style={{width: 120}} htmlType="submit"
-                          loading={submitLoading}>保存</Button>
+                  <Button size='large' style={{width: 120, marginRight: 40}} onClick={() => this.submit(2)}>不通过</Button>
+                  <Button type="primary" size='large' style={{width: 120}} onClick={() => this.submit(1)}>通过</Button>
                 </Row>
               </Form>
             </Spin>
@@ -343,6 +282,6 @@ Index.contextTypes = {
   router: PropTypes.object
 }
 
-const travelKeeper = Form.create({name: 'travelKeeper'})(Index);
+const foodKeeperEdit = Form.create({name: 'foodKeeper'})(Index);
 
-export default travelKeeper;
+export default foodKeeperEdit;

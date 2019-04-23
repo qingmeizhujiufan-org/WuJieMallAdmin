@@ -104,6 +104,31 @@ class Index extends React.Component {
         this.setState({certificateFileList: fileList})
     }
 
+  submit = val => {
+    const data = this.state.data;
+    data.state = val;
+    const values = {
+      id: data.id,
+      state: val
+    };
+
+    axios.post('shop/update', values).then(res => res.data).then(data => {
+      if (data.success) {
+        notification.success({
+          message: '提示',
+          description: '审核房间信息成功！'
+        });
+
+        return this.context.router.goBack();
+      } else {
+        message.error('审核失败，请重试！');
+      }
+      this.setState({
+        submitLoading: false
+      });
+    });
+  }
+
     handleSubmit = (e) => {
         e.preventDefault();
         this.props.form.validateFieldsAndScroll((err, values) => {
@@ -152,10 +177,10 @@ class Index extends React.Component {
                     <div className="breadcrumb-block">
                         <Breadcrumb>
                             <Breadcrumb.Item>店铺管理</Breadcrumb.Item>
-                            <Breadcrumb.Item>新增店铺</Breadcrumb.Item>
+                            <Breadcrumb.Item>店铺审核</Breadcrumb.Item>
                         </Breadcrumb>
                     </div>
-                    <h1 className='title'>新增店铺</h1>
+                    <h1 className='title'>店铺审核</h1>
                 </div>
                 <div className='pageContent'>
                     <div className='ibox-content'>
@@ -168,11 +193,7 @@ class Index extends React.Component {
                                         {getFieldDecorator('shopPic', {
                                             rules: [{required: false, message: '店铺描述图片不能为空!'}],
                                         })(
-                                            <Upload
-                                                onChange={this.handleShopPicChange}
-                                            >
-                                                {fileList.length >= 5 ? null : uploadButton}
-                                            </Upload>
+                                            <Upload disabled/>
                                         )}
 
                                     </FormItem>
@@ -185,12 +206,8 @@ class Index extends React.Component {
                                         {...formItemLayout}
                                         label="店铺名称"
                                     >
-                                        {getFieldDecorator('shopName', {
-                                            rules: [{
-                                                required: true, message: '请输入店铺名称',
-                                            }],
-                                        })(
-                                            <Input/>
+                                        {getFieldDecorator('shopName')(
+                                            <Input disabled/>
                                         )}
                                     </FormItem>
                                 </Col>
@@ -199,10 +216,8 @@ class Index extends React.Component {
                                         {...formItemLayout}
                                         label="店铺地址"
                                     >
-                                        {getFieldDecorator('shopAddress', {
-                                            rules: [{required: true, message: '请输入店铺地址'}],
-                                        })(
-                                            <Input/>
+                                        {getFieldDecorator('shopAddress')(
+                                            <Input disabled/>
                                         )}
                                     </FormItem>
                                 </Col>
@@ -211,28 +226,28 @@ class Index extends React.Component {
                                         {...formItemLayout}
                                         label="店铺持有人"
                                     >
-                                        {getFieldDecorator('shopOwner', {
-                                            rules: [{
-                                                required: true, message: '请输入店铺持有人',
-                                            }],
-                                        })(
-                                            <Input/>
+                                        {getFieldDecorator('shopOwner')(
+                                            <Input disabled/>
                                         )}
                                     </FormItem>
                                 </Col>
+                              <Col {...itemGrid}>
+                                <FormItem
+                                  {...formItemLayout}
+                                  label="身份证号码"
+                                >
+                                  {getFieldDecorator('IDNumber')(
+                                    <Input disabled/>
+                                  )}
+                                </FormItem>
+                              </Col>
                                 <Col {...itemGrid}>
                                     <FormItem
                                         {...formItemLayout}
                                         label="手机号码"
                                     >
-                                        {getFieldDecorator('shopTelephone', {
-                                            rules: [{
-                                                required: true, message: '请输入手机号码',
-                                            }, {
-                                                validator: this.validatePhone,
-                                            }],
-                                        })(
-                                            <Input/>
+                                        {getFieldDecorator('shopTelephone')(
+                                            <Input disabled/>
                                         )}
                                     </FormItem>
                                 </Col>
@@ -241,12 +256,8 @@ class Index extends React.Component {
                                         {...formItemLayout}
                                         label="固定号码"
                                     >
-                                        {getFieldDecorator('shopPhone', {
-                                            rules: [{
-                                                required: false,
-                                            }],
-                                        })(
-                                            <Input/>
+                                        {getFieldDecorator('shopPhone')(
+                                            <Input disabled/>
                                         )}
                                     </FormItem>
                                 </Col>
@@ -255,12 +266,8 @@ class Index extends React.Component {
                                         {...formItemLayout}
                                         label="微信号"
                                     >
-                                        {getFieldDecorator('shopWeixin', {
-                                            rules: [{
-                                                required: true, message: '请输入微信号',
-                                            }],
-                                        })(
-                                            <Input/>
+                                        {getFieldDecorator('shopWeixin')(
+                                            <Input disabled/>
                                         )}
                                     </FormItem>
                                 </Col>
@@ -269,11 +276,7 @@ class Index extends React.Component {
                                         {...formItemLayout}
                                         label="店铺创建人"
                                     >
-                                        {getFieldDecorator('createBy', {
-                                            rules: [{
-                                                required: false,
-                                            }]
-                                        })(
+                                        {getFieldDecorator('createBy')(
                                             <Input disabled/>
                                         )}
                                     </FormItem>
@@ -283,11 +286,7 @@ class Index extends React.Component {
                                         {...formItemLayout}
                                         label="店铺修改人"
                                     >
-                                        {getFieldDecorator('updateBy', {
-                                            rules: [{
-                                                required: false,
-                                            }]
-                                        })(
+                                        {getFieldDecorator('updateBy')(
                                             <Input disabled/>
                                         )}
                                     </FormItem>
@@ -297,12 +296,7 @@ class Index extends React.Component {
                                         {...formItemLayout}
                                         label="店铺状态"
                                     >
-                                        {getFieldDecorator('shopStatus', {
-                                            rules: [{
-                                                required: false, message: '请输入食品状态',
-                                            }],
-                                            initialValue: 0
-                                        })(
+                                        {getFieldDecorator('shopStatus')(
                                             <Select placeholder="请选择" disabled>
                                                 <Option value={0}>未审核</Option>
                                                 <Option value={1}>已审核</Option>
@@ -318,12 +312,8 @@ class Index extends React.Component {
                                         {...formItemLayout}
                                         label="备注"
                                     >
-                                        {getFieldDecorator('mark', {
-                                            rules: [{
-                                                required: false
-                                            }],
-                                        })(
-                                            <TextArea/>
+                                        {getFieldDecorator('mark')(
+                                            <TextArea disabled/>
                                         )}
                                     </FormItem>
                                 </Col>
@@ -334,19 +324,15 @@ class Index extends React.Component {
                                     <FormItem
                                     >
                                         {getFieldDecorator('shopCertificate')(
-                                            <Upload
-                                                onChange={this.handleShopCertificateChange}
-                                            >
-                                                {certificateFileList.length >= 1 ? null : uploadButton}
-                                            </Upload>
+                                            <Upload disabled/>
                                         )}
                                     </FormItem>
                                 </Col>
                             </Row>
-                            <Row type="flex" justify="center" style={{marginTop: 40}}>
-                                <Button type="primary" size='large' style={{width: 120}} htmlType="submit"
-                                        loading={submitLoading}>提交</Button>
-                            </Row>
+                          <Row type="flex" justify="center" style={{marginTop: 40}}>
+                            <Button size='large' style={{width: 120, marginRight: 40}} onClick={() => this.submit(1)}>不通过</Button>
+                            <Button type="primary" size='large' style={{width: 120}} onClick={() => this.submit(2)}>通过</Button>
+                          </Row>
                         </Form>
                     </div>
                 </div>

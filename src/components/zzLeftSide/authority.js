@@ -7,7 +7,7 @@ const admin = {
             children: ['000_1', '000_2']
         }, {
             key: '003',
-            children: ['003_1']
+            children: ['003_1', '003_2']
         }, {
             key: '007',
             children: ['007_1', '007_2']

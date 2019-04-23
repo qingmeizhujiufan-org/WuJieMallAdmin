@@ -21,9 +21,14 @@ const Menu = [
         children: [
             {
                 key: '003_1',
-                link: '/frame/food/list',
-                label: '特色食品列表'
-            }
+                link: '/frame/food/shopList',
+                label: '食品商铺列表'
+            },
+          {
+            key: '003_2',
+            link: '/frame/food/list',
+            label: '特色食品列表'
+          }
         ]
     }, {
         key: '007',

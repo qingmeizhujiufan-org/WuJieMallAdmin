@@ -122,6 +122,7 @@ class Index extends React.Component {
         values.hotelTypeText = typeList[values.hotelType];
         values.hotelStatus = values.hotelStatus;
         values.hotelStatusText = statusList[values.hotelStatus];
+        values.id = sessionStorage.userId;
         values.createBy = sessionStorage.userName;
 
         this.setState({

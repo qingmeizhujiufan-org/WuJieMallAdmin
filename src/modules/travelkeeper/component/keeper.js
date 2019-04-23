@@ -135,7 +135,7 @@ class Index extends React.Component {
         this.setState({
           submitLoading: true
         });
-        axios.post('travelKeeper/update', values).then(res => res.data).then(data => {
+        axios.post(data.id ? 'travelKeeper/update' : 'travelKeeper/add', values).then(res => res.data).then(data => {
           if (data.success) {
             notification.success({
               message: '提示',

@@ -28,26 +28,20 @@ class FoodShopList extends React.Component {
 
     this.columns = [
       {
-        title: '店铺名称',
-        dataIndex: 'shopName',
+        title: '旅游商家名称',
         width: 150,
         align: 'center',
-        key: 'shopName',
+        dataIndex: 'foodKeeperName',
+        key: 'foodKeeperName',
         render: (text, record, index) => (
           <Link to={this.onEdit(record.id)}>{text}</Link>
         )
       }, {
-        title: '店铺地址',
-        dataIndex: 'shopAddress',
-        width: 200,
+        title: '负责人姓名',
+        dataIndex: 'keeperName',
+        width: 120,
         align: 'center',
-        key: 'shopAddress'
-      }, {
-        title: '店铺持有人',
-        width: 100,
-        align: 'center',
-        dataIndex: 'shopOwner',
-        key: 'shopOwner'
+        key: 'keeperName'
       }, {
         title: '身份证号码',
         dataIndex: 'IDNumber',
@@ -55,56 +49,67 @@ class FoodShopList extends React.Component {
         align: 'center',
         key: 'IDNumber'
       }, {
-        title: '手机号码',
+        title: '手机电话',
+        dataIndex: 'telephone',
         width: 120,
         align: 'center',
-        dataIndex: 'shopTelephone',
-        key: 'shopTelephone',
+        key: 'telephone'
       }, {
         title: '固定电话',
-        width: 100,
+        dataIndex: 'phone',
+        width: 120,
         align: 'center',
-        dataIndex: 'shopPhone',
-        key: 'shopPhone'
+        key: 'phone'
       }, {
-        title: '微信号',
-        width: 100,
+        title: '商家地址',
+        width: 180,
+        align: 'right',
+        dataIndex: 'foodKeeperAddress',
+        key: 'foodKeeperAddress'
+      }, {
+        title: '营业状态',
         align: 'center',
-        dataIndex: 'shopWeixin',
-        key: 'shopWeixin'
-      },{
-        title: '状态',
         width: 100,
-        dataIndex: 'shopStatus',
-        key: 'shopStatus'
+        dataIndex: 'businessStatus',
+        key: 'businessStatus',
+        render: (text) => {
+          if (text === 0) {
+            return <Badge status="error" text="休息中"/>;
+          } else if (text === 1) {
+            return <Badge status="success" text="营业中"/>;
+          } else {
+            return <Badge status="processing" text="下架中"/>;
+          }
+        }
       }, {
-        title: '备注',
-        dataIndex: 'mark',
-        key: 'mark'
+        title: '创建时间',
+        align: 'right',
+        width: 150,
+        dataIndex: 'created_at',
+        key: 'created_at'
       }, {
-        title: '更新时间',
-        width: 200,
+        title: '修改时间',
         align: 'center',
+        width: 150,
         dataIndex: 'updated_at',
         key: 'updated_at'
       }, {
-        title: '创建时间',
-        width: 200,
+        title: '备注',
         align: 'center',
-        dataIndex: 'created_at',
-        key: 'created_at'
+        dataIndex: 'mark',
+        key: 'mark'
       }, {
         title: '状态',
         align: 'left',
         fixed: 'right',
         width: 110,
-        dataIndex: 'state',
-        key: 'state',
+        dataIndex: 'checkStatus',
+        key: 'checkStatus',
         render: (text) => {
           if (text === 1) {
-            return <Badge status="error" text="审核不通过"/>;
-          } else if (text === 2) {
             return <Badge status="success" text="审核通过"/>;
+          } else if (text === 2) {
+            return <Badge status="error" text="审核不通过"/>;
           } else {
             return <Badge status="processing" text="待审核"/>;
           }
@@ -134,7 +139,7 @@ class FoodShopList extends React.Component {
     const {params, keyWords} = this.state;
     const param = assign({}, params, {keyWords});
     this.setState({loading: true});
-    axios.get('shop/queryList', {
+    axios.get('foodKeeper/queryList', {
       params: param
     }).then(res => res.data).then(data => {
       if (data.success) {
@@ -185,47 +190,8 @@ class FoodShopList extends React.Component {
     });
   }
 
-  addFood = () => {
-    return this.context.router.push('/frame/shop/add');
-  }
-
-  onDetail = id => {
-    return `/frame/shop/list/detail/${id}`
-  }
-
   onEdit = id => {
-    return `/frame/shop/list/edit/${id}`
-  }
-
-  onDelete = (key) => {
-    Modal.confirm({
-      title: '提示',
-      content: '确认要删除吗？',
-      okText: '确认',
-      cancelText: '取消',
-      onOk: () => {
-        let param = {};
-        param.id = key;
-        axios.post('shop/delete', param).then(res => res.data).then(data => {
-          if (data.success) {
-            Notification.success({
-              message: '提示',
-              description: '删除成功！'
-            });
-
-            this.setState({
-              params: {
-                pageNumber: 1
-              },
-            }, () => {
-              this.queryList();
-            });
-          } else {
-            Message.error(data.backMsg);
-          }
-        });
-      }
-    });
+    return `/frame/food/shopList/edit/${id}`
   }
 
   render() {
@@ -261,7 +227,7 @@ class FoodShopList extends React.Component {
               dataSource={dataSource}
               pagination={pagination}
               loading={loading}
-              scroll={{x: 1600}}
+              scroll={{x: 1500}}
               handlePageChange={this.handlePageChange.bind(this)}
             />
           </ZZCard>
