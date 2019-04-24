@@ -41,32 +41,37 @@ class OrderList extends React.Component {
       {
         title: '订单编号',
         align: 'center',
-        dataIndex: 'orderId',
-        key: 'orderId'
+        dataIndex: 'id',
+        key: 'id'
       }, {
-        title: '预订日期',
+        title: '住店人',
         align: 'center',
-        dataIndex: 'signDate',
-        key: 'signDate'
+        dataIndex: 'person',
+        key: 'person'
       }, {
-        title: '联系人',
+        title: '住店人电话',
         align: 'center',
-        dataIndex: 'contract',
-        key: 'contract'
+        dataIndex: 'telephone',
+        key: 'telephone'
       }, {
-        title: '联系人电话',
-        align: 'center',
-        dataIndex: 'contractPhone',
-        key: 'contractPhone'
-      }, {
-        title: '车牌号',
+        title: '起始日期',
         width: 150,
-        align: 'right',
-        dataIndex: 'plateNumber',
-        key: 'plateNumber'
+        align: 'center',
+        dataIndex: 'beginDate',
+        key: 'beginDate'
+      }, {
+        title: '结束日期',
+        width: 150,
+        align: 'center',
+        dataIndex: 'endDate',
+        key: 'endDate'
+      }, {
+        title: '天数',
+        align: 'center',
+        dataIndex: 'days',
+        key: 'days'
       }, {
         title: '总金额',
-        width: 150,
         align: 'right',
         dataIndex: 'totalMoney',
         key: 'totalMoney',
@@ -74,25 +79,28 @@ class OrderList extends React.Component {
           <span>{Util.shiftThousands(text)}</span>
         )
       }, {
-        title: '创建时间',
-        // width: 200,
+        title: '预定时间',
         align: 'center',
         dataIndex: 'created_at',
         key: 'created_at'
       }, {
         title: '订单状态',
-        width: 200,
+        width: 150,
         fixed: 'right',
         align: 'center',
-        dataIndex: 'state',
-        key: 'state',
+        dataIndex: 'status',
+        key: 'status',
         render: text => {
-          if (!text) {
-            return <Badge status="processing" text="待确认"/>;
-          } else if (text === 1) {
+          if (text === 1) {
             return <Badge status="success" text="已确认"/>;
           } else if (text === 2) {
             return <Badge status="warning" text="已拒绝"/>;
+          } else if (text === 3) {
+            return <Badge status="warning" text="已入住"/>;
+          } else if (text === 4) {
+            return <Badge status="warning" text="已结束"/>;
+          } else {
+            return <Badge status="processing" text="待确认"/>;
           }
         }
       }, {
@@ -101,25 +109,34 @@ class OrderList extends React.Component {
         fixed: 'right',
         width: 120,
         align: 'center',
-        render: (text, record, index) => (
-          <Dropdown
-            placement="bottomCenter"
-            overlay={
-              <Menu>
-                <Menu.Item>
-                  <a onClick={() => this.onCheck(record, 1)}>确认</a>
-                </Menu.Item>
-                <Menu.Item>
-                  <a onClick={() => this.onCheck(record, 2)}>拒绝</a>
-                </Menu.Item>
-              </Menu>
-            }
-          >
-            <a className="ant-dropdown-link">操作</a>
-          </Dropdown>
-        )
-      }
-    ];
+        render: (text, record, index) => {
+          if (record.status !== 4) {
+            return <Dropdown
+              placement="bottomCenter"
+              overlay={
+                <Menu>
+                  <Menu.Item>
+                    <a onClick={() => this.onCheck(record, 1)}>确认</a>
+                  </Menu.Item>
+                  <Menu.Item>
+                    <a onClick={() => this.onCheck(record, 2)}>拒绝</a>
+                  </Menu.Item>
+                  <Menu.Item>
+                    <a onClick={() => this.onCheck(record, 3)}>入住</a>
+                  </Menu.Item>
+                  <Menu.Item>
+                    <a onClick={() => this.onCheck(record, 4)}>离店</a>
+                  </Menu.Item>
+                </Menu>
+              }
+            >
+              <a className="ant-dropdown-link">操作</a>
+            </Dropdown>
+          } else {
+            return <span>已结束</span>
+          }
+        }
+      }];
 
     this.state = {
       loading: false,
@@ -131,7 +148,7 @@ class OrderList extends React.Component {
       params: {
         pageNumber: 1,
         pageSize: 10,
-        travelkeeperId: sessionStorage.userId
+        keeperId: sessionStorage.userId
       },
       keyWords: '',
       searchKey: {},
@@ -149,7 +166,7 @@ class OrderList extends React.Component {
     const {params, searchKey} = this.state;
     const param = assign({}, params, searchKey);
     this.setState({loading: true});
-    axios.get('travelKeeper/queryOrderList', {
+    axios.get('hotelKeeper/queryOrderList', {
       params: param
     }).then(res => res.data).then(data => {
       if (data.success) {
@@ -178,7 +195,7 @@ class OrderList extends React.Component {
     });
   }
 
-  // 处理分页变化
+// 处理分页变化
   handlePageChange = param => {
     const params = assign({}, this.state.params, param);
     this.setState({params}, () => {
@@ -186,7 +203,7 @@ class OrderList extends React.Component {
     });
   }
 
-  //简单搜索
+//简单搜索
   onSearch = (val) => {
     this.setState({
       searchKey: {
@@ -197,7 +214,7 @@ class OrderList extends React.Component {
     });
   }
 
-  onCheck = (record, state) => {
+  onCheck = (record, status) => {
     // const type = sessionStorage.type;
     //业务员
     // if (type === '3' && record.orderState !== 0) {
@@ -218,8 +235,8 @@ class OrderList extends React.Component {
       onOk: () => {
         let param = {};
         param.id = record.id;
-        param.state = state;
-        axios.post('travelKeeper/orderCheck', param).then(res => res.data).then(data => {
+        param.status = status;
+        axios.post('hotelKeeper/orderCheck', param).then(res => res.data).then(data => {
           if (data.success) {
             notification.success({
               message: '提示',
@@ -230,7 +247,7 @@ class OrderList extends React.Component {
               params: {
                 pageNumber: 1,
                 pageSize: 10,
-                travelkeeperId: sessionStorage.userId
+                keeperId: sessionStorage.userId
               },
             }, () => {
               this.queryList();
@@ -243,34 +260,9 @@ class OrderList extends React.Component {
     });
   }
 
-  handleSubmit = (e) => {
-    e.preventDefault();
-    this.props.form.validateFields((err, values) => {
-      if (!err) {
-        values.keyWords = this.state.keyWords;
-        values.orderDate = values.orderDate ? values.orderDate.format("YYYY-MM-DD") : '';
-        values.deliverBeginDate = values.deliverBeginDate ? values.deliverBeginDate.format("YYYY-MM-DD") : '';
-        values.deliverEndDate = values.deliverEndDate ? values.deliverEndDate.format("YYYY-MM-DD") : '';
-        values.deliverDate = values.deliverDate ? values.deliverDate.format("YYYY-MM-DD") : '';
-
-        const searchKey = {};
-        for (let item in values) {
-          if (values[item] !== undefined && values[item] !== '') {
-            searchKey[item] = values[item];
-          }
-        }
-
-        this.setState({
-          drawerVisible: false,
-          searchKey
-        }, () => this.queryList());
-      }
-    })
-  };
-
   render() {
-    const {getFieldDecorator} = this.props.form;
-    const {dataSource, pagination, loading, keyWords, showUpload, warehouse, showExportOrderModal} = this.state;
+
+    const {dataSource, pagination, loading, keyWords} = this.state;
 
     return (
       <div className="zui-content page-orderList">
@@ -305,7 +297,7 @@ class OrderList extends React.Component {
               dataSource={dataSource}
               pagination={pagination}
               loading={loading}
-              scroll={{x: 1000}}
+              scroll={{x: 1500}}
               handlePageChange={this.handlePageChange}
             />
           </ZZCard>

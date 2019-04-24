@@ -91,12 +91,12 @@ class OrderList extends React.Component {
         dataIndex: 'state',
         key: 'state',
         render: text => {
-          if (!text) {
-            return <Badge status="processing" text="待确认"/>;
-          } else if (text === 1) {
+          if (text === 1) {
             return <Badge status="success" text="已确认"/>;
           } else if (text === 2) {
             return <Badge status="warning" text="已拒绝"/>;
+          } else {
+            return <Badge status="processing" text="待确认"/>;
           }
         }
       }, {
