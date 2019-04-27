@@ -242,7 +242,7 @@ class TravelList extends React.Component {
         const {params_1, keyWords_1} = this.state;
         const param = assign({}, {params: params_1}, {keyWords: keyWords_1});
         this.setState({loading_1: true});
-        axios.get('food/queryList', param).then(res => res.data).then(data => {
+        axios.get('food/queryAdminList', param).then(res => res.data).then(data => {
             if (data.success) {
                 if (data.backData) {
                     const backData = data.backData;
@@ -270,7 +270,7 @@ class TravelList extends React.Component {
         const {params_2, keyWords_2} = this.state;
         const param = assign({}, {params: params_2}, {keyWords: keyWords_2});
         this.setState({loading_2: true});
-        axios.get('travel/queryList', param).then(res => res.data).then(data => {
+        axios.get('travel/queryAdminList', param).then(res => res.data).then(data => {
             if (data.success) {
                 if (data.backData) {
                     const backData = data.backData;

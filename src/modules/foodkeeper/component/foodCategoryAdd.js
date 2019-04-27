@@ -57,7 +57,7 @@ class Index extends React.Component {
                 if (values.foodCategoryPic) {
                     values.foodCategoryPic = values.foodCategoryPic.map(item => item.response.id).join(',');
                 }
-                console.log('handleSubmit  param === ', values);
+                values.createBy = sessionStorage.userName;
                 this.setState({
                     submitLoading: true
                 });
@@ -108,7 +108,7 @@ class Index extends React.Component {
                             <Row>
                                 <Col {...itemGrid}>
                                     <FormItem
-                                        label="头像"
+                                        label="类别图"
                                         {...formItemLayout}
                                     >
                                         {getFieldDecorator('foodCategoryPic', {
@@ -144,19 +144,6 @@ class Index extends React.Component {
                                             rules: [{required: true, message: '请输入食品类别条码'}]
                                         })(
                                             <Input/>
-                                        )}
-                                    </FormItem>
-                                </Col>
-                                <Col {...itemGrid}>
-                                    <FormItem
-                                        {...formItemLayout}
-                                        label="创建人"
-                                    >
-                                        {getFieldDecorator('createBy', {
-                                            rules: [{required: true, message: '请输入食品名称'}],
-                                            initialValue: sessionStorage.getItem('userName')
-                                        })(
-                                            <Input disabled/>
                                         )}
                                     </FormItem>
                                 </Col>

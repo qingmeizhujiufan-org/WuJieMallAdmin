@@ -267,9 +267,9 @@ class Index extends React.Component {
                                 </Row>
                                 <Row type="flex" justify="center" style={{marginTop: 40}}>
                                     <Button size='large' style={{width: 120, marginRight: 40}}
-                                            onClick={() => this.submit(2)}>不通过</Button>
+                                            onClick={() => this.submit(1)}>不通过</Button>
                                     <Button type="primary" size='large' style={{width: 120}}
-                                            onClick={() => this.submit(1)}>通过</Button>
+                                            onClick={() => this.submit(2)}>通过</Button>
                                 </Row>
                             </Form>
                         </Spin>

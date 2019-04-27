@@ -10,14 +10,16 @@ import {
     Button,
     notification,
     message,
+    InputNumber,
     Divider,
-    Icon,
-    Modal
 } from 'antd';
-import {Upload, InputNumber} from 'Comps/zui';
+import {DatePicker, Upload} from 'Comps/zui';
 import {formItemLayout, itemGrid} from 'Utils/formItemGrid';
+import restUrl from 'RestUrl';
 import axios from "Utils/axios";
+
 import '../index.less';
+import assign from "lodash/assign";
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -25,81 +27,56 @@ const {TextArea} = Input;
 
 class Index extends React.Component {
     state = {
-        fileList: [],
         submitLoading: false,
         categoryList: []
     };
 
     componentDidMount = () => {
-        this.queryDetail();
+        this.queryAllCategoryList();
     }
 
-    queryDetail = () => {
-        const _this = this;
-        const param = {};
-        param.id = sessionStorage.userId;
-
-        axios.get('hotel/queryDetail', {
+    queryAllCategoryList = () => {
+        const {params, keyWords} = this.state;
+        const param = assign({}, params, {keyWords});
+        axios.get('food/queryAllCategoryList', {
             params: param
         }).then(res => res.data).then(data => {
             if (data.success) {
-                let backData = data.backData;
-                if (backData.state !== 2) {
-                    Modal.info({
-                        title: '提示',
-                        content: '认证通过前暂不能添加房间信息，请耐心等待审核结果！',
-                        onOk() {
-                            return new Promise((resolve, reject) => {
-                                setTimeout(() => {
-                                    resolve();
-                                    _this.context.router.push('/frame/hotelkeeper/keeper');
-                                }, 1000);
-                            }).catch(() => {
-                            });
-                        }
-                    });
+                if (data.backData && data.backData.length !== 0) {
+                    const categoryList = data.backData;
+                    this.setState({
+                        categoryList: categoryList
+                    })
+                } else {
+                    message.error('当前没有食品分类，请先添加食品分类');
                 }
             } else {
-                message.error('获取商家信息失败，将自动跳转到认证信息页');
-                setTimeout(() => {
-                    this.context.router.push('/frame/hotelkeeper/keeper');
-                }, 1000);
+                message.error('查询列表失败');
             }
         });
-    }
-
-    validatePhone = (rule, value, callback) => {
-        const reg = /^[1][3,4,5,7,8][0-9]{9}$/;
-        if (value && value !== '' && !reg.test(value)) {
-            callback(new Error('手机号格式不正确'));
-        } else {
-            callback();
-        }
-    }
-
-    handleChange = fileList => {
-        this.setState({fileList});
     }
 
     handleSubmit = (e) => {
         e.preventDefault();
         this.props.form.validateFieldsAndScroll((err, values) => {
             if (!err) {
-                values.thumbnail = values.detailPic[0].response.id;
-                values.detailPic = values.detailPic && values.detailPic.map(item => item.response.id).join(',');
+                console.log('handleSubmit  param === ', values);
                 values.foodkeeperId = sessionStorage.userId;
+                values.thumbnail = values.headerPic[0].response.id;
+                values.headerPic = values.headerPic && values.headerPic.map(item => item.response.id).join(',');
+                values.detailPic = values.detailPic && values.detailPic.map(item => item.response.id).join(',');
 
                 this.setState({
                     submitLoading: true
                 });
-                axios.post('room/add', values).then(res => res.data).then(data => {
+                axios.post('food/add', values).then(res => res.data).then(data => {
                     if (data.success) {
                         notification.success({
                             message: '提示',
-                            description: '新增房间成功！'
+                            description: '新增食品成功！'
                         });
 
-                        return this.context.router.goBack();
+                        return this.context.router.push('/frame/foodkeeper/foodList');
                     } else {
                         message.error(data.backMsg);
                     }
@@ -114,53 +91,76 @@ class Index extends React.Component {
 
     render() {
         const {getFieldDecorator} = this.props.form;
-        const {fileList, submitLoading} = this.state;
+        const {submitLoading, categoryList} = this.state;
 
         return (
+
             <div className="zui-content">
                 <div className='pageHeader'>
                     <div className="breadcrumb-block">
                         <Breadcrumb>
-                            <Breadcrumb.Item>特色民宿管理</Breadcrumb.Item>
-                            <Breadcrumb.Item>民宿房间管理</Breadcrumb.Item>
-                            <Breadcrumb.Item>新增民宿房间</Breadcrumb.Item>
+                            <Breadcrumb.Item>食品管理</Breadcrumb.Item>
+                            <Breadcrumb.Item>新增食品</Breadcrumb.Item>
                         </Breadcrumb>
                     </div>
-                    <h1 className='title'>新增民宿房间</h1>
+                    <h1 className='title'>新增食品</h1>
                 </div>
                 <div className='pageContent'>
                     <div className='ibox-content'>
                         <Form onSubmit={this.handleSubmit}>
-                            <Divider>房间描述图</Divider>
+                            <Divider>食品示意图</Divider>
                             <Row>
                                 <Col span={24}>
                                     <FormItem
                                     >
-                                        {getFieldDecorator('detailPic', {
-                                            rules: [{
-                                                required: true
-                                                , message: '民宿房间描述图片不能为空!'
-                                            }],
+                                        {getFieldDecorator('headerPic', {
+                                            rules: [{required: true, message: '头像不能为空!'}],
                                         })(
-                                            <Upload
-                                                multiple={false}
-                                                onChange={this.handleChange}
-                                            >
-                                                {fileList.length >= 5 ? null : <div><Icon type="plus"/> 添加</div>}
-                                            </Upload>
+                                            <Upload/>
                                         )}
                                     </FormItem>
                                 </Col>
                             </Row>
                             <Divider>基本信息</Divider>
                             <Row>
+                                <Col {...itemGrid} style={{display: 'none'}}>
+                                    <FormItem
+                                        {...formItemLayout}
+                                        label="商家ID"
+                                    >
+                                        {getFieldDecorator('shopId', {initialValue: '123456789'})(
+                                            <Input/>
+                                        )}
+                                    </FormItem>
+                                </Col>
                                 <Col {...itemGrid}>
                                     <FormItem
                                         {...formItemLayout}
-                                        label="房间名称"
+                                        label="食品分类"
                                     >
-                                        {getFieldDecorator('roomName', {
-                                            rules: [{required: true, message: '请输入房间名称'}],
+                                        {getFieldDecorator('foodCategoryId', {
+                                            rules: [{
+                                                required: true, message: '请选择分类',
+                                            }],
+                                        })(
+                                            <Select placeholder="请选择">
+                                                {
+                                                    categoryList.map(item => {
+                                                        return (<Option key={item.id}
+                                                                        value={item.id}>{item.foodCategoryName}</Option>)
+                                                    })
+                                                }
+                                            </Select>
+                                        )}
+                                    </FormItem>
+                                </Col>
+                                <Col {...itemGrid}>
+                                    <FormItem
+                                        {...formItemLayout}
+                                        label="食品编码"
+                                    >
+                                        {getFieldDecorator('foodCode', {
+                                            rules: [{required: false, message: '请输入食品编码'}],
                                         })(
                                             <Input/>
                                         )}
@@ -169,97 +169,12 @@ class Index extends React.Component {
                                 <Col {...itemGrid}>
                                     <FormItem
                                         {...formItemLayout}
-                                        label="房间状态"
+                                        label="食品名称"
                                     >
-                                        {getFieldDecorator('roomStatus', {
-                                            rules: [{required: true, message: '请选择房间状态'}],
-                                            initialValue: 0
-                                        })(
-                                            <Select placeholder="请选择">
-                                                <Option value={0}>可预订</Option>
-                                                <Option value={1}>已满房</Option>
-                                                <Option value={2}>已下架</Option>
-                                            </Select>
-                                        )}
-                                    </FormItem>
-                                </Col>
-                                <Col {...itemGrid}>
-                                    <FormItem
-                                        {...formItemLayout}
-                                        label="床型"
-                                    >
-                                        {getFieldDecorator('bedModel', {
-                                            rules: [{required: true, message: '请输入房间类型'}],
-                                        })(
-                                            <Select placeholder="请选择">
-                                                <Option value='1.5米单人床'>1.5米单人床</Option>
-                                                <Option value='1.8米双人床'>1.8米双人床</Option>
-                                                <Option value='2米圆床'>2米圆床</Option>
-                                            </Select>
-                                        )}
-                                    </FormItem>
-                                </Col>
-                                <Col {...itemGrid}>
-                                    <FormItem
-                                        {...formItemLayout}
-                                        label="房间价格"
-                                    >
-                                        {getFieldDecorator('roomPrice', {
-                                            rules: [{required: true, message: '请输入房间价格'}],
-                                        })(
-                                            <InputNumber min={1}/>
-                                        )}
-                                    </FormItem>
-                                </Col>
-                                <Col {...itemGrid}>
-                                    <FormItem
-                                        {...formItemLayout}
-                                        label="房间大小"
-                                    >
-                                        {getFieldDecorator('roomSize', {
-                                            rules: [{required: true, message: '请输入房间类型'}],
-                                        })(
-                                            <InputNumber min={1}/>
-                                        )}
-                                    </FormItem>
-                                </Col>
-                                <Col {...itemGrid}>
-                                    <FormItem
-                                        {...formItemLayout}
-                                        label="可住人数"
-                                    >
-                                        {getFieldDecorator('stayPersonNum', {
-                                            rules: [{required: true, message: '请输入房间类型'}],
-                                            initialValue: 1
-                                        })(
-                                            <InputNumber min={1}/>
-                                        )}
-                                    </FormItem>
-                                </Col>
-                                <Col {...itemGrid}>
-                                    <FormItem
-                                        {...formItemLayout}
-                                        label="网络"
-                                    >
-                                        {getFieldDecorator('internet', {
-                                            rules: [{required: true, message: '请输入房间类型'}],
-                                            initialValue: '免费WIFI'
-                                        })(
-                                            <Select placeholder="请选择">
-                                                <Option value='免费WIFI'>免费WIFI</Option>
-                                                <Option value='有线网络'>有线网络</Option>
-                                            </Select>
-                                        )}
-                                    </FormItem>
-                                </Col>
-                                <Col {...itemGrid}>
-                                    <FormItem
-                                        {...formItemLayout}
-                                        label="窗景"
-                                    >
-                                        {getFieldDecorator('windowScenery', {
-                                            rules: [{required: true, message: '请输入房间类型'}],
-                                            initialValue: '无'
+                                        {getFieldDecorator('foodName', {
+                                            rules: [{
+                                                required: true, message: '请输入食品名称',
+                                            }],
                                         })(
                                             <Input/>
                                         )}
@@ -268,29 +183,12 @@ class Index extends React.Component {
                                 <Col {...itemGrid}>
                                     <FormItem
                                         {...formItemLayout}
-                                        label="窗户"
+                                        label="食品简介"
                                     >
-                                        {getFieldDecorator('window', {
-                                            rules: [{required: true, message: '请输入房间类型'}],
-                                            initialValue: '有窗'
-                                        })(
-                                            <Select placeholder="请选择">
-                                                <Option value='有窗'>有窗</Option>
-                                                <Option value='无床'>无窗</Option>
-                                                <Option value='部分有窗'>部分有窗</Option>
-                                                <Option value='内窗'>内窗</Option>
-                                            </Select>
-                                        )}
-                                    </FormItem>
-                                </Col>
-                                <Col {...itemGrid}>
-                                    <FormItem
-                                        {...formItemLayout}
-                                        label="卫浴"
-                                    >
-                                        {getFieldDecorator('bathroom', {
-                                            rules: [{required: true, message: '请输入房间类型'}],
-                                            initialValue: '独立卫浴免费洗浴用品'
+                                        {getFieldDecorator('foodSummary', {
+                                            rules: [{
+                                                required: false, message: '请输入食品简介',
+                                            }],
                                         })(
                                             <Input/>
                                         )}
@@ -299,28 +197,50 @@ class Index extends React.Component {
                                 <Col {...itemGrid}>
                                     <FormItem
                                         {...formItemLayout}
-                                        label="早餐"
+                                        label="售价"
                                     >
-                                        {getFieldDecorator('breakfast', {
-                                            rules: [{required: true, message: '请输入房间类型'}],
-                                            initialValue: '含双早'
+                                        {getFieldDecorator('foodSellingprice', {
+                                            rules: [{
+                                                required: false, message: '请输入售价',
+                                            }],
                                         })(
-                                            <Select placeholder="请选择">
-                                                <Option value='含双早'>含双早</Option>
-                                                <Option value='含单早'>含单早</Option>
-                                                <Option value='不含'>不含</Option>
-                                            </Select>
+                                            <InputNumber
+                                                min={0}
+                                                precision={2}
+                                                step={1}
+                                                style={{width: '100%'}}
+                                            />
                                         )}
                                     </FormItem>
                                 </Col>
                                 <Col {...itemGrid}>
                                     <FormItem
                                         {...formItemLayout}
-                                        label="饮品"
+                                        label="成本价格"
                                     >
-                                        {getFieldDecorator('drink', {
-                                            rules: [{required: true, message: '请输入房间类型'}],
-                                            initialValue: '矿泉水两瓶'
+                                        {getFieldDecorator('foodCostprice', {
+                                            rules: [{
+                                                required: true, message: '请输入成本价格',
+                                            }],
+                                        })(
+                                            <InputNumber
+                                                min={0}
+                                                precision={2}
+                                                step={1}
+                                                style={{width: '100%'}}
+                                            />
+                                        )}
+                                    </FormItem>
+                                </Col>
+                                <Col {...itemGrid}>
+                                    <FormItem
+                                        {...formItemLayout}
+                                        label="食品单位"
+                                    >
+                                        {getFieldDecorator('food_unit', {
+                                            rules: [{
+                                                required: false, message: '请输入食品单位',
+                                            }],
                                         })(
                                             <Input/>
                                         )}
@@ -329,11 +249,12 @@ class Index extends React.Component {
                                 <Col {...itemGrid}>
                                     <FormItem
                                         {...formItemLayout}
-                                        label="其他设施"
+                                        label="食品规格"
                                     >
-                                        {getFieldDecorator('facilities', {
-                                            rules: [{required: true, message: '请输入房间类型'}],
-                                            initialValue: '无'
+                                        {getFieldDecorator('food_spec', {
+                                            rules: [{
+                                                required: false, message: '请输入食品规格',
+                                            }],
                                         })(
                                             <Input/>
                                         )}
@@ -342,29 +263,32 @@ class Index extends React.Component {
                                 <Col {...itemGrid}>
                                     <FormItem
                                         {...formItemLayout}
-                                        label="支付方式"
+                                        label="食品型号"
                                     >
-                                        {getFieldDecorator('payType', {
-                                            initialValue: '到店支付'
+                                        {getFieldDecorator('food_model', {
+                                            rules: [{
+                                                required: false, message: '请输入食品型号',
+                                            }],
                                         })(
-                                            <Select placeholder="请选择" disabled>
-                                                <Option value='在线支付'>在线支付</Option>
-                                                <Option value='到店支付'>到店支付</Option>
-                                            </Select>
+                                            <Input/>
                                         )}
                                     </FormItem>
                                 </Col>
                                 <Col {...itemGrid}>
                                     <FormItem
                                         {...formItemLayout}
-                                        label="可否取消"
+                                        label="食品状态"
                                     >
-                                        {getFieldDecorator('canCancel', {
+                                        {getFieldDecorator('food_state', {
+                                            rules: [{
+                                                required: false, message: '请输入食品状态',
+                                            }],
                                             initialValue: 0
                                         })(
                                             <Select placeholder="请选择" disabled>
-                                                <Option value='支持取消'>支持取消</Option>
-                                                <Option value='您在下单后变更或取消收取全额的定金。'>您在下单后变更或取消收取全额的定金。</Option>
+                                                <Option value={0}>未上架</Option>
+                                                <Option value={1}>已上架</Option>
+                                                <Option value={2}>已删除</Option>
                                             </Select>
                                         )}
                                     </FormItem>
@@ -372,39 +296,154 @@ class Index extends React.Component {
                                 <Col {...itemGrid}>
                                     <FormItem
                                         {...formItemLayout}
-                                        label="可否加床"
+                                        label="配送范围"
                                     >
-                                        {getFieldDecorator('canAddbed', {
-                                            initialValue: 0
-                                        })(
-                                            <Select placeholder="请选择" disabled>
-                                                <Option value='不可加床'>不可加床</Option>
-                                                <Option value='可以加床'>可以加床</Option>
-                                            </Select>
-                                        )}
-                                    </FormItem>
-                                </Col>
-                                <Col {...itemGrid}>
-                                    <FormItem
-                                        {...formItemLayout}
-                                        label="内宾"
-                                    >
-                                        {getFieldDecorator('innerNeed', {
-                                            initialValue: '须大陆身份证入住'
-                                        })(
-                                            <Input disabled/>
-                                        )}
-                                    </FormItem>
-                                </Col>
-                                <Col {...itemGrid}>
-                                    <FormItem
-                                        {...formItemLayout}
-                                        label="优惠政策"
-                                    >
-                                        {getFieldDecorator('sale', {
-                                            initialValue: '无'
+                                        {getFieldDecorator('distributionScope', {
+                                            rules: [{
+                                                required: false, message: '请输入配送范围',
+                                            }],
                                         })(
                                             <TextArea/>
+                                        )}
+                                    </FormItem>
+                                </Col>
+                                <Col {...itemGrid}>
+                                    <FormItem
+                                        {...formItemLayout}
+                                        label="备注"
+                                    >
+                                        {getFieldDecorator('mark', {
+                                            rules: [{
+                                                required: false
+                                            }],
+                                        })(
+                                            <TextArea/>
+                                        )}
+                                    </FormItem>
+                                </Col>
+                            </Row>
+                            <Divider>食品参数</Divider>
+                            <Row>
+                                <Col {...itemGrid}>
+                                    <FormItem
+                                        {...formItemLayout}
+                                        label="产地"
+                                    >
+                                        {getFieldDecorator('foodOrigin', {
+                                            rules: [{
+                                                required: false, message: '请输入食品产地',
+                                            }],
+                                        })(
+                                            <Input/>
+                                        )}
+                                    </FormItem>
+                                </Col>
+                                <Col {...itemGrid}>
+                                    <FormItem
+                                        {...formItemLayout}
+                                        label="食用办法"
+                                    >
+                                        {getFieldDecorator('foodUsage', {
+                                            rules: [{
+                                                required: false, message: '请输入食品食用办法',
+                                            }],
+                                        })(
+                                            <Input/>
+                                        )}
+                                    </FormItem>
+                                </Col>
+                                <Col {...itemGrid}>
+                                    <FormItem
+                                        {...formItemLayout}
+                                        label="贮藏办法"
+                                    >
+                                        {getFieldDecorator('foodStorage', {
+                                            rules: [{
+                                                required: false, message: '请输入食品贮藏办法',
+                                            }],
+                                        })(
+                                            <Input/>
+                                        )}
+                                    </FormItem>
+                                </Col>
+                                <Col {...itemGrid}>
+                                    <FormItem
+                                        {...formItemLayout}
+                                        label="口味"
+                                    >
+                                        {getFieldDecorator('foodTaste', {
+                                            rules: [{
+                                                required: false, message: '请输入食品口味',
+                                            }],
+                                        })(
+                                            <Input/>
+                                        )}
+                                    </FormItem>
+                                </Col>
+                                <Col {...itemGrid}>
+                                    <FormItem
+                                        {...formItemLayout}
+                                        label="品牌"
+                                    >
+                                        {getFieldDecorator('foodBrand', {
+                                            rules: [{
+                                                required: false, message: '请输入食品品牌',
+                                            }],
+                                        })(
+                                            <Input/>
+                                        )}
+                                    </FormItem>
+                                </Col>
+                                <Col {...itemGrid}>
+                                    <FormItem
+                                        {...formItemLayout}
+                                        label="配料"
+                                    >
+                                        {getFieldDecorator('foodBatching', {
+                                            rules: [{
+                                                required: false, message: '请输入食品配料',
+                                            }],
+                                        })(
+                                            <Input/>
+                                        )}
+                                    </FormItem>
+                                </Col>
+                                <Col {...itemGrid}>
+                                    <FormItem
+                                        {...formItemLayout}
+                                        label="保质期"
+                                    >
+                                        {getFieldDecorator('foodDate', {
+                                            rules: [{
+                                                required: false, message: '请输入食品保质期',
+                                            }],
+                                        })(
+                                            <DatePicker/>
+                                        )}
+                                    </FormItem>
+                                </Col>
+                                <Col {...itemGrid}>
+                                    <FormItem
+                                        {...formItemLayout}
+                                        label="净含量"
+                                    >
+                                        {getFieldDecorator('foodNetWeight', {
+                                            rules: [{
+                                                required: false, message: '请输入食品净含量',
+                                            }],
+                                        })(
+                                            <Input/>
+                                        )}
+                                    </FormItem>
+                                </Col>
+                            </Row>
+                            <Divider>食品详情图</Divider>
+                            <Row>
+                                <Col span={24}>
+                                    <FormItem
+                                    >
+                                        {getFieldDecorator('detailPic')(
+                                            <Upload/>
                                         )}
                                     </FormItem>
                                 </Col>
@@ -423,8 +462,8 @@ class Index extends React.Component {
 
 Index.contextTypes = {
     router: PropTypes.object
-}
+};
 
-const roomAdd = Form.create({name: 'roomAdd'})(Index);
+const foodAdd = Form.create()(Index);
 
-export default roomAdd;
+export default foodAdd;

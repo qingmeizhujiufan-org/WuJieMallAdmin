@@ -109,7 +109,7 @@ class Index extends React.Component {
                     values.foodCategoryPic = values.foodCategoryPic.map(item => item.response.id).join(',');
                 }
                 values.id = this.props.params.id;
-
+                values.updateBy = sessionStorage.userName;
                 this.setState({
                     submitLoading: true
                 });
@@ -158,7 +158,7 @@ class Index extends React.Component {
                             <Row>
                                 <Col {...itemGrid}>
                                     <FormItem
-                                        label="头像"
+                                        label="类别图"
                                         {...formItemLayout}
                                     >
                                         {getFieldDecorator('foodCategoryPic', {
@@ -194,30 +194,6 @@ class Index extends React.Component {
                                             rules: [{required: true, message: '请输入食品类别条码'}]
                                         })(
                                             <Input/>
-                                        )}
-                                    </FormItem>
-                                </Col>
-                                <Col {...itemGrid}>
-                                    <FormItem
-                                        {...formItemLayout}
-                                        label="创建人"
-                                    >
-                                        {getFieldDecorator('createBy', {
-                                            rules: [{required: false, message: '请输入食品名称'}]
-                                        })(
-                                            <Input disabled/>
-                                        )}
-                                    </FormItem>
-                                </Col>
-                                <Col {...itemGrid}>
-                                    <FormItem
-                                        {...formItemLayout}
-                                        label="修改人"
-                                    >
-                                        {getFieldDecorator('updateBy', {
-                                            rules: [{required: false}]
-                                        })(
-                                            <Input disabled/>
                                         )}
                                     </FormItem>
                                 </Col>

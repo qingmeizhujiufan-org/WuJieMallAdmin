@@ -148,7 +148,7 @@ class FoodList extends React.Component {
         const {params, keyWords} = this.state;
         const param = assign({}, params, {keyWords});
         this.setState({loading: true});
-        axios.get('food/queryList', {
+        axios.get('food/queryAdminList', {
             params: param
         }).then(res => res.data).then(data => {
             if (data.success) {

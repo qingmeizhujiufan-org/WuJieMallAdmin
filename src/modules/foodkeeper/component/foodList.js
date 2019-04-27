@@ -38,10 +38,10 @@ class FoodList extends React.Component {
                 )
             }, {
                 title: '店家名称',
-                dataIndex: 'shopName',
+                dataIndex: 'keeperName',
                 width: 150,
                 align: 'center',
-                key: 'shopName'
+                key: 'keeperName'
             }, {
                 title: '食品分类',
                 dataIndex: 'foodCategoryName',
@@ -205,11 +205,11 @@ class FoodList extends React.Component {
     }
 
     addFood = () => {
-        return this.context.router.push('/frame/food/add');
+        return this.context.router.push('/frame/foodkeeper/addFood');
     }
 
     onEdit = id => {
-        return `/frame/food/list/edit/${id}`
+        return `/frame/foodkeeper/foodList/edit/${id}`
     }
 
     onDelete = (key) => {

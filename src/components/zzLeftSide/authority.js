@@ -25,7 +25,7 @@ const admin = {
 };
 
 const hotelkeeperAdmin = {
-    defaultOpenKeys: ['300', '301'],
+    defaultOpenKeys: ['300', '301', '302'],
     defaultSelectedKeys: ['300_1'],
     menu: [
         {

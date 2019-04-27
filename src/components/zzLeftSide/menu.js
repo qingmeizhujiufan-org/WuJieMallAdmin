@@ -22,7 +22,7 @@ const Menu = [
             {
                 key: '003_1',
                 link: '/frame/food/shopList',
-                label: '食品商铺列表'
+                label: '食品商家列表'
             },
           {
             key: '003_2',
