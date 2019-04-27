@@ -44,7 +44,7 @@ class Index extends React.Component {
         }).then(res => res.data).then(data => {
             if (data.success) {
                 let backData = data.backData;
-                if(backData.state !== 2) {
+                if (backData.state !== 2) {
                     Modal.info({
                         title: '提示',
                         content: '认证通过前暂不能添加房间信息，请耐心等待审核结果！',
@@ -54,7 +54,8 @@ class Index extends React.Component {
                                     resolve();
                                     _this.context.router.push('/frame/hotelkeeper/keeper');
                                 }, 1000);
-                            }).catch(() => {});
+                            }).catch(() => {
+                            });
                         }
                     });
                 }
@@ -86,7 +87,7 @@ class Index extends React.Component {
             if (!err) {
                 values.thumbnail = values.detailPic[0].response.id;
                 values.detailPic = values.detailPic && values.detailPic.map(item => item.response.id).join(',');
-                values.hotelId = sessionStorage.userId;
+                values.foodkeeperId = sessionStorage.userId;
 
                 this.setState({
                     submitLoading: true

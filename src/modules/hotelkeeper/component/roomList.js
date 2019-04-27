@@ -216,9 +216,9 @@ class RoomList extends React.Component {
 
     queryList = () => {
         const {params, keyWords} = this.state;
-        const hotelId = sessionStorage.userId;
+        const hotelkeeperId = sessionStorage.userId;
         const param = assign({
-            hotelId
+            hotelkeeperId
         }, params, {keyWords});
         this.setState({loading: true});
         axios.get('room/queryList', {

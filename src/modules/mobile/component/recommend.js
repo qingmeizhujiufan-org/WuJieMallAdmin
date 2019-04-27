@@ -211,14 +211,17 @@ class TravelList extends React.Component {
             params_1: {
                 pageNumber: 1,
                 pageSize: 10,
+                state: 2
             },
             params_2: {
                 pageNumber: 1,
                 pageSize: 10,
+                state: 2
             },
             params_3: {
                 pageNumber: 1,
                 pageSize: 10,
+                state: 2
             },
             keyWords_1: '',
             keyWords_2: '',
@@ -454,23 +457,25 @@ class TravelList extends React.Component {
                         </Breadcrumb>
                     </div>
                     <h1 className='title'>主题旅游列表</h1>
-                    <div className='search-area'>
-                        <Row type='flex' justify="center" align="middle">
-                            <Col span={8}>
-                                <Search
-                                    placeholder="主题名称"
-                                    enterButton='搜索'
-                                    size="large"
-                                    onSearch={this.onSearch}
-                                />
-                            </Col>
-                        </Row>
-                    </div>
+                    {/*<div className='search-area'>*/}
+                        {/*<Row type='flex' justify="center" align="middle">*/}
+                            {/*<Col span={8}>*/}
+                                {/*<Search*/}
+                                    {/*placeholder="主题名称"*/}
+                                    {/*enterButton='搜索'*/}
+                                    {/*size="large"*/}
+                                    {/*onSearch={this.onSearch}*/}
+                                {/*/>*/}
+                            {/*</Col>*/}
+                        {/*</Row>*/}
+                    {/*</div>*/}
                 </div>
                 <div className='pageContent'>
                     <ZZCard>
                         <Tabs defaultActiveKey="1">
-                            <TabPane tab="特色食品推荐" key="1">
+                            <TabPane tab={<Badge
+                                count={dataSource_1.filter(item => item.isRecommend === 1).length}>特色食品推荐</Badge>}
+                                     key="1">
                                 <ZZCard>
                                     <ZZTable
                                         columns={this.columns_food}
@@ -481,7 +486,9 @@ class TravelList extends React.Component {
                                     />
                                 </ZZCard>
                             </TabPane>
-                            <TabPane tab="主题旅游推荐" key="2">
+                            <TabPane tab={<Badge
+                                count={dataSource_2.filter(item => item.isRecommend === 1).length}>主题旅游推荐</Badge>}
+                                     key="2">
                                 <ZZCard>
                                     <ZZTable
                                         columns={this.columns_travel}
@@ -492,7 +499,9 @@ class TravelList extends React.Component {
                                     />
                                 </ZZCard>
                             </TabPane>
-                            <TabPane tab="特色民宿推荐" key="3">
+                            <TabPane tab={<Badge
+                                count={dataSource_3.filter(item => item.isRecommend === 1).length}>特色民宿推荐</Badge>}
+                                     key="3">
                                 <ZZCard>
                                     <ZZTable
                                         columns={this.columns_hotel}

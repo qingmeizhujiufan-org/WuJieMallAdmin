@@ -1,14 +1,10 @@
 import React from 'react';
-import {Link} from 'react-router';
 import PropTypes from 'prop-types';
 import {
     Row,
     Col,
-    Input,
     Icon,
-    Menu,
     Breadcrumb,
-    Dropdown,
     notification,
     message,
     Modal,
@@ -109,7 +105,7 @@ class Index extends React.Component {
         const {dataSource, loading} = this.state;
 
         return (
-            <div className="zui-content page-newsList">
+            <div className="zui-content page-topslider">
                 <div className='pageHeader'>
                     <div className="breadcrumb-block">
                         <Breadcrumb>

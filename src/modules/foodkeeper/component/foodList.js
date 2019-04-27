@@ -153,7 +153,8 @@ class FoodList extends React.Component {
 
     queryList = () => {
         const {params, keyWords} = this.state;
-        const param = assign({}, params, {keyWords});
+        const foodkeeperId = sessionStorage.userId;
+        const param = assign({foodkeeperId}, params, {keyWords});
         this.setState({loading: true});
         axios.get('food/queryList', {
             params: param
@@ -205,10 +206,6 @@ class FoodList extends React.Component {
 
     addFood = () => {
         return this.context.router.push('/frame/food/add');
-    }
-
-    onDetail = id => {
-        return `/frame/food/list/detail/${id}`
     }
 
     onEdit = id => {
@@ -287,7 +284,7 @@ class FoodList extends React.Component {
                             dataSource={dataSource}
                             pagination={pagination}
                             loading={loading}
-                            scroll={{x: 2500}}
+                            scroll={{x: 1500}}
                             handlePageChange={this.handlePageChange}
                         />
                     </ZZCard>
