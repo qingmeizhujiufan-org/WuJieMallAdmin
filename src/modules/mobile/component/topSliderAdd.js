@@ -50,14 +50,14 @@ class Index extends React.Component {
                 });
                 axios.post('app/addTopSlider', values).then(res => res.data).then(data => {
                     if (data.success) {
-                        Notification.success({
+                        notification.success({
                             message: '提示',
                             description: data.backMsg
                         });
 
                         // return this.context.router.push('/frame/food/list');
                     } else {
-                        Message.error(data.backMsg);
+                        message.error(data.backMsg);
                     }
                     this.setState({
                         submitLoading: false
