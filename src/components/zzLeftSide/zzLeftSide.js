@@ -47,6 +47,8 @@ class ZZLeftSide extends React.Component {
             let authority, authority_menu = [];
             if (type === "000") {
                 authority = admin;
+            } else if (type === "001") {
+                authority = admin;
             } else if (type === "002") {
             } else if (type === "003") {
                 authority = hotelkeeperAdmin;

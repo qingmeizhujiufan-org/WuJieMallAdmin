@@ -9,8 +9,8 @@ import {
     Badge,
     Breadcrumb,
     Dropdown,
-    Notification,
-    Message,
+    notification,
+    message,
     Modal,
     Button
 } from 'antd';
@@ -211,7 +211,7 @@ class FoodList extends React.Component {
                 param.id = key;
                 axios.post('food/delete', param).then(res => res.data).then(data => {
                     if (data.success) {
-                        Notification.success({
+                        notification.success({
                             message: '提示',
                             description: '删除成功！'
                         });
@@ -224,7 +224,7 @@ class FoodList extends React.Component {
                             this.queryList();
                         });
                     } else {
-                        Message.error(data.backMsg);
+                        message.error(data.backMsg);
                     }
                 });
             }

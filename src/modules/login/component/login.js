@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {Form, Icon, Row, Col, Input, Button, Message} from 'antd';
+import {Form, Icon, Row, Col, Input, Button, message} from 'antd';
 import restUrl from 'RestUrl';
 import axios from 'Utils/axios';
 import '../login.less';
@@ -49,7 +49,7 @@ class Login extends React.Component {
                         }
                         // 管理员
                         else if (backData.roleId === '001') {
-                            initUrl = '/frame/report/list';
+                            initUrl = '/frame/food/list';
                         }
                         // 民宿店家
                         else if (backData.roleId === '003') {
@@ -58,7 +58,7 @@ class Login extends React.Component {
                         // 旅游店家
                         else if (backData.roleId === '004') {
                             initUrl = '/frame/travelkeeper/travelList';
-                        }else if(backData.roleId === '005') {
+                        } else if (backData.roleId === '005') {
                             initUrl = '/frame/foodkeeper/foodList';
                         } else {
                             this.setState({loading: false});
