@@ -92,9 +92,13 @@ class OrderList extends React.Component {
         key: 'state',
         render: text => {
           if (text === 1) {
-            return <Badge status="success" text="已确认"/>;
+            return <Badge status="default" text="已拒绝"/>;
           } else if (text === 2) {
-            return <Badge status="warning" text="已拒绝"/>;
+            return <Badge status="success" text="已确认"/>;
+          } else if (text === 3) {
+            return <Badge status="warning" text="已完成"/>;
+          } else if (text === -1) {
+            return <Badge status="error" text="已取消"/>;
           } else {
             return <Badge status="processing" text="待确认"/>;
           }
@@ -105,23 +109,30 @@ class OrderList extends React.Component {
         fixed: 'right',
         width: 120,
         align: 'center',
-        render: (text, record, index) => (
-          <Dropdown
-            placement="bottomCenter"
-            overlay={
-              <Menu>
-                <Menu.Item>
-                  <a onClick={() => this.onCheck(record, 1)}>确认</a>
-                </Menu.Item>
-                <Menu.Item>
-                  <a onClick={() => this.onCheck(record, 2)}>拒绝</a>
-                </Menu.Item>
-              </Menu>
-            }
-          >
-            <a className="ant-dropdown-link">操作</a>
-          </Dropdown>
-        )
+        render: (text, record, index) => {
+          if (record.status === 3) {
+            return <span>已结束</span>
+          } else {
+            return <Dropdown
+              placement="bottomCenter"
+              overlay={
+                <Menu>
+                  <Menu.Item>
+                    <a onClick={() => this.onCheck(record, 2)}>确认</a>
+                  </Menu.Item>
+                  <Menu.Item>
+                    <a onClick={() => this.onCheck(record, 1)}>拒绝</a>
+                  </Menu.Item>
+                  <Menu.Item>
+                    <a onClick={() => this.onCheck(record, 3)}>完成</a>
+                  </Menu.Item>
+                </Menu>
+              }
+            >
+              <a className="ant-dropdown-link">操作</a>
+            </Dropdown>
+          }
+        }
       }
     ];
 

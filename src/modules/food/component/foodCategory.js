@@ -19,7 +19,7 @@ import {
 import assign from 'lodash/assign';
 import axios from "Utils/axios";
 import Util from 'Utils/util';
-import '../../food/index.less';
+import '../index.less';
 import restUrl from "RestUrl";
 
 const Search = Input.Search;
@@ -129,11 +129,11 @@ class FoodList extends React.Component {
     }
 
     addFoodCategory = () => {
-        return this.context.router.push('/frame/foodkeeper/category/add');
+        return this.context.router.push('/frame/food/category/add');
     }
 
     onEdit = id => {
-        return this.context.router.push(`/frame/foodkeeper/categoryList/edit/${id}`);
+        return this.context.router.push(`/frame/food/categoryList/edit/${id}`);
     }
 
     onDelete = (key) => {

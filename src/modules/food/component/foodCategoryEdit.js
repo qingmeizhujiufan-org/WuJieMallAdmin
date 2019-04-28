@@ -16,7 +16,7 @@ import axios from "Utils/axios";
 import {formItemLayout, itemGrid} from 'Utils/formItemGrid';
 import {Upload} from 'Comps/zui/index';
 
-import '../../food/index.less';
+import '../index.less';
 import restUrl from "RestUrl";
 
 const FormItem = Form.Item;
@@ -28,13 +28,64 @@ class Index extends React.Component {
         this.state = {
             previewVisible: false,
             previewImage: '',
+            loading: false,
             submitLoading: false,
             fileList: []
         };
     }
 
     componentDidMount = () => {
+        this.queryDetail()
+    }
 
+    queryDetail = () => {
+        const id = this.props.params.id;
+        const param = {};
+        param.id = id;
+        this.setState({
+            loading: true
+        });
+        axios.get('food/categoryDetail', {
+            params: param
+        }).then(res => res.data).then(data => {
+            if (data.success) {
+                let backData = data.backData;
+                this.setFields(backData);
+                this.setState({
+                    data: backData,
+                    fileList: backData.foodCategoryPic
+                });
+            } else {
+                message.error('食品信息查询失败');
+            }
+            this.setState({
+                loading: false
+            });
+        });
+    }
+
+    setFields = val => {
+        const values = this.props.form.getFieldsValue();
+        for (let key in values) {
+            if (key === 'foodCategoryPic') {
+                values[key] = [];
+                val[key].map((item, index) => {
+                    values[key].push({
+                        uid: index,
+                        name: item.fileTame,
+                        status: 'done',
+                        url: restUrl.FILE_ASSET + `${item.id + item.fileType}`,
+                        thumbUrl: restUrl.FILE_ASSET + `${item.id + item.fileType}`,
+                        response: {
+                            id: item.id
+                        }
+                    });
+                });
+            } else {
+                values[key] = val[key];
+            }
+        }
+        this.props.form.setFieldsValue(values);
     }
 
     handleCancel = () => this.setState({previewVisible: false})
@@ -57,18 +108,17 @@ class Index extends React.Component {
                 if (values.foodCategoryPic) {
                     values.foodCategoryPic = values.foodCategoryPic.map(item => item.response.id).join(',');
                 }
-                values.createBy = sessionStorage.userName;
+                values.id = this.props.params.id;
+                values.updateBy = sessionStorage.userName;
                 this.setState({
                     submitLoading: true
                 });
-                axios.post('food/categoryAdd', values).then(res => res.data).then(data => {
+                axios.post('food/categoryUpdate', values).then(res => res.data).then(data => {
                     if (data.success) {
                         notification.success({
                             message: '提示',
                             description: '食品信息保存成功！'
                         });
-
-                        return this.context.router.push('/frame/food/category/list');
                     } else {
                         message.error(data.backMsg);
                     }
@@ -163,10 +213,10 @@ class Index extends React.Component {
     }
 }
 
-const foodCategoryAdd = Form.create()(Index);
+const foodCategoryEdit = Form.create()(Index);
 
 Index.contextTypes = {
     router: PropTypes.object
 }
 
-export default foodCategoryAdd;
+export default foodCategoryEdit;

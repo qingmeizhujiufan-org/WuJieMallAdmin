@@ -23,20 +23,6 @@ const FoodEdit = Loadable({
     loading: Loading
 });
 
-/*  分类管理*/
-const FoodCategoryList = Loadable({
-    loader: () => import("../modules/foodkeeper/component/foodCategory"),
-    loading: Loading
-});
-const FoodCategoryAdd = Loadable({
-    loader: () => import("../modules/foodkeeper/component/foodCategoryAdd"),
-    loading: Loading
-});
-const FoodCategoryEdit = Loadable({
-    loader: () => import("../modules/foodkeeper/component/foodCategoryEdit"),
-    loading: Loading
-});
-
 /* 认证信息 */
 const Keeper = Loadable({
     loader: () => import("../modules/foodkeeper/component/keeper"),
@@ -50,8 +36,5 @@ module.exports = (
         <Route path="foodList/edit/:id" component={FoodEdit}/>
         <Route path="addFood" component={FoodAdd}/>
         <Route path="keeper" component={Keeper}/>
-        <Route path="categoryList" component={FoodCategoryList}/>
-        <Route path="category/add" component={FoodCategoryAdd}/>
-        <Route path="categoryList/edit/:id" component={FoodCategoryEdit}/>
     </Route>
 );
