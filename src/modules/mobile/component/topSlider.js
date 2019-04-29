@@ -121,7 +121,7 @@ class Index extends React.Component {
                             {
                                 dataSource.map((item, index) => {
                                     return (
-                                        <Col span={6} key={index}>
+                                        <Col span={6} key={index} style={{marginBottom: 15}}>
                                             <Card
                                                 hoverable
                                                 cover={<img src={item.imgSrc}/>}

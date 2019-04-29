@@ -23,8 +23,12 @@ axios.interceptors.response.use(response => {
     // 对响应错误做点什么
     const response = error.response;
     if(response) {
+        const data = response.data || {};
+        if(response.status === 101) {
+            message.error(data.message);
+            window.location.hash = `/login?back_url=${window.location.href}`;
+        }
         if (response.status === 401 || response.status === 403) {
-            const data = response.data || {};
             message.error(data.message);
             window.location.hash = `/login?back_url=${window.location.href}`;
         }

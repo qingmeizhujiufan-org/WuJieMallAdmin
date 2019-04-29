@@ -55,10 +55,12 @@ class Index extends React.Component {
                             description: data.backMsg
                         });
 
-                        // return this.context.router.push('/frame/food/list');
+                        return this.context.router.push('/frame/mobile/topSlider/list');
                     } else {
                         message.error(data.backMsg);
                     }
+
+                }).finally(() => {
                     this.setState({
                         submitLoading: false
                     });
@@ -95,7 +97,7 @@ class Index extends React.Component {
                                         {...formItemLayout}
                                     >
                                         {getFieldDecorator('imgId', {
-                                            rules: [{required: false, message: '图片不能为空!'}],
+                                            rules: [{required: true, message: '图片不能为空!'}],
                                         })(
                                             <Upload
                                                 listType={'picture'}
