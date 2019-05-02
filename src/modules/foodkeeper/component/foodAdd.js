@@ -11,7 +11,7 @@ import {
     notification,
     message,
     InputNumber,
-    Divider,
+    Divider, Modal,
 } from 'antd';
 import {DatePicker, Upload} from 'Comps/zui';
 import {formItemLayout, itemGrid} from 'Utils/formItemGrid';
@@ -32,7 +32,41 @@ class Index extends React.Component {
     };
 
     componentDidMount = () => {
+        this.queryDetail();
         this.queryAllCategoryList();
+    }
+
+    queryDetail = () => {
+        const _this = this;
+        const param = {};
+        param.id = sessionStorage.userId;
+
+        axios.get('foodKeeper/queryDetail', {
+            params: param
+        }).then(res => res.data).then(data => {
+            if (data.success) {
+                let backData = data.backData;
+                if(backData.state !== 2) {
+                    Modal.info({
+                        title: '提示',
+                        content: '认证通过前暂不能添加食品信息，请耐心等待审核结果！',
+                        onOk() {
+                            return new Promise((resolve, reject) => {
+                                setTimeout(() => {
+                                    resolve();
+                                    _this.context.router.push('/frame/foodkeeper/keeper');
+                                }, 1000);
+                            }).catch(() => {});
+                        }
+                    });
+                }
+            } else {
+                message.error('获取商家信息失败，将自动跳转到认证信息页');
+                setTimeout(() => {
+                    this.context.router.push('/frame/foodkeeper/keeper');
+                }, 1000);
+            }
+        });
     }
 
     queryAllCategoryList = () => {

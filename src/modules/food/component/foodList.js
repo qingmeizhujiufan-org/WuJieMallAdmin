@@ -38,10 +38,10 @@ class FoodList extends React.Component {
                 )
             }, {
                 title: '店家名称',
-                dataIndex: 'shopName',
+                dataIndex: 'keeperName',
                 width: 150,
                 align: 'center',
-                key: 'shopName'
+                key: 'keeperName'
             }, {
                 title: '食品分类',
                 dataIndex: 'foodCategoryName',

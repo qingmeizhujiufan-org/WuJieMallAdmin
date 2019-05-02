@@ -32,7 +32,7 @@ class Index extends React.Component {
         this.columns = [
             {
                 title: '用户名',
-                width: 120,
+                width: 200,
                 align: 'center',
                 dataIndex: 'userName',
                 key: 'userName',
@@ -41,7 +41,7 @@ class Index extends React.Component {
                 )
             }, {
                 title: '真实姓名',
-                width: 150,
+                width: 200,
                 align: 'center',
                 dataIndex: 'realName',
                 key: 'realName',

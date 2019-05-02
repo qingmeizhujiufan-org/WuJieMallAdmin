@@ -81,7 +81,9 @@ class Index extends React.Component {
                         }
                     });
                 });
-            } else {
+            } else if(key === 'state') {
+                values[key] = 0;
+            }else {
                 values[key] = val[key];
             }
         }
@@ -285,11 +287,7 @@ class Index extends React.Component {
                                             label="审核状态"
 
                                         >
-                                            {getFieldDecorator('businessStatus', {
-                                                rules: [{
-                                                    required: false, message: '请输入营业状态',
-                                                }]
-                                            })(
+                                            {getFieldDecorator('state')(
                                                 <Select disabled>
                                                     <Option value={0}>未审核</Option>
                                                     <Option value={1}>审核通过</Option>

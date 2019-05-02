@@ -66,7 +66,7 @@ class ZZTable extends React.Component {
 
         return (
             <Table
-                className={`zzTable ${className}`}
+                className={`zzTable ${className ? className : ''}`}
                 dataSource={_dataSource}
                 pagination={pagination ? _pagination : false}
                 {...restProps}
