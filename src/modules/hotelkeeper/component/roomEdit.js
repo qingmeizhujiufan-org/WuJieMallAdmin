@@ -5,7 +5,6 @@ import {
     Col,
     Form,
     Input,
-    InputNumber,
     Select,
     Breadcrumb,
     Button,
@@ -14,7 +13,7 @@ import {
     Divider,
     Icon
 } from 'antd';
-import {Upload} from 'Comps/zui';
+import {Upload, InputNumber} from 'Comps/zui';
 import {formItemLayout, itemGrid} from 'Utils/formItemGrid';
 import axios from "Utils/axios";
 import restUrl from "RestUrl"
@@ -110,8 +109,6 @@ class Index extends React.Component {
                             message: '提示',
                             description: '更新房间信息成功！'
                         });
-
-                        return this.context.router.goBack();
                     } else {
                         message.error(data.backMsg);
                     }
@@ -135,10 +132,10 @@ class Index extends React.Component {
                         <Breadcrumb>
                             <Breadcrumb.Item>特色民宿管理</Breadcrumb.Item>
                             <Breadcrumb.Item>民宿房间管理</Breadcrumb.Item>
-                            <Breadcrumb.Item>新增民宿房间</Breadcrumb.Item>
+                            <Breadcrumb.Item>更新民宿房间信息</Breadcrumb.Item>
                         </Breadcrumb>
                     </div>
-                    <h1 className='title'>新增民宿房间</h1>
+                    <h1 className='title'>更新民宿房间信息</h1>
                 </div>
                 <div className='pageContent'>
                     <div className='ibox-content'>
@@ -202,11 +199,7 @@ class Index extends React.Component {
                                         {getFieldDecorator('bedModel', {
                                             rules: [{required: true, message: '请输入房间类型'}],
                                         })(
-                                            <Select placeholder="请选择">
-                                                <Option value='1.5米单人床'>1.5米单人床</Option>
-                                                <Option value='1.8米双人床'>1.8米双人床</Option>
-                                                <Option value='2米圆床'>2米圆床</Option>
-                                            </Select>
+                                            <Input/>
                                         )}
                                     </FormItem>
                                 </Col>

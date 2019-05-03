@@ -11,7 +11,9 @@ import {
     notification,
     message,
     Divider,
-    Icon, InputNumber
+    Icon,
+    InputNumber,
+    Rate
 } from 'antd';
 import {Upload} from 'Comps/zui';
 import {formItemLayout, itemGrid} from 'Utils/formItemGrid';
@@ -98,6 +100,32 @@ class Index extends React.Component {
         }
     }
 
+    handleSubmit = (e) => {
+        e.preventDefault();
+        this.props.form.validateFields((err, values) => {
+            if (!err) {
+                this.setState({
+                    submitLoading: true
+                });
+                axios.post('hotel/update', {
+                    id: this.state.data.id,
+                    grade: values.grade
+                }).then(res => res.data).then(data => {
+                    if (data.success) {
+                        notification.success({
+                            message: '提示',
+                            description: '保存成功！'
+                        });
+
+                        this.queryDetail();
+                    } else {
+                        message.error(data.backMsg);
+                    }
+                }).finally(() => this.setState({submitLoading: false}));
+            }
+        });
+    }
+
     submit = val => {
         const data = this.state.data;
         data.state = val;
@@ -141,8 +169,29 @@ class Index extends React.Component {
                     <h1 className='title'>审核民宿信息</h1>
                 </div>
                 <div className='pageContent'>
-                    <div className='ibox-content'>
-                        <Form onSubmit={this.handleSubmit}>
+                    <Form onSubmit={this.handleSubmit}>
+                        <div className='ibox-content'>
+                            <Divider>评分</Divider>
+                            <Row>
+                                <Col {...itemGrid}>
+                                    <FormItem
+                                        {...formItemLayout}
+                                        label="商家评分"
+                                    >
+                                        {getFieldDecorator('grade', {
+                                            rules: [{required: true, message: '商家评分不能为空!'}],
+                                        })(
+                                            <Rate/>
+                                        )}
+                                    </FormItem>
+                                </Col>
+                                <Col {...itemGrid}>
+                                    <Button type="primary" htmlType="submit">确定</Button>
+                                </Col>
+                            </Row>
+                        </div>
+                        <br/>
+                        <div className='ibox-content'>
                             <Divider>民宿描述图</Divider>
                             <Row>
                                 <Col span={24}>
@@ -341,8 +390,8 @@ class Index extends React.Component {
                                 <Button type="primary" size='large' style={{width: 120}}
                                         onClick={() => this.submit(2)}>通过</Button>
                             </Row>
-                        </Form>
-                    </div>
+                        </div>
+                    </Form>
                 </div>
             </div>
         );

@@ -359,11 +359,11 @@ class Index extends React.Component {
                                     <Col {...itemGrid}>
                                         <FormItem
                                             {...formItemLayout}
-                                            label="备注"
+                                            label="无介评语"
                                         >
                                             {getFieldDecorator('mark', {
                                                 rules: [{
-                                                    required: false
+                                                    required: true, message: '请填写无介评语'
                                                 }],
                                             })(
                                                 <TextArea/>
@@ -484,10 +484,10 @@ class Index extends React.Component {
                                         >
                                             {getFieldDecorator('foodDate', {
                                                 rules: [{
-                                                    required: false, message: '请输入食品保质期',
+                                                    required: true, message: '请输入食品保质期',
                                                 }],
                                             })(
-                                                <Input disabled/>
+                                                <Input/>
                                             )}
                                         </FormItem>
                                     </Col>

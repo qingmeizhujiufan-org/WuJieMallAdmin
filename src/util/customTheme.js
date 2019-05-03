@@ -10,10 +10,10 @@ const options = {
         // 布局
         '@layout-header-height': '50px',
         '@layout-header-background': '#5578DC',
-        '@layout-sider-background': '#303A5E',
+        '@layout-sider-background': '#fff',
         // 菜单
         '@menu-dark-bg': '#303A5E',
-        '@menu-dark-submenu-bg': '#303A5E',
+        '@menu-dark-submenu-bg': '#fff',
         // 表格
         '@table-padding-vertical': '10px',
         '@table-padding-horizontal': '10px',

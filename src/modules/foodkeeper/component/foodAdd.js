@@ -157,16 +157,6 @@ class Index extends React.Component {
                             </Row>
                             <Divider>基本信息</Divider>
                             <Row>
-                                <Col {...itemGrid} style={{display: 'none'}}>
-                                    <FormItem
-                                        {...formItemLayout}
-                                        label="商家ID"
-                                    >
-                                        {getFieldDecorator('shopId', {initialValue: '123456789'})(
-                                            <Input/>
-                                        )}
-                                    </FormItem>
-                                </Col>
                                 <Col {...itemGrid}>
                                     <FormItem
                                         {...formItemLayout}
@@ -344,11 +334,11 @@ class Index extends React.Component {
                                 <Col {...itemGrid}>
                                     <FormItem
                                         {...formItemLayout}
-                                        label="备注"
+                                        label="无介评语"
                                     >
                                         {getFieldDecorator('mark', {
                                             rules: [{
-                                                required: false
+                                                required: true, message: '请填写无介评语'
                                             }],
                                         })(
                                             <TextArea/>

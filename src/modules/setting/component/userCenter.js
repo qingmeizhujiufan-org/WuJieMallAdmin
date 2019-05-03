@@ -7,19 +7,16 @@ import {
     Input,
     Breadcrumb,
     Button,
-    Upload,
     Icon,
     Tabs,
-    Message,
-    Notification
+    message,
+    notification
 } from 'antd';
-import assign from 'lodash/assign';
+import {Upload} from 'Comps/zui';
 import restUrl from 'RestUrl';
 import '../index.less';
 import {formItemLayout, itemGrid} from 'Utils/formItemGrid';
 import axios from "Utils/axios";
-
-const uploadUrl = restUrl.BASE_HOST + 'assessory/upload';
 
 const FormItem = Form.Item;
 const TabPane = Tabs.TabPane;
@@ -30,7 +27,6 @@ class DetailForm extends React.Component {
 
         this.state = {
             id: '',
-            data: {},
             imageUrl: '',
             fileList: [],
             loading: false,
@@ -43,38 +39,8 @@ class DetailForm extends React.Component {
         this.queryDetail();
     }
 
-    handleChange = ({file, fileList}) => {
-        console.log('file === ', file);
-        if (file.status === 'done') {
-            this.setState({fileList});
-        }
-        if (file.status === 'removed') {
-            this.delFile(file.response.backData.id);
-        }
-    }
-
-    normFile = (e) => {
-        if (Array.isArray(e)) {
-            return e;
-        }
-        return e && e.fileList;
-    }
-
-    delFile = id => {
-        const param = {};
-        param.id = id;
-        axios.post('assessory/delete', param).then(res => res.data).then(data => {
-            if (data.success) {
-                Notification.success({
-                    message: '提示',
-                    description: '删除成功！'
-                });
-
-                this.setState({fileList: []});
-            } else {
-                Message.error(data.backMsg);
-            }
-        });
+    handleChange = fileList => {
+        this.setState({fileList});
     }
 
     queryDetail = () => {
@@ -84,36 +50,47 @@ class DetailForm extends React.Component {
         this.setState({
             loading: true
         });
-        axios.get('user/qureyOneUser', {
+        axios.get('admin/qureyOneUser', {
             params: param
         }).then(res => res.data).then(data => {
             if (data.success) {
                 let backData = data.backData;
-                if (backData.assessorys) {
-                    backData.assessorys.map((item, index) => {
-                        backData.assessorys[index] = assign({}, item, {
-                            uid: item.id,
-                            status: 'done',
-                            url: restUrl.ADDR + item.path + item.name,
-                            response: {
-                                backData: item
-                            }
-                        });
-                    });
-                } else {
-                    backData.assessorys = [];
-                }
-                const fileList = [].concat(backData.assessorys);
+                this.setFields(backData);
 
                 this.setState({
                     data: backData,
-                    fileList,
                     loading: false
                 });
             } else {
-                Message.error('用户信息查询失败');
+                message.error('用户信息查询失败');
             }
         });
+    }
+
+    setFields = val => {
+        const values = this.props.form.getFieldsValue();
+        for (let key in values) {
+            if (key === 'avatarSrc') {
+                values[key] = [];
+                val[key].map((item, index) => {
+                    values[key].push({
+                        uid: index,
+                        name: item.fileName,
+                        status: 'done',
+                        url: restUrl.FILE_ASSET + `${item.id + item.fileType}`,
+                        thumbUrl: restUrl.FILE_ASSET + `${item.id + item.fileType}`,
+                        response: {
+                            id: item.id
+                        }
+                    });
+                });
+                this.setState({fileList: values[key]});
+            } else {
+                values[key] = val[key];
+            }
+        }
+
+        this.props.form.setFieldsValue(values);
     }
 
     validatePhone = (rule, value, callback) => {
@@ -129,101 +106,46 @@ class DetailForm extends React.Component {
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
             if (!err) {
+                const avatarSrc = values.avatarSrc;
                 values.id = sessionStorage.userId;
-                values.assessorys = values.assessorys ? values.assessorys.map(item => {
-                    return item.response.backData;
-                }) : [];
-
+                values.avatarSrc = values.avatarSrc && values.avatarSrc.map(item => item.response.id).join(',');
+                console.log('avatarSrc == ', avatarSrc);
                 this.setState({
                     submitLoading: true
                 });
-                axios.post('user/save', values).then(res => res.data).then(data => {
+                axios.post('admin/updateUser', values).then(res => res.data).then(data => {
                     if (data.success) {
-                        Notification.success({
+                        notification.success({
                             message: '提示',
                             description: '用户信息保存成功！'
                         });
-
-                        const backData = data.backData;
-                        if (backData.assessorys && backData.assessorys.length > 0) {
-                            sessionStorage.setItem('avatar', restUrl.ADDR + backData.assessorys[0].path + backData.assessorys[0].name);
-                        } else {
-                            sessionStorage.setItem('avatar', undefined);
-                        }
+                        sessionStorage.setItem('avatar', avatarSrc[0].thumbUrl);
+                        this.queryDetail();
                     } else {
-                        Message.error(data.backMsg);
+                        message.error(data.backMsg);
                     }
-
-                    this.setState({
-                        submitLoading: false
-                    }, () => {
-                        this.queryDetail()
-                    });
-                });
+                }).finally(() => this.setState({submitLoading: false}));
             }
         });
     }
 
     render() {
         const {getFieldDecorator} = this.props.form;
-        const {data, fileList, submitLoading} = this.state;
+        const {fileList, submitLoading} = this.state;
         return (
             <div className='userCenter'>
                 <Form layout="vertical" hideRequiredMark onSubmit={this.handleSubmit}>
                     <Row type="flex" justify="center">
                         <Col span={8}>
-                            <Row style={{display: 'none'}}>
-                                <Col span={20}>
-                                    <FormItem
-                                        label="用户角色"
-                                    >
-                                        {getFieldDecorator('roleId', {
-                                            rules: [{required: true, message: '角色不能为空!'}],
-                                            initialValue: data.roleId
-                                        })(
-                                            <Input disabled/>
-                                        )}
-                                    </FormItem>
-                                </Col>
-                            </Row>
-                            <Row>
-                                <Col span={20}>
-                                    <FormItem
-                                        label="用户角色"
-                                    >
-                                        {getFieldDecorator('roleName', {
-                                            rules: [{required: true, message: '角色不能为空!'}],
-                                            initialValue: data.roleName
-                                        })(
-                                            <Input disabled/>
-                                        )}
-                                    </FormItem>
-                                </Col>
-                            </Row>
                             <Row>
                                 <Col span={20}>
                                     <FormItem
                                         label="用户名"
                                     >
-                                        {getFieldDecorator('userName', {
+                                        {getFieldDecorator('realName', {
                                             rules: [{required: true, message: '请输入用户名'}],
-                                            initialValue: data.userName
                                         })(
-                                            <Input disabled/>
-                                        )}
-                                    </FormItem>
-                                </Col>
-                            </Row>
-                            <Row>
-                                <Col span={20}>
-                                    <FormItem
-                                        label="用户编码"
-                                    >
-                                        {getFieldDecorator('userCode', {
-                                            rules: [{required: false}],
-                                            initialValue: data.userCode
-                                        })(
-                                            <Input disabled/>
+                                            <Input/>
                                         )}
                                     </FormItem>
                                 </Col>
@@ -236,22 +158,7 @@ class DetailForm extends React.Component {
                                         {getFieldDecorator('phone', {
                                             rules: [{required: true, message: '请输入个人电话'}, {
                                                 validator: this.validatePhone,
-                                            }],
-                                            initialValue: data.phone
-                                        })(
-                                            <Input/>
-                                        )}
-                                    </FormItem>
-                                </Col>
-                            </Row>
-                            <Row>
-                                <Col span={20}>
-                                    <FormItem
-                                        label="所属区域"
-                                    >
-                                        {getFieldDecorator('region', {
-                                            rules: [{required: true, message: '请输入所属区域'}],
-                                            initialValue: data.region
+                                            }]
                                         })(
                                             <Input/>
                                         )}
@@ -263,10 +170,7 @@ class DetailForm extends React.Component {
                                     <FormItem
                                         label="创建时间"
                                     >
-                                        {getFieldDecorator('createTime', {
-                                            rules: [{required: false}],
-                                            initialValue: data.createTime
-                                        })(
+                                        {getFieldDecorator('created_at')(
                                             <Input disabled/>
                                         )}
                                     </FormItem>
@@ -277,18 +181,10 @@ class DetailForm extends React.Component {
                             <FormItem
                                 label="头像"
                             >
-                                {getFieldDecorator('assessorys', {
-                                    valuePropName: 'fileList',
-                                    getValueFromEvent: this.normFile,
-                                    rules: [{required: false, message: '头像不能为空!'}],
-                                    initialValue: data.assessorys
+                                {getFieldDecorator('avatarSrc', {
+                                    rules: [{required: false, message: '头像不能为空!'}]
                                 })(
                                     <Upload
-                                        headers={{
-                                            'X-Auth-Token': sessionStorage.token
-                                        }}
-                                        name='bannerImage'
-                                        action={uploadUrl}
                                         listType="picture-card"
                                         onChange={this.handleChange}
                                     >
@@ -362,7 +258,7 @@ class PasswordForm extends React.Component {
         const {getFieldDecorator} = this.props.form;
         const {submitLoading} = this.state;
         return (
-            <Form onSubmit={this.handleSubmit} autoComplete="off">
+            <Form onSubmit={this.handleSubmit}>
                 <Row type="flex" justify="center" style={{marginTop: 40}}>
                     <Col {...itemGrid}>
                         <FormItem
@@ -370,12 +266,11 @@ class PasswordForm extends React.Component {
                             label="手机号"
                         >
                             {getFieldDecorator('phoneNumber', {
-                                initialValue: '',
                                 rules: [{required: true, message: '请输入个人电话'}, {
                                     validator: this.validatePhone
                                 }],
                             })(
-                                <Input autocomplete="off"/>
+                                <Input/>
                             )}
                         </FormItem>
 
@@ -389,7 +284,7 @@ class PasswordForm extends React.Component {
                                 initialValue: '',
                                 rules: [{required: true, message: '请输入新密码'}],
                             })(
-                                <Input type='password' autocomplete="off"/>
+                                <Input type='password'/>
                             )}
                         </FormItem>
                     </Col>

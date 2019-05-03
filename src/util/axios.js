@@ -24,10 +24,6 @@ axios.interceptors.response.use(response => {
     const response = error.response;
     if(response) {
         const data = response.data || {};
-        if(response.status === 101) {
-            message.error(data.message);
-            window.location.hash = `/login?back_url=${window.location.href}`;
-        }
         if (response.status === 401 || response.status === 403) {
             message.error(data.message);
             window.location.hash = `/login?back_url=${window.location.href}`;

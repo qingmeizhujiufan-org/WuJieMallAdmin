@@ -36,11 +36,13 @@ class Login extends React.Component {
                 }).then(data => {
                     if (data.success) {
                         const backData = data.backData;
-                        // sessionStorage.setItem('token', backData.token);
-                        // sessionStorage.setItem('expireDate', backData.outofServicetime);
+
                         sessionStorage.setItem('userId', backData.id);
                         sessionStorage.setItem('userName', backData.userName);
                         sessionStorage.setItem('realName', backData.realName);
+                        if(backData.File){
+                            sessionStorage.setItem('avatar', restUrl.FILE_ASSET + `${backData.File.id + backData.File.fileType}`);
+                        }
 
                         let initUrl = null;
                         // 管理员

@@ -44,7 +44,7 @@ class Index extends React.Component {
         }).then(res => res.data).then(data => {
             if (data.success) {
                 let backData = data.backData;
-                if(backData.state !== 2) {
+                if (backData.state !== 2) {
                     Modal.info({
                         title: '提示',
                         content: '认证通过前暂不能添加房间信息，请耐心等待审核结果！',
@@ -54,7 +54,8 @@ class Index extends React.Component {
                                     resolve();
                                     _this.context.router.push('/frame/hotelkeeper/keeper');
                                 }, 1000);
-                            }).catch(() => {});
+                            }).catch(() => {
+                            });
                         }
                     });
                 }
@@ -190,11 +191,7 @@ class Index extends React.Component {
                                         {getFieldDecorator('bedModel', {
                                             rules: [{required: true, message: '请输入房间类型'}],
                                         })(
-                                            <Select placeholder="请选择">
-                                                <Option value='1.5米单人床'>1.5米单人床</Option>
-                                                <Option value='1.8米双人床'>1.8米双人床</Option>
-                                                <Option value='2米圆床'>2米圆床</Option>
-                                            </Select>
+                                            <Input/>
                                         )}
                                     </FormItem>
                                 </Col>
@@ -359,7 +356,7 @@ class Index extends React.Component {
                                         label="可否取消"
                                     >
                                         {getFieldDecorator('canCancel', {
-                                            initialValue: 0
+                                            initialValue: '您在下单后变更或取消收取全额的定金。'
                                         })(
                                             <Select placeholder="请选择" disabled>
                                                 <Option value='支持取消'>支持取消</Option>
@@ -374,7 +371,7 @@ class Index extends React.Component {
                                         label="可否加床"
                                     >
                                         {getFieldDecorator('canAddbed', {
-                                            initialValue: 0
+                                            initialValue: '不可加床'
                                         })(
                                             <Select placeholder="请选择" disabled>
                                                 <Option value='不可加床'>不可加床</Option>

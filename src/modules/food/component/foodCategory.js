@@ -67,7 +67,7 @@ class FoodList extends React.Component {
                     const dataSource = backData.content;
                     dataSource.map(item => {
                         item.key = item.id;
-                        item.url = restUrl.FILE_ASSET + `${item.foodCategoryPic[0].id + item.foodCategoryPic[0].fileType}`
+                        item.url = (item.foodCategoryPic && item.foodCategoryPic[0]) ? (restUrl.FILE_ASSET + `${item.foodCategoryPic[0].id + item.foodCategoryPic[0].fileType}`) : null
                     });
 
                     callback(dataSource)

@@ -12,7 +12,8 @@ import {
     notification,
     message,
     Modal,
-    Badge
+    Badge,
+    Rate
 } from 'antd';
 import assign from 'lodash/assign';
 import axios from "Utils/axios";
@@ -36,6 +37,15 @@ class HotelList extends React.Component {
                     <Link to={this.onEdit(record.id)}>{text}</Link>
                 )
             }, {
+                title: '评分',
+                dataIndex: 'grade',
+                width: 200,
+                align: 'center',
+                key: 'grade',
+                render: text => (
+                    <Rate disabled defaultValue={text} />
+                )
+            }, {
                 title: '负责人姓名',
                 dataIndex: 'keeperName',
                 width: 120,
@@ -44,7 +54,7 @@ class HotelList extends React.Component {
             }, {
                 title: '身份证号码',
                 dataIndex: 'IDNumber',
-                width: 120,
+                width: 200,
                 align: 'center',
                 key: 'IDNumber'
             }, {
@@ -258,7 +268,7 @@ class HotelList extends React.Component {
                             dataSource={dataSource}
                             pagination={pagination}
                             loading={loading}
-                            scroll={{x: 1600}}
+                            scroll={{x: 1800}}
                             handlePageChange={this.handlePageChange}
                         />
                     </ZZCard>

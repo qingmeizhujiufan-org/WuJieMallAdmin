@@ -133,6 +133,17 @@ const Menu = [
             }
         ]
     }, {
+        key: '303',
+        iconType: 'setting',
+        label: '个人设置',
+        children: [
+            {
+                key: '303_1',
+                link: '/frame/setting/list',
+                label: '个人中心'
+            }
+        ]
+    }, {
         key: '400',
         iconType: 'shop',
         label: '特色旅游管理',
@@ -170,6 +181,17 @@ const Menu = [
             }
         ]
     }, {
+        key: '403',
+        iconType: 'setting',
+        label: '个人设置',
+        children: [
+            {
+                key: '403_1',
+                link: '/frame/setting/list',
+                label: '个人中心'
+            }
+        ]
+    }, {
         key: '500',
         iconType: 'shop',
         label: '食品管理',
@@ -193,6 +215,17 @@ const Menu = [
                 key: '501_1',
                 link: '/frame/foodkeeper/keeper',
                 label: '认证信息'
+            }
+        ]
+    }, {
+        key: '502',
+        iconType: 'setting',
+        label: '个人设置',
+        children: [
+            {
+                key: '502_1',
+                link: '/frame/setting/list',
+                label: '个人中心'
             }
         ]
     }

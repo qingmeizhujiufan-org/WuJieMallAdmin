@@ -13,7 +13,8 @@ import {
     Divider,
     Icon,
     InputNumber,
-    Spin
+    Spin,
+    Alert
 } from 'antd';
 import {Upload} from 'Comps/zui';
 import {formItemLayout, itemGrid} from 'Utils/formItemGrid';
@@ -81,9 +82,9 @@ class Index extends React.Component {
                         }
                     });
                 });
-            } else if(key === 'state') {
-                values[key] = 0;
-            }else {
+            } else if (key === 'state') {
+                values[key] = values[key] || 0;
+            } else {
                 values[key] = val[key];
             }
         }
@@ -130,11 +131,11 @@ class Index extends React.Component {
                     if (data.success) {
                         notification.success({
                             message: '提示',
-                            description: '认证信息添加成功！'
+                            description: '认证信息更新成功！'
                         });
                         this.queryDetail();
                     } else {
-                        message.error('认证信息添加失败!');
+                        message.error('认证信息更新失败!');
                     }
                     this.setState({
                         submitLoading: false
@@ -148,9 +149,17 @@ class Index extends React.Component {
     render() {
         const {getFieldDecorator} = this.props.form;
         const {fileList, loading, submitLoading, data} = this.state;
+        const info = (data.state === 0 && {type: 'warning', message: '信息已提交，请耐心等待审核！'})
+            || (data.state === 1 && {type: 'error', message: '审核不通过，请重新填写资料并提交审核！'})
+            || (data.state === 2 && {type: 'success', message: '恭喜！审核已通过~'});
 
         return (
             <div className="zui-content">
+                {
+                    data.state >= 0 ? (
+                        <Alert type={info.type} message={info.message} banner closable/>
+                    ) : null
+                }
                 <div className='pageHeader'>
                     <div className="breadcrumb-block">
                         <Breadcrumb>
@@ -170,7 +179,7 @@ class Index extends React.Component {
                                         <FormItem
                                         >
                                             {getFieldDecorator('headerPic', {
-                                                rules: [{required: true, message: '旅游商家描述图片不能为空!'}],
+                                                rules: [{required: true, message: '商家描述图片不能为空!'}],
                                             })(
                                                 <Upload/>
                                             )}
@@ -277,21 +286,6 @@ class Index extends React.Component {
                                                     <Option value={0}>休息中</Option>
                                                     <Option value={1}>营业中</Option>
                                                     <Option value={2}>下架中</Option>
-                                                </Select>
-                                            )}
-                                        </FormItem>
-                                    </Col>
-                                    <Col {...itemGrid}>
-                                        <FormItem
-                                            {...formItemLayout}
-                                            label="审核状态"
-
-                                        >
-                                            {getFieldDecorator('state')(
-                                                <Select disabled>
-                                                    <Option value={0}>未审核</Option>
-                                                    <Option value={1}>审核通过</Option>
-                                                    <Option value={2}>审核不通过</Option>
                                                 </Select>
                                             )}
                                         </FormItem>

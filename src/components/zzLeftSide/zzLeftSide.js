@@ -75,7 +75,7 @@ class ZZLeftSide extends React.Component {
                     }
                 }
             });
-            console.log('authority == ', authority);
+
             this.setState({
                 isLoaded: true,
                 defaultOpenKeys: authority.defaultOpenKeys,
@@ -143,7 +143,7 @@ class ZZLeftSide extends React.Component {
 
         return (
             <Menu
-                theme="dark"
+                theme="light"
                 mode="inline"
                 selectedKeys={[selectedKeys]}
                 defaultSelectedKeys={defaultSelectedKeys}
