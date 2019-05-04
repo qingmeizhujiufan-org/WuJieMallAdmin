@@ -10,7 +10,9 @@ import {
     Button,
     notification,
     message,
-    Icon
+    Icon,
+    AutoComplete,
+    Spin
 } from 'antd';
 import {DatePicker, Upload} from 'Comps/zui';
 import {formItemLayout, itemGrid} from 'Utils/formItemGrid';
@@ -30,13 +32,45 @@ class Index extends React.Component {
 
         this.state = {
             fileList: [],
+            dataSource: [],
+            loading: false,
             submitLoading: false
         };
     }
 
     componentDidMount = () => {
+        this.queryFoodList();
     }
 
+    queryFoodList = () => {
+        const param = {
+            pageNumber: 1,
+            pageSize: 9999,
+            state: 2
+        };
+        this.setState({loading: true});
+        axios.get('food/queryAdminList', {params: param}).then(res => res.data).then(data => {
+            if (data.success) {
+                if (data.backData) {
+                    const backData = data.backData;
+                    const dataSource = backData.content;
+                    dataSource.map(item => item.key = item.id);
+
+                    this.setState({
+                        dataSource: dataSource
+                    });
+                } else {
+                    this.setState({
+                        dataSource: []
+                    });
+                }
+            } else {
+                message.error('查询列表失败');
+            }
+        }).finally(() => {
+            this.setState({loading: false});
+        });
+    }
 
     handleSubmit = (e) => {
         e.preventDefault();
@@ -72,7 +106,8 @@ class Index extends React.Component {
 
     render() {
         const {getFieldDecorator} = this.props.form;
-        const {fileList, submitLoading} = this.state;
+        const {fileList, dataSource, loading, submitLoading} = this.state;
+        const children = dataSource.map(item => <Option key={item.id}>{item.foodName}</Option>);
 
         return (
 
@@ -114,13 +149,15 @@ class Index extends React.Component {
                                         {...formItemLayout}
                                         label="食品链接"
                                     >
-                                        {getFieldDecorator('foodLink', {
-                                            rules: [{
-                                                required: true, message: '请选择食品',
-                                            }],
-                                        })(
-                                            <Input/>
-                                        )}
+                                        <Spin spinning={loading} indicator={<Icon type="loading" spin />}>
+                                            {getFieldDecorator('foodLink', {
+                                                rules: [{
+                                                    required: true, message: '请选择食品',
+                                                }],
+                                            })(
+                                                <AutoComplete>{children}</AutoComplete>
+                                            )}
+                                        </Spin>
                                     </FormItem>
                                 </Col>
                                 <Col {...itemGrid}>

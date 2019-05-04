@@ -31,40 +31,22 @@ class DetailForm extends React.Component {
             fileList: [],
             loading: false,
             roleList: [],
-            submitLoading: false
+            submitLoading: false,
+            init: false,
         };
     }
 
     componentDidMount = () => {
-        this.queryDetail();
+    }
+
+    componentWillReceiveProps = nextProps => {
+        if ('data' in nextProps && nextProps['data'] && !this.state.init) {
+            this.setFields(nextProps['data']);
+        }
     }
 
     handleChange = fileList => {
         this.setState({fileList});
-    }
-
-    queryDetail = () => {
-        const id = sessionStorage.userId;
-        const param = {};
-        param.id = id;
-        this.setState({
-            loading: true
-        });
-        axios.get('admin/qureyOneUser', {
-            params: param
-        }).then(res => res.data).then(data => {
-            if (data.success) {
-                let backData = data.backData;
-                this.setFields(backData);
-
-                this.setState({
-                    data: backData,
-                    loading: false
-                });
-            } else {
-                message.error('用户信息查询失败');
-            }
-        });
     }
 
     setFields = val => {
@@ -89,8 +71,9 @@ class DetailForm extends React.Component {
                 values[key] = val[key];
             }
         }
-
-        this.props.form.setFieldsValue(values);
+        this.setState({init: true}, () => {
+            this.props.form.setFieldsValue(values);
+        });
     }
 
     validatePhone = (rule, value, callback) => {
@@ -229,27 +212,33 @@ class PasswordForm extends React.Component {
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
             if (!err) {
-                console.log('handleSubmit  param === ', values);
-                const param = {
-                    phone: values.phoneNumber,
-                    password: values.newPassword
+                const data = this.props.data;
+                if (values.oldPassword !== data.password) {
+                    message.error('旧密码不对，请重新填写');
+                    return;
+                }
+                if (values.newPassword.length < 6) {
+                    message.error('新密码位数不能少于6位');
+                    return;
                 }
                 this.setState({
                     submitLoading: true
                 });
-                axios.post('user/updatePassword', param).then(res => res.data).then(data => {
-                    this.setState({
-                        submitLoading: false
-                    });
+                axios.post('admin/updateUser', {
+                    id: sessionStorage.userId,
+                    password: values.newPassword
+                }).then(res => res.data).then(data => {
                     if (data.success) {
-                        Notification.success({
+                        notification.success({
                             message: '提示',
-                            description: '修改密码成功！'
+                            description: '用户密码更新成功！'
                         });
+                        sessionStorage.setItem('avatar', avatarSrc[0].thumbUrl);
+                        this.queryDetail();
                     } else {
-                        Message.error(data.backMsg);
+                        message.error(data.backMsg);
                     }
-                });
+                }).finally(() => this.setState({submitLoading: false}));
             }
         });
     }
@@ -263,14 +252,12 @@ class PasswordForm extends React.Component {
                     <Col {...itemGrid}>
                         <FormItem
                             {...formItemLayout}
-                            label="手机号"
+                            label="旧密码"
                         >
-                            {getFieldDecorator('phoneNumber', {
-                                rules: [{required: true, message: '请输入个人电话'}, {
-                                    validator: this.validatePhone
-                                }],
+                            {getFieldDecorator('oldPassword', {
+                                rules: [{required: true, message: '请输入旧密码'}],
                             })(
-                                <Input/>
+                                <Input type='password' autoComplete='false'/>
                             )}
                         </FormItem>
 
@@ -284,7 +271,7 @@ class PasswordForm extends React.Component {
                                 initialValue: '',
                                 rules: [{required: true, message: '请输入新密码'}],
                             })(
-                                <Input type='password'/>
+                                <Input type='password' autoComplete='false'/>
                             )}
                         </FormItem>
                     </Col>
@@ -305,16 +292,40 @@ class Index extends React.Component {
         super(props);
 
         this.state = {
-            id: ''
+            loading: false,
+            data: null
         };
     }
 
     componentDidMount = () => {
+        this.queryDetail();
+    }
 
+    queryDetail = () => {
+        const id = sessionStorage.userId;
+        const param = {};
+        param.id = id;
+        this.setState({
+            loading: true
+        });
+        axios.get('admin/qureyOneUser', {
+            params: param
+        }).then(res => res.data).then(data => {
+            if (data.success) {
+                let backData = data.backData;
+
+                this.setState({
+                    data: backData,
+                    loading: false
+                });
+            } else {
+                message.error('用户信息查询失败');
+            }
+        });
     }
 
     render() {
-        const id = this.props.params.id;
+        const {data} = this.state;
         return (
             <div className="zui-content">
                 <div className='pageHeader'>
@@ -330,10 +341,10 @@ class Index extends React.Component {
                     <div className='ibox-content'>
                         <Tabs defaultActiveKey="1">
                             <TabPane tab={<span><Icon type="setting"/>个人信息</span>} key="1">
-                                <DetailForm id={id}/>
+                                <DetailForm data={data}/>
                             </TabPane>
                             <TabPane tab={<span><Icon type="lock"/>修改密码</span>} key="2">
-                                <PasswordForm/>
+                                <PasswordForm data={data}/>
                             </TabPane>
                         </Tabs>
                     </div>
