@@ -183,7 +183,7 @@ class Index extends React.Component {
                                             rules: [{required: true, message: '请选择房间状态'}],
                                             initialValue: 0
                                         })(
-                                            <Select placeholder="请选择">
+                                            <Select placeholder="请选择" disabled>
                                                 <Option value={0}>可预订</Option>
                                                 <Option value={1}>已满房</Option>
                                                 <Option value={2}>已下架</Option>
