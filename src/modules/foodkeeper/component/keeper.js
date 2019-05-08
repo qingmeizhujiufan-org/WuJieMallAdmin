@@ -116,11 +116,10 @@ class Index extends React.Component {
             if (!err) {
                 const data = this.state.data;
                 const statusList = ['营业中', '休息中', '下架中'];
-                const checkList = ['未审核', '审核通过', '审核不通过'];
                 values.thumbnail = values.headerPic[0].response.id;
                 values.headerPic = values.headerPic && values.headerPic.map(item => item.response.id).join(',');
                 values.detailPic = values.detailPic && values.detailPic.map(item => item.response.id).join(',');
-                values.businessStatusText = checkList[values.businessStatus];
+                values.businessStatusText = statusList[values.businessStatus];
                 values.createBy = sessionStorage.userName;
                 values.id = sessionStorage.userId;
 

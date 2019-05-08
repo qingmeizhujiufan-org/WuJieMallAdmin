@@ -117,6 +117,7 @@ class Index extends React.Component {
         this.props.form.validateFieldsAndScroll((err, values) => {
             if (!err) {
                 const {travelDays, expenseDesc, lineInfo} = this.state;
+                values.travelkeeperId = sessionStorage.userId;
                 values.thumbnail = values.headerPic[0].response.id;
                 values.headerPic = values.headerPic && values.headerPic.map(item => item.response.id).join(',');
                 values.detailPic = values.detailPic && values.detailPic.map(item => item.response.id).join(',');
@@ -338,6 +339,20 @@ class Index extends React.Component {
                                         label="旅游用车"
                                     >
                                         {getFieldDecorator('travelUsecar', {
+                                            rules: [{
+                                                required: false
+                                            }],
+                                        })(
+                                            <Input/>
+                                        )}
+                                    </FormItem>
+                                </Col>
+                                <Col {...itemGrid}>
+                                    <FormItem
+                                        {...formItemLayout}
+                                        label="线路玩法"
+                                    >
+                                        {getFieldDecorator('linePlay', {
                                             rules: [{
                                                 required: false
                                             }],

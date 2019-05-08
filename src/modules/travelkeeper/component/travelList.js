@@ -113,13 +113,13 @@ class TravelList extends React.Component {
                 align: 'left',
                 fixed: 'right',
                 width: 110,
-                dataIndex: 'checkStatus',
-                key: 'checkStatus',
+                dataIndex: 'state',
+                key: 'state',
                 render: (text) => {
                     if (text === 1) {
-                        return <Badge status="success" text="审核通过"/>;
-                    } else if (text === 2) {
                         return <Badge status="error" text="审核不通过"/>;
+                    } else if (text === 2) {
+                        return <Badge status="success" text="审核通过"/>;
                     } else {
                         return <Badge status="processing" text="待审核"/>;
                     }
