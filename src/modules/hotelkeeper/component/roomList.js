@@ -213,9 +213,9 @@ class RoomList extends React.Component {
                   <Menu.Item>
                     <a onClick={() => this.onCheck(record.id, 0)}>可预订</a>
                   </Menu.Item>
-                  <Menu.Item>
-                    <a onClick={() => this.onCheck(record.id, 1)}>满房</a>
-                  </Menu.Item>
+                  {/*<Menu.Item>*/}
+                    {/*<a onClick={() => this.onCheck(record.id, 1)}>满房</a>*/}
+                  {/*</Menu.Item>*/}
                   <Menu.Item>
                     <a onClick={() => this.onCheck(record.id, 2)}>下架</a>
                   </Menu.Item>
