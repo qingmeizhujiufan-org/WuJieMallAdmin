@@ -12,7 +12,7 @@ import {
     notification,
     message,
     Modal,
-    Button
+    Button, Badge
 } from 'antd';
 import assign from 'lodash/assign';
 import axios from "Utils/axios";
@@ -107,6 +107,22 @@ class FoodList extends React.Component {
                 align: 'center',
                 dataIndex: 'created_at',
                 key: 'created_at'
+            }, {
+                title: '审核状态',
+                align: 'left',
+                fixed: 'right',
+                width: 110,
+                dataIndex: 'state',
+                key: 'state',
+                render: (text) => {
+                    if (text === 1) {
+                        return <Badge status="error" text="审核不通过"/>;
+                    } else if (text === 2) {
+                        return <Badge status="success" text="审核通过"/>;
+                    } else {
+                        return <Badge status="processing" text="待审核"/>;
+                    }
+                }
             }, {
                 title: <a><Icon type="setting" style={{fontSize: 18}}/></a>,
                 key: 'operation',
@@ -284,7 +300,7 @@ class FoodList extends React.Component {
                             dataSource={dataSource}
                             pagination={pagination}
                             loading={loading}
-                            scroll={{x: 1500}}
+                            scroll={{x: 1800}}
                             handlePageChange={this.handlePageChange}
                         />
                     </ZZCard>

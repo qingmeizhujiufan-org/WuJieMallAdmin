@@ -507,6 +507,16 @@ class Index extends React.Component {
                                             )}
                                         </FormItem>
                                     </Col>
+                                    <Col {...itemGrid}>
+                                        <FormItem
+                                            {...formItemLayout}
+                                            label="淘宝链接"
+                                        >
+                                            {getFieldDecorator('taobaoUrl')(
+                                                <TextArea disabled/>
+                                            )}
+                                        </FormItem>
+                                    </Col>
                                 </Row>
                                 <Divider>食品详情图</Divider>
                                 <Row>
