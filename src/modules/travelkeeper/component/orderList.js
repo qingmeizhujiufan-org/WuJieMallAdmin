@@ -117,12 +117,12 @@ class OrderList extends React.Component {
               placement="bottomCenter"
               overlay={
                 <Menu>
-                  <Menu.Item>
-                    <a onClick={() => this.onCheck(record, 2)}>确认</a>
-                  </Menu.Item>
-                  <Menu.Item>
-                    <a onClick={() => this.onCheck(record, 1)}>取消</a>
-                  </Menu.Item>
+                  {/*<Menu.Item>*/}
+                    {/*<a onClick={() => this.onCheck(record, 2)}>确认</a>*/}
+                  {/*</Menu.Item>*/}
+                  {/*<Menu.Item>*/}
+                    {/*<a onClick={() => this.onCheck(record, 1)}>取消</a>*/}
+                  {/*</Menu.Item>*/}
                   <Menu.Item>
                     <a onClick={() => this.onCheck(record, 3)}>完成</a>
                   </Menu.Item>
